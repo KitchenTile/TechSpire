@@ -18,11 +18,12 @@ app.UseHttpsRedirection();
 
 
 var mockShow = new Show { Id = 1, Name = "Mock Show", StartTime = 1900, EndTime = 2000, ChannelId = 5 };
+var mockChannel = new Channel { ChannelId = 01, Name = "Mock Channel", ShowList = [mockShow] };
 
 // test endpoint
 app.MapGet("/", () =>
 {
-    return Results.Ok(mockShow);
+    return Results.Ok(mockChannel);
 });
 
 app.Run();
