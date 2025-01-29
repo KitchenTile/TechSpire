@@ -38,3 +38,7 @@ next-env.d.ts
 # temp obj and bin folder ignores
 tvscheduler/obj
 tvscheduler/bin
+
+# vs
+.vs
+TechSpire.sln
