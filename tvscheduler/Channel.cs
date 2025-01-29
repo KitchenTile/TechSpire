@@ -18,7 +18,7 @@ public class Channel
     public void DisplayChannel()
     {
         Console.WriteLine("Channel Name: " + Name);
-        // Console.WriteLine("Channel Description: " + channelDescription);
+        Console.WriteLine("Channel Description: " + ChannelDescription);
         Console.WriteLine("Program List: " + ShowList);
     }
 
