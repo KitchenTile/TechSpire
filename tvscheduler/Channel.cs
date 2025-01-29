@@ -7,22 +7,22 @@ public class Channel
     public required List<Show> ShowList { get; set; }
 
     // constructor
-    public Channel(int channelId, string name, List<Show> showlist)
-    {
-        channelId = CannelId;
-        name = Name;
-        showlist = ShowList;
-    }
+    // public Channel(int channelId, string name, List<Show> showlist)
+    // {
+    //     ChannelId = channelId;
+    //     Name = name;
+    //     ShowList = showlist;
+    // }
 
     public void DisplayChannel()
     {
-        Console.WriteLine("Channel Name: " + channelName);
-        Console.WriteLine("Channel Description: " + channelDescription);
-        Console.WriteLine("Program List: " + progrmaList);
+        Console.WriteLine("Channel Name: " + Name);
+        // Console.WriteLine("Channel Description: " + channelDescription);
+        Console.WriteLine("Program List: " + ShowList);
     }
 
-    public void AddProgram(Program program)
+    public void AddShow(Show show)
     {
-        progrmaList += program.programName + ", ";
+        ShowList.Add(show);
     }
 }
