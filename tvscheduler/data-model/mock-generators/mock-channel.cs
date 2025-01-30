@@ -26,11 +26,11 @@ namespace tvscheduler
             {
                 shows.Add(new Show
                 {
-                    ChannelId = channelId,
+                    evtID = Random.Next(69,420),
+                    Channel = channelId,
                     Name = ChannelNames[Random.Next(0,
                         ChannelNames.Length)],
                     StartTime = scheduleStartTime.AddMinutes(i * showDuration),
-                    Id = i,
                     EndTime = scheduleStartTime.AddMinutes(i * showDuration + showDuration),
                 });
             }
