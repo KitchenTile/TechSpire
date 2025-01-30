@@ -5,28 +5,93 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
 app.UseHttpsRedirection();
 
 
-var mockShow = new Show { Id = 1, Name = "Mock Show", StartTime = 1900, EndTime = 2000, ChannelId = 5 };
-var mockChannel = new Channel { ChannelId = 01, Name = "Mock Channel", ChannelDescription = "mock desc", ShowList = [mockShow] };
+var scheduleRoute = app.MapGroup("schedule");
+var mySchedule = new List<Show>();
 
 
-mockChannel.DisplayChannel();
 
-// test endpoint
+// creating mock data
+var mockChannel1 = ChannelGenerator.GenerateMockChannel(
+        channelId: 1,
+        scheduleStartTime: DateTime.Now,
+        showCount: 5,
+        showDuration: 5
+        );
+var mockChannel2 = ChannelGenerator.GenerateMockChannel(
+        channelId: 2,
+        scheduleStartTime: DateTime.Now,
+        showCount: 5,
+        showDuration: 5
+);
+
+var channels = new List<Channel>
+{
+    mockChannel1,
+    mockChannel2
+};
+
+
+
+// entry endpoint
 app.MapGet("/", () =>
 {
-    return Results.Ok(mockChannel);
+    return Results.Ok(new
+    {
+        channels,
+        mySchedule
+    });
 });
+
+
+
+// add to schedule
+// ex: /schedule/add?id=1&channel=1
+scheduleRoute.MapGet("add", (int channel, int id) =>
+{
+    var channelObject = channels.FirstOrDefault(c => c.ChannelId == channel);
+    var showObject = channelObject?.ShowList.FirstOrDefault(s => s.Id == id);
+
+    if (showObject != null)
+    {
+        mySchedule.Add(showObject);
+    }
+    else
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Ok("ok");
+});
+
+
+
+// remove from the schedule
+scheduleRoute.MapGet("remove", (int channel, int id) =>
+{
+    var channelObject = channels.FirstOrDefault(c => c.ChannelId == channel);
+    var showObject = channelObject?.ShowList.FirstOrDefault(s => s.Id == id);
+
+    if (showObject != null)
+    {
+        mySchedule.Remove(showObject);
+    }
+    else
+    {
+        return Results.NotFound();
+    }
+    
+    return Results.Ok("ok");
+});
+
+
 
 app.Run();
