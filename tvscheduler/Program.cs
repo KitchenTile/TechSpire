@@ -17,12 +17,15 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 
-var mockShow = new Show { Id = 1, Name = "Mock Show", StartTime = 1900, EndTime = 2000, ChannelId = 5 };
-var mockChannel = new Channel { ChannelId = 01, Name = "Mock Channel", ChannelDescription = "mock desc", ShowList = [mockShow] };
-
+var mockShow = new Show { Id = 1, Name = "Mock Show", StartTime = 1900, EndTime = 2000};
+var mockShow2 = new Show { Id = 1, Name = "Mock Show2", StartTime = 1600, EndTime = 1900};
+var mockShow3 = new Show { Id = 1, Name = "Mock Show3", StartTime = 2000, EndTime = 2100};
+var mockChannel = new Channel { ChannelId = 1, Name = "Mock Channel", ChannelDescription = "mock desc", ShowList = [mockShow, mockShow2, mockShow3] };
+var mockChannel2 = new Channel { ChannelId = 2, Name = "Mock Channel 2", ChannelDescription = "mock desc", ShowList = [mockShow, mockShow3] };
 
 mockChannel.DisplayChannel();
-
+Console.WriteLine("------------");
+mockChannel2.DisplayChannel();
 // test endpoint
 app.MapGet("/", () =>
 {
