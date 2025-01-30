@@ -54,11 +54,11 @@ app.MapGet("/", () =>
 
 
 // add to schedule
-// ex: /schedule/add?id=1&channel=1
-scheduleRoute.MapGet("add", (int channel, int id) =>
+// ex: /schedule/add?id=500
+scheduleRoute.MapGet("add", (int id, int channel) =>
 {
     var channelObject = channels.FirstOrDefault(c => c.ChannelId == channel);
-    var showObject = channelObject?.ShowList.FirstOrDefault(s => s.Id == id);
+    var showObject = channelObject?.ShowList.FirstOrDefault(s => s.evtID == id);
 
     if (showObject != null)
     {
@@ -75,10 +75,9 @@ scheduleRoute.MapGet("add", (int channel, int id) =>
 
 
 // remove from the schedule
-scheduleRoute.MapGet("remove", (int channel, int id) =>
+scheduleRoute.MapGet("remove", (int id) =>
 {
-    var channelObject = channels.FirstOrDefault(c => c.ChannelId == channel);
-    var showObject = channelObject?.ShowList.FirstOrDefault(s => s.Id == id);
+    var showObject = mySchedule.FirstOrDefault(s => s.evtID == id);
 
     if (showObject != null)
     {
