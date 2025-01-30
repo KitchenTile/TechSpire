@@ -1,3 +1,5 @@
+using System.Net.Http;
+using System.Text.Json;
 using tvscheduler;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddHttpClient();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -39,8 +42,45 @@ var channels = new List<Channel>
     mockChannel2
 };
 
+// Fetch TV Guide data from the API
+async Task<JsonElement> FetchGuideData(HttpClient httpClient)
+{
+    var response = await httpClient.GetAsync("https://www.freesat.co.uk/tv-guide/api");
+    response.EnsureSuccessStatusCode();
+
+    var responseBody = await response.Content.ReadAsStringAsync();
+    var guideData = JsonSerializer.Deserialize<JsonElement>(responseBody);
+
+    return guideData;
+}
+
+// Fetch TV Guide data for a specific channel
+async Task<JsonElement> FetchProgramData(HttpClient httpClient, int channelId = 560)
+{
+    var response = await httpClient.GetAsync($"https://www.freesat.co.uk/tv-guide/api/0?channel={channelId}");
+    response.EnsureSuccessStatusCode();
+
+    var responseBody = await response.Content.ReadAsStringAsync();
+    var programData = JsonSerializer.Deserialize<JsonElement>(responseBody);
+
+    return programData;
+}
 
 
+// entry endpoint with external API calls
+app.MapGet("/", async (HttpClient httpClient) =>
+{
+    var guideData = await FetchGuideData(httpClient);
+    var programData = await FetchProgramData(httpClient);
+
+    return Results.Ok(new
+    {
+        guideData,
+        programData
+    });
+});
+
+/*
 // entry endpoint
 app.MapGet("/", () =>
 {
@@ -50,7 +90,7 @@ app.MapGet("/", () =>
         mySchedule
     });
 });
-
+*/
 
 
 // add to schedule
