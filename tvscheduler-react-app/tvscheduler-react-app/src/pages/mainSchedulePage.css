@@ -1,0 +1,14 @@
+.channel-container{
+    position: relative;
+  }
+  
+  
+  .selected-channel-container{
+    position: absolute;
+    top: -20px;
+    left: 120%;
+    width: 100%;
+    height: max-content;
+    background: maroon;
+    border-radius: 10px;
+  }
