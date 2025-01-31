@@ -42,3 +42,4 @@ tvscheduler/bin
 # vs
 .vs
 TechSpire.sln
+/tvscheduler-react-app/tvscheduler-react-app/node_modules
