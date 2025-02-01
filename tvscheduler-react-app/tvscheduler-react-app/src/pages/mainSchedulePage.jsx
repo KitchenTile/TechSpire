@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./MainSchedulePage.css";
+import ShowCard from "../components/ShowCard";
 
 const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
@@ -48,6 +49,9 @@ const MainSchedulePage = () => {
                 <p>
                   {channels.programData[hoveredChannel][0].event[0].description}
                 </p>
+                <ShowCard
+                  show={channels.programData[hoveredChannel][0].event[0]}
+                />
               </div>
             )}
           </div>
