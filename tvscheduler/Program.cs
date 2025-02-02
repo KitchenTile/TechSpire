@@ -71,19 +71,6 @@ async Task<JsonElement> FetchGuideData(HttpClient httpClient)
     return guideData;
 }
 
-// Fetch TV Guide data for a specific channel
-// async Task<JsonElement> FetchProgramData(HttpClient httpClient, int channelId = 560)
-// {
-//     var response = await httpClient.GetAsync($"https://www.freesat.co.uk/tv-guide/api/0?channel={channelId}");
-//     response.EnsureSuccessStatusCode();
-
-//     var responseBody = await response.Content.ReadAsStringAsync();
-//     var programData = JsonSerializer.Deserialize<JsonElement>(responseBody);
-
-//     return programData;
-// }
-
-
 // New func to fetch multiple channels' data at once using a list of ids
 async Task<Dictionary<int, JsonElement>> FetchMultipleProgramData(HttpClient httpClient, List<int> channelIds)
 {
@@ -98,6 +85,17 @@ async Task<Dictionary<int, JsonElement>> FetchMultipleProgramData(HttpClient htt
         //returns a kvp of {id -> data}
         return new KeyValuePair<int, JsonElement>(channelId, programData);
     });
+=======
+async Task<JsonElement> FetchProgramData(HttpClient httpClient, int channelId = 560)
+{
+    var response = await httpClient.GetAsync($"https://www.freesat.co.uk/tv-guide/api/0?channel={channelId}");
+    response.EnsureSuccessStatusCode();
+
+    var responseBody = await response.Content.ReadAsStringAsync();
+    var programData = JsonSerializer.Deserialize<JsonElement>(responseBody);
+
+    return programData;
+}
 
     var results = await Task.WhenAll(fetchTasks);
 
@@ -107,7 +105,6 @@ async Task<Dictionary<int, JsonElement>> FetchMultipleProgramData(HttpClient htt
 // entry endpoint with external API calls
 app.MapGet("/", async (HttpClient httpClient) =>
 {
-
     var guideData = await FetchGuideData(httpClient);
     // var programData = await FetchProgramData(httpClient);
     var channelIds = new List<int> { 560, 700, 10005, 1540, 1547 }; //first 5 ids in guideData - needs change
@@ -120,7 +117,6 @@ app.MapGet("/", async (HttpClient httpClient) =>
         programData
     });
 });
-
 
 /*
 // entry endpoint
@@ -140,6 +136,7 @@ app.MapGet("/", () =>
 scheduleRoute.MapGet("add", (int id, int channel) =>
 {
     var channelObject = channels.FirstOrDefault(c => c.ChannelId == channel);
+
     var showObject = channelObject?.ShowList.FirstOrDefault(s => s.EvtID == id);
 
     if (showObject != null)
@@ -160,6 +157,7 @@ scheduleRoute.MapGet("add", (int id, int channel) =>
 scheduleRoute.MapGet("remove", (int id) =>
 {
     var showObject = mySchedule.FirstOrDefault(s => s.EvtID == id);
+
 
     if (showObject != null)
     {
