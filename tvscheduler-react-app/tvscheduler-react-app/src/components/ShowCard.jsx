@@ -1,7 +1,18 @@
 // import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./ShowCard.css";
 
 const ShowCard = (show) => {
+  const [expanded, setExpanded] = useState(false);
+
+  const unixToHuman = new Date(show.show.startTime * 1000);
+  console.log(unixToHuman.toLocaleString());
+
+  const unixToHumanEnd = new Date(
+    (show.show.startTime + show.show.duration) * 1000
+  );
+  console.log(unixToHumanEnd.toLocaleString());
+
   const endTime = show.startTime - show.duration;
   //this will be devided into several components
 
@@ -17,12 +28,29 @@ const ShowCard = (show) => {
       <div className="info-container">
         <h2 className="show-title">{show.name}</h2>
         <div className="time-stamps">
-          <span className="from">{show.startTime}</span> -{" "}
-          <span className="to"></span>
+          <span className="from">
+            {" "}
+            {unixToHuman.toLocaleTimeString("en-GB", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>{" "}
+          -{" "}
+          <span className="to">
+            {unixToHumanEnd.toLocaleTimeString("en-GB", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
         </div>
-        <p className="show-description">{show.description}</p>
-        <button className="add-button">+</button>
+        <p className="show-description">
+          {expanded ? show.description : show.description.slice(0, 80) + " "}
+          <span className="read-more" onClick={!setExpanded}>
+            {expanded ? "Read Less..." : "Read More..."}
+          </span>
+        </p>
       </div>
+      <button className="add-button">+</button>
     </div>
   );
 };
