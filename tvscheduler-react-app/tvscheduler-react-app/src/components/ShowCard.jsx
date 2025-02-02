@@ -44,8 +44,9 @@ const ShowCard = (show) => {
           </span>
         </div>
         <p className="show-description">
+          {/* needs work */}
           {expanded ? show.description : show.description.slice(0, 80) + " "}
-          <span className="read-more" onClick={!setExpanded}>
+          <span className="read-more" onClick={() => setExpanded(!expanded)}>
             {expanded ? "Read Less..." : "Read More..."}
           </span>
         </p>

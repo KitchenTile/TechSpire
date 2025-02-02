@@ -4,7 +4,7 @@ import ShowCard from "../components/ShowCard";
 
 const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
-  const [hoveredChannel, setHoveredChannel] = useState(null);
+  const [myShows, setMyShows] = useState(null);
 
   useEffect(() => {
     const loadChannels = async () => {
@@ -23,42 +23,38 @@ const MainSchedulePage = () => {
     loadChannels();
   }, []);
 
-  //this will be devided into several components
   return (
     <>
-      <div>
-        <h2>ALL CHANNELS</h2>
-        {channels ? (
-          <div className="channel-container">
-            <ul className="channel-list">
-              {channels.guideData.map((channel) => (
-                <li
-                  key={channel.channelid}
-                  onMouseEnter={() => setHoveredChannel(channel.channelid)}
-                  onMouseLeave={() => setHoveredChannel(null)}
-                >
-                  {channel.channelname}
-                </li>
-              ))}
-            </ul>
-
-            {hoveredChannel && channels.programData[hoveredChannel] && (
-              <div className="selected-channel-container">
-                <h3>Next up</h3>
-                <h4>{channels.programData[hoveredChannel][0].event[0].name}</h4>
-                <p>
-                  {channels.programData[hoveredChannel][0].event[0].description}
-                </p>
-                <ShowCard
-                  show={channels.programData[hoveredChannel][0].event[0]}
-                />
+      {channels ? (
+        <>
+          <h1 className="title">All Shows</h1>
+          <div className="grid-container">
+            {/* get the first x elements of the guide data array -- 129 is too long man */}
+            {channels.guideData.slice(0, 5).map((channel) => (
+              <div key={channel.channelid} className="channel-show-container">
+                <h3>{channel.channelname}</h3>
+                <div className="shows-row">
+                  {/* if the channel has shows, get the first x shows for each channel -- consider writing a variable for more readable code */}
+                  {channels.programData[channel.channelid].length > 0 ? (
+                    channels.programData[channel.channelid][0].event
+                      .slice(0, 5)
+                      .map((show, id) => <ShowCard key={id} show={show} />)
+                  ) : (
+                    <p>No shows available for ${channel.name}</p>
+                  )}
+                </div>
               </div>
-            )}
+            ))}
+
+            {/* my shows display */}
+            <h1 className="title">My Shows</h1>
+
+            <div className="myshow-container"></div>
           </div>
-        ) : (
-          <p>loading...</p>
-        )}
-      </div>
+        </>
+      ) : (
+        <p>loading...</p>
+      )}
     </>
   );
 };

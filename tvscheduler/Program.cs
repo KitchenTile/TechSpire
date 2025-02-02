@@ -72,16 +72,16 @@ async Task<JsonElement> FetchGuideData(HttpClient httpClient)
 }
 
 // Fetch TV Guide data for a specific channel
-async Task<JsonElement> FetchProgramData(HttpClient httpClient, int channelId = 560)
-{
-    var response = await httpClient.GetAsync($"https://www.freesat.co.uk/tv-guide/api/0?channel={channelId}");
-    response.EnsureSuccessStatusCode();
+// async Task<JsonElement> FetchProgramData(HttpClient httpClient, int channelId = 560)
+// {
+//     var response = await httpClient.GetAsync($"https://www.freesat.co.uk/tv-guide/api/0?channel={channelId}");
+//     response.EnsureSuccessStatusCode();
 
-    var responseBody = await response.Content.ReadAsStringAsync();
-    var programData = JsonSerializer.Deserialize<JsonElement>(responseBody);
+//     var responseBody = await response.Content.ReadAsStringAsync();
+//     var programData = JsonSerializer.Deserialize<JsonElement>(responseBody);
 
-    return programData;
-}
+//     return programData;
+// }
 
 
 // New func to fetch multiple channels' data at once using a list of ids
