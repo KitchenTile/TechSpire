@@ -4,16 +4,33 @@ using tvscheduler;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//add cors policies
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173")
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
+        });
+});
+
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddHttpClient();
 var app = builder.Build();
+app.UseCors("AllowFrontend");
+
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+
 app.UseHttpsRedirection();
 
 
@@ -54,7 +71,21 @@ async Task<JsonElement> FetchGuideData(HttpClient httpClient)
     return guideData;
 }
 
-// Fetch TV Guide data for a specific channel
+// New func to fetch multiple channels' data at once using a list of ids
+async Task<Dictionary<int, JsonElement>> FetchMultipleProgramData(HttpClient httpClient, List<int> channelIds)
+{
+    var fetchTasks = channelIds.Select(async channelId =>
+    {
+        var response = await httpClient.GetAsync($"https://www.freesat.co.uk/tv-guide/api/0?channel={channelId}");
+        response.EnsureSuccessStatusCode();
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+        var programData = JsonSerializer.Deserialize<JsonElement>(responseBody);
+
+        //returns a kvp of {id -> data}
+        return new KeyValuePair<int, JsonElement>(channelId, programData);
+    });
+=======
 async Task<JsonElement> FetchProgramData(HttpClient httpClient, int channelId = 560)
 {
     var response = await httpClient.GetAsync($"https://www.freesat.co.uk/tv-guide/api/0?channel={channelId}");
@@ -66,16 +97,23 @@ async Task<JsonElement> FetchProgramData(HttpClient httpClient, int channelId = 
     return programData;
 }
 
+    var results = await Task.WhenAll(fetchTasks);
+
+    return results.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+}
 
 // entry endpoint with external API calls
 app.MapGet("/", async (HttpClient httpClient) =>
 {
     var guideData = await FetchGuideData(httpClient);
-    var programData = await FetchProgramData(httpClient);
+    // var programData = await FetchProgramData(httpClient);
+    var channelIds = new List<int> { 560, 700, 10005, 1540, 1547 }; //first 5 ids in guideData - needs change
+    var programData = await FetchMultipleProgramData(httpClient, channelIds);
 
     return Results.Ok(new
     {
         guideData,
+        channelIds,
         programData
     });
 });
@@ -98,7 +136,8 @@ app.MapGet("/", () =>
 scheduleRoute.MapGet("add", (int id, int channel) =>
 {
     var channelObject = channels.FirstOrDefault(c => c.ChannelId == channel);
-    var showObject = channelObject?.ShowList.FirstOrDefault(s => s.evtID == id);
+
+    var showObject = channelObject?.ShowList.FirstOrDefault(s => s.EvtID == id);
 
     if (showObject != null)
     {
@@ -117,7 +156,8 @@ scheduleRoute.MapGet("add", (int id, int channel) =>
 // remove from the schedule
 scheduleRoute.MapGet("remove", (int id) =>
 {
-    var showObject = mySchedule.FirstOrDefault(s => s.evtID == id);
+    var showObject = mySchedule.FirstOrDefault(s => s.EvtID == id);
+
 
     if (showObject != null)
     {
@@ -127,7 +167,7 @@ scheduleRoute.MapGet("remove", (int id) =>
     {
         return Results.NotFound();
     }
-    
+
     return Results.Ok("ok");
 });
 
