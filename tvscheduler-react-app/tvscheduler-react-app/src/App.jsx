@@ -1,3 +1,4 @@
+import React from "react";
 import "./App.css";
 import MainSchedulePage from "./pages/MainSchedulePage";
 
