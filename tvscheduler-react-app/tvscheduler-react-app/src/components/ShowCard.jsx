@@ -1,22 +1,17 @@
-// import { useEffect, useState } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./ShowCard.css";
 
-const ShowCard = (show) => {
+const ShowCard = ({ show, addShow }) => {
   const [expanded, setExpanded] = useState(false);
 
-  const unixToHuman = new Date(show.show.startTime * 1000);
-  console.log(unixToHuman.toLocaleString());
+  // Unix conversion
+  const unixToHuman = new Date(show.startTime * 1000);
+  const unixToHumanEnd = new Date((show.startTime + show.duration) * 1000);
 
-  const unixToHumanEnd = new Date(
-    (show.show.startTime + show.show.duration) * 1000
-  );
-  console.log(unixToHumanEnd.toLocaleString());
+  const readMore = () => {
+    setExpanded(!expanded);
+  };
 
-  const endTime = show.startTime - show.duration;
-  //this will be devided into several components
-
-  console.log((show = show.show));
   return (
     <div className="card-container">
       <span className="img-container">
@@ -43,15 +38,18 @@ const ShowCard = (show) => {
             })}
           </span>
         </div>
-        <p className="show-description">
+        <p className={`show-description ${expanded ? "expanded" : ""}`}>
           {/* needs work */}
           {expanded ? show.description : show.description.slice(0, 80) + " "}
-          <span className="read-more" onClick={() => setExpanded(!expanded)}>
-            {expanded ? "Read Less..." : "Read More..."}
+          <span className="read-more" onClick={readMore}>
+            {expanded ? "" : "Read More..."}
           </span>
+          <span className="cross" onClick={readMore}></span>
         </p>
       </div>
-      <button className="add-button">+</button>
+      <button className="add-button" onClick={() => addShow(show.evtId)}>
+        +
+      </button>
     </div>
   );
 };

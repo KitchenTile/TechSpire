@@ -26,7 +26,7 @@ namespace tvscheduler
             {
                 shows.Add(new Show
                 {
-                    EvtID = Random.Next(69, 420),
+                    EvtID = Random.Next(69, 420), //nice
                     Channel = channelId,
                     Name = ChannelNames[Random.Next(0,
                         ChannelNames.Length)],
