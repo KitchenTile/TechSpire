@@ -11,11 +11,19 @@ const ShowCard = ({ show, addShow }) => {
   // Manage description tags
   const descriptionTags = ["HD", "S", "AD", "SL"];
 
+  const formattedDescription = show.description.replace(
+    //insane regex lmao
+    /\[([^\]]+)\]/g,
+    (_, tags) =>
+      tags
+        .split(",")
+        .map((tag) => `[${tag.trim()}]`)
+        .join(" ")
+  );
+
   const checkActiveTags = descriptionTags.map((tag) => ({
     tag,
-    active: show.description
-      .replace("[SL,S,HD]", "[SL] [S] [HD]")
-      .includes(`[${tag}]`),
+    active: formattedDescription.includes(`[${tag}]`),
   }));
 
   console.log(show.description.replace("[SL,S,HD]", "SL, S, HD"));
