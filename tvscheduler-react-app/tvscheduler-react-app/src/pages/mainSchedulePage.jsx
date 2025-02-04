@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import "./MainSchedulePage.css";
 import ShowCard from "../components/ShowCard";
@@ -6,7 +7,7 @@ const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
   const [myShows, setMyShows] = useState(null);
 
-  useEffect(() => {
+  /*useEffect(() => {
     const loadChannels = async () => {
       try {
         const response = await fetch("http://localhost:5171");
@@ -21,7 +22,20 @@ const MainSchedulePage = () => {
       }
     };
     loadChannels();
+  }, []);*/
+  useEffect(() => {
+    setChannels({
+      guideData: [
+        { channelid: "1", channelname: "Channel 1" },
+        { channelid: "2", channelname: "Channel 2" }
+      ],
+      programData: {
+        "1": [{ event: [{ name: "Show 1", startTime: 1700000000, duration: 3600, image: "image1.jpg", description: "Sample description for Show 1" }] }],
+        "2": [{ event: [{ name: "Show 2", startTime: 1700003600, duration: 1800, image: "image2.jpg", description: "Sample description for Show 2" }] }]
+      }
+    });
   }, []);
+  
 
   return (
     <>
