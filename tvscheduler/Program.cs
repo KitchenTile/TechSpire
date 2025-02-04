@@ -114,7 +114,8 @@ app.MapGet("/", async (HttpClient httpClient) =>
     {
         guideData,
         channelIds,
-        programData
+        programData,
+        mySchedule
     });
 });
 
