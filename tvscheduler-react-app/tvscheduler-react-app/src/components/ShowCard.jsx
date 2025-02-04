@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./ShowCard.css";
 
 const ShowCard = ({ show, addShow }) => {
@@ -13,8 +13,12 @@ const ShowCard = ({ show, addShow }) => {
 
   const checkActiveTags = descriptionTags.map((tag) => ({
     tag,
-    active: show.description.includes(`[${tag}]`),
+    active: show.description
+      .replace("[SL,S,HD]", "[SL] [S] [HD]")
+      .includes(`[${tag}]`),
   }));
+
+  console.log(show.description.replace("[SL,S,HD]", "SL, S, HD"));
 
   const readMore = () => {
     setExpanded(!expanded);
@@ -50,7 +54,8 @@ const ShowCard = ({ show, addShow }) => {
           {/* needs work */}
           {expanded
             ? show.description.split("[", 1)
-            : show.description.slice(0, 80) + " "}
+            : // show.description.split("[", 1)
+              show.description.slice(0, 80).split("[", 1) + " "}
           <span className="read-more" onClick={readMore}>
             {expanded ? "" : "Read More..."}
           </span>
@@ -60,6 +65,7 @@ const ShowCard = ({ show, addShow }) => {
               <span
                 className={`littleTag small ${active ? "" : "disabled"}`}
                 id={tag}
+                key={tag}
               >
                 {tag}
               </span>

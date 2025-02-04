@@ -33,6 +33,26 @@ const MainSchedulePage = () => {
     <>
       {channels ? (
         <>
+          {/* my shows display */}
+          <h1 className="title">My Shows</h1>
+
+          <div className="myshow-container">
+            {/* if my shows is not empty, flatten the show per channel object and match the ids of the show's we added to our My Shows array to all fetched shows. Then display cards */}
+            {myShows.length > 0 ? (
+              Object.entries(channels.programData)
+                .map(([channelId, channelData]) =>
+                  channelData[0].event.filter((show) =>
+                    myShows.includes(show.evtId)
+                  )
+                )
+                .flat()
+                .map((show) => (
+                  <ShowCard key={show.evtId} show={show} addShow={addShow} />
+                ))
+            ) : (
+              <p>No shows found in My Shows</p>
+            )}
+          </div>
           <h1 className="title">All Shows</h1>
           <div className="grid-container">
             {/* get the first x elements of the guide data array -- 129 is too long man */}
@@ -58,27 +78,6 @@ const MainSchedulePage = () => {
                 </div>
               </div>
             ))}
-
-            {/* my shows display */}
-            <h1 className="title">My Shows</h1>
-
-            <div className="myshow-container">
-              {/* if my shows is not empty, flatten the show per channel object and match the ids of the show's we added to our My Shows array to all fetched shows. Then display cards */}
-              {myShows.length > 0 ? (
-                Object.entries(channels.programData)
-                  .map(([channelId, channelData]) =>
-                    channelData[0].event.filter((show) =>
-                      myShows.includes(show.evtId)
-                    )
-                  )
-                  .flat()
-                  .map((show) => (
-                    <ShowCard key={show.evtId} show={show} addShow={addShow} />
-                  ))
-              ) : (
-                <p>No shows found in My Shows</p>
-              )}
-            </div>
           </div>
         </>
       ) : (

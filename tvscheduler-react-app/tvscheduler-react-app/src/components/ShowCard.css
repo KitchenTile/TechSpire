@@ -72,25 +72,35 @@
 		}
 
 		& .cross{
-			position: absolute;
-            right: 6%;
+            position: absolute;
+            right: 4%;
             top: 11%;
             height: 20px;
-            width: 2px;
-            background: white;
+            width: 20px;
+            background: transparent;
             visibility: hidden;
-            transform: rotate(45deg);
-			cursor: pointer;
+            cursor: pointer;
 
 			&::before{
 				content: "";
 				position: absolute;
-				right: 6%;
+				right: 45%;
 				top: 0;
 				height: 20px;
 				width: 2px;
 				background: white;
-				transform: rotate(270deg);
+				transform: rotate(315deg);
+			}
+
+			&::after{
+				content: "";
+				position: absolute;
+				right: 45%;
+				top: 0;
+				height: 20px;
+				width: 2px;
+				background: white;
+				transform: rotate(45deg);
 			}
 		}
 

@@ -85,17 +85,17 @@ async Task<Dictionary<int, JsonElement>> FetchMultipleProgramData(HttpClient htt
         //returns a kvp of {id -> data}
         return new KeyValuePair<int, JsonElement>(channelId, programData);
     });
-=======
-async Task<JsonElement> FetchProgramData(HttpClient httpClient, int channelId = 560)
-{
-    var response = await httpClient.GetAsync($"https://www.freesat.co.uk/tv-guide/api/0?channel={channelId}");
-    response.EnsureSuccessStatusCode();
 
-    var responseBody = await response.Content.ReadAsStringAsync();
-    var programData = JsonSerializer.Deserialize<JsonElement>(responseBody);
+    // async Task<JsonElement> FetchProgramData(HttpClient httpClient, int channelId = 560)
+    // {
+    //     var response = await httpClient.GetAsync($"https://www.freesat.co.uk/tv-guide/api/0?channel={channelId}");
+    //     response.EnsureSuccessStatusCode();
 
-    return programData;
-}
+    //     var responseBody = await response.Content.ReadAsStringAsync();
+    //     var programData = JsonSerializer.Deserialize<JsonElement>(responseBody);
+
+    //     return programData;
+    // }
 
     var results = await Task.WhenAll(fetchTasks);
 
