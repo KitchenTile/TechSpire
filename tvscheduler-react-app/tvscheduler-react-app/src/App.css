@@ -1,0 +1,17 @@
+#root {
+  width: 100vw;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  --ShowCardGradient: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 50%, rgba(49,49,49,0) 100%);
+
+
+  --accentColor: #646cff;
+}
+
+.small{
+  height: 26px;
+  width: 34px;
+  font-size: 12px;
+}
