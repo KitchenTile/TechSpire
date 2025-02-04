@@ -94,6 +94,43 @@
 			}
 		}
 
+
+		& .littleTag{
+			position: absolute;
+			top: 157px;
+			
+			line-height: 16px;
+			border: 2px solid;
+			border-radius: 5px;
+			padding: 3px;
+			text-align: center;
+			font-size: 12px;
+			font-weight: 600;
+			color: var(--accentColor);
+			border-color: var(--accentColor);
+
+			&#S{
+				transform: translateX(40px);
+			  }
+  
+			  &#AD{
+				  transform: translateX(80px);
+			  }
+			  
+			  &#SL{
+				  transform: translateX(120px);
+			  }
+  
+  
+			  &.disabled{
+				  color:rgba(255, 255, 255, 0.4);
+				  border-color: rgba(255, 255, 255, 0.4);
+			  }
+			  
+			}
+			
+			
+
 		&.expanded{
 			position: absolute;
             top: 50%;
@@ -106,6 +143,10 @@
             background: rgba(0, 0, 0, 0.8);
 
 			& .cross{
+				visibility: visible;
+			}
+
+			& .littleTag{
 				visibility: visible;
 			}
 		}
@@ -125,6 +166,7 @@
 	font-size: 0.8em;
 	cursor: pointer;	
 	line-height: 12px;	
+	transition: none;
 	
 	&::before{
 		content: "Add to schedule";
@@ -155,14 +197,18 @@
 		transition: all 0.2s ease-in-out;
 
 	}
-	
-	&:hover::before, &:hover::after{
-		visibility: visible;
-		opacity: 1;
-		transform: translate(-45%, -145%);
-	}
-	
-	&:hover::after{
-		transform: translate(-73%, -100%);
+
+	&:hover{
+		color: var(--accentColor);
+
+		&::before, &::after{
+			visibility: visible;
+			opacity: 1;
+			transform: translate(-45%, -145%);
+		}
+
+		&::after{
+			transform: translate(-78%, -100%);
+		}
 	}
 }

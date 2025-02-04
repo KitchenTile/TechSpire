@@ -8,6 +8,14 @@ const ShowCard = ({ show, addShow }) => {
   const unixToHuman = new Date(show.startTime * 1000);
   const unixToHumanEnd = new Date((show.startTime + show.duration) * 1000);
 
+  // Manage description tags
+  const descriptionTags = ["HD", "S", "AD", "SL"];
+
+  const checkActiveTags = descriptionTags.map((tag) => ({
+    tag,
+    active: show.description.includes(`[${tag}]`),
+  }));
+
   const readMore = () => {
     setExpanded(!expanded);
   };
@@ -40,11 +48,23 @@ const ShowCard = ({ show, addShow }) => {
         </div>
         <p className={`show-description ${expanded ? "expanded" : ""}`}>
           {/* needs work */}
-          {expanded ? show.description : show.description.slice(0, 80) + " "}
+          {expanded
+            ? show.description.split("[", 1)
+            : show.description.slice(0, 80) + " "}
           <span className="read-more" onClick={readMore}>
             {expanded ? "" : "Read More..."}
           </span>
           <span className="cross" onClick={readMore}></span>
+          <div className="tags">
+            {checkActiveTags.map(({ tag, active }) => (
+              <span
+                className={`littleTag small ${active ? "" : "disabled"}`}
+                id={tag}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
         </p>
       </div>
       <button className="add-button" onClick={() => addShow(show.evtId)}>
