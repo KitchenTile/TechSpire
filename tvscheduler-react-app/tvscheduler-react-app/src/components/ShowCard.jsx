@@ -1,22 +1,25 @@
-// import { useEffect, useState } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./ShowCard.css";
 
-const ShowCard = (show) => {
+const ShowCard = ({ show, addShow }) => {
   const [expanded, setExpanded] = useState(false);
 
-  const unixToHuman = new Date(show.show.startTime * 1000);
-  console.log(unixToHuman.toLocaleString());
+  // Unix conversion
+  const unixToHuman = new Date(show.startTime * 1000);
+  const unixToHumanEnd = new Date((show.startTime + show.duration) * 1000);
 
-  const unixToHumanEnd = new Date(
-    (show.show.startTime + show.show.duration) * 1000
-  );
-  console.log(unixToHumanEnd.toLocaleString());
+  // Manage description tags
+  const descriptionTags = ["HD", "S", "AD", "SL"];
 
-  const endTime = show.startTime - show.duration;
-  //this will be devided into several components
+  const checkActiveTags = descriptionTags.map((tag) => ({
+    tag,
+    active: show.description.includes(`[${tag}]`),
+  }));
 
-  console.log((show = show.show));
+  const readMore = () => {
+    setExpanded(!expanded);
+  };
+
   return (
     <div className="card-container">
       <span className="img-container">
@@ -43,15 +46,30 @@ const ShowCard = (show) => {
             })}
           </span>
         </div>
-        <p className="show-description">
+        <p className={`show-description ${expanded ? "expanded" : ""}`}>
           {/* needs work */}
-          {expanded ? show.description : show.description.slice(0, 80) + " "}
-          <span className="read-more" onClick={() => setExpanded(!expanded)}>
-            {expanded ? "Read Less..." : "Read More..."}
+          {expanded
+            ? show.description.split("[", 1)
+            : show.description.slice(0, 80) + " "}
+          <span className="read-more" onClick={readMore}>
+            {expanded ? "" : "Read More..."}
           </span>
+          <span className="cross" onClick={readMore}></span>
+          <div className="tags">
+            {checkActiveTags.map(({ tag, active }) => (
+              <span
+                className={`littleTag small ${active ? "" : "disabled"}`}
+                id={tag}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
         </p>
       </div>
-      <button className="add-button">+</button>
+      <button className="add-button" onClick={() => addShow(show.evtId)}>
+        +
+      </button>
     </div>
   );
 };
