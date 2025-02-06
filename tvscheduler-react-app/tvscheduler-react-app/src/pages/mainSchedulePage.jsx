@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./MainSchedulePage.css";
 import ShowCard from "../components/ShowCard";
+import rightArrow from "../assets/rightArrow.svg";
 
 const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
@@ -63,7 +64,16 @@ const MainSchedulePage = () => {
                   />
                 ))
             ) : (
-              <p>No shows found in My Shows</p>
+              <div className="dummy-show">
+                <h3>Nothing here yet!</h3>
+                <p>
+                  Click on the "+" to add shows{" "}
+                  <span>
+                    <img src={rightArrow}></img>
+                  </span>
+                </p>
+                <span className="add-button small">+</span>
+              </div>
             )}
           </div>
           <h1 className="title h1">All Shows</h1>
