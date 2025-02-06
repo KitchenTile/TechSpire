@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./ShowCard.css";
 
-const ShowCard = ({ show, addShow }) => {
+const ShowCard = ({ show, addShow, isAdded }) => {
   const [expanded, setExpanded] = useState(false);
 
   // Unix conversion
@@ -26,10 +26,12 @@ const ShowCard = ({ show, addShow }) => {
     active: formattedDescription.includes(`[${tag}]`),
   }));
 
-  console.log(show.description.replace("[SL,S,HD]", "SL, S, HD"));
-
   const readMore = () => {
     setExpanded(!expanded);
+  };
+
+  const addShowFunction = () => {
+    addShow(show.evtId);
   };
 
   return (
@@ -62,8 +64,7 @@ const ShowCard = ({ show, addShow }) => {
           {/* needs work */}
           {expanded
             ? show.description.split("[", 1)
-            : // show.description.split("[", 1)
-              show.description.slice(0, 80).split("[", 1) + " "}
+            : show.description.slice(0, 80).split("[", 1) + " "}
           <span className="read-more" onClick={readMore}>
             {expanded ? "" : "Read More..."}
           </span>
@@ -81,8 +82,12 @@ const ShowCard = ({ show, addShow }) => {
           </div>
         </p>
       </div>
-      <button className="add-button" onClick={() => addShow(show.evtId)}>
-        +
+      <button
+        className="add-button small"
+        tooltip-text={isAdded ? "Remove show" : "Add to schedule"}
+        onClick={addShowFunction}
+      >
+        {isAdded ? "-" : "+"}
       </button>
     </div>
   );

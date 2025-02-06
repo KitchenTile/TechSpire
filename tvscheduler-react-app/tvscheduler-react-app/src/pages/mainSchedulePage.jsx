@@ -6,6 +6,7 @@ const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
   const [myShows, setMyShows] = useState([]);
 
+  //fetch Data on page load
   useEffect(() => {
     const loadChannels = async () => {
       try {
@@ -23,10 +24,18 @@ const MainSchedulePage = () => {
     loadChannels();
   }, []);
 
+  //console log the array every time it's modified -- debugging
+  useEffect(() => {
+    console.log(myShows);
+  }, [myShows]);
+
   //add shows to state pass -- pass function to component as prop (ShowCard)
   const addShow = (showId) => {
-    setMyShows((myShows) => [...myShows, showId]);
-    console.log(myShows);
+    if (!myShows.includes(showId)) {
+      setMyShows((myShows) => [...myShows, showId]);
+    } else {
+      setMyShows(myShows.filter((id) => id !== showId));
+    }
   };
 
   return (
@@ -34,8 +43,7 @@ const MainSchedulePage = () => {
       {channels ? (
         <>
           {/* my shows display */}
-          <h1 className="title">My Shows</h1>
-
+          <h1 className="title h1">My Shows</h1>
           <div className="myshow-container">
             {/* if my shows is not empty, flatten the show per channel object and match the ids of the show's we added to our My Shows array to all fetched shows. Then display cards */}
             {myShows.length > 0 ? (
@@ -47,13 +55,18 @@ const MainSchedulePage = () => {
                 )
                 .flat()
                 .map((show) => (
-                  <ShowCard key={show.evtId} show={show} addShow={addShow} />
+                  <ShowCard
+                    key={show.evtId}
+                    show={show}
+                    addShow={addShow}
+                    isAdded={myShows.includes(show.evtId)}
+                  />
                 ))
             ) : (
               <p>No shows found in My Shows</p>
             )}
           </div>
-          <h1 className="title">All Shows</h1>
+          <h1 className="title h1">All Shows</h1>
           <div className="grid-container">
             {/* get the first x elements of the guide data array -- 129 is too long man */}
             {channels.guideData.slice(0, 5).map((channel) => (
@@ -70,7 +83,12 @@ const MainSchedulePage = () => {
                     channels.programData[channel.channelid][0].event
                       .slice(0, 5)
                       .map((show, id) => (
-                        <ShowCard key={id} show={show} addShow={addShow} />
+                        <ShowCard
+                          key={id}
+                          show={show}
+                          addShow={addShow}
+                          isAdded={myShows.includes(show.evtId)}
+                        />
                       ))
                   ) : (
                     <p>No shows available for ${channel.name}</p>
