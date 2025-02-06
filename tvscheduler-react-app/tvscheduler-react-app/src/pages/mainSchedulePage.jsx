@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./MainSchedulePage.css";
+import "./mainSchedulePage.css";
 import ShowCard from "../components/ShowCard";
 
 const MainSchedulePage = () => {
