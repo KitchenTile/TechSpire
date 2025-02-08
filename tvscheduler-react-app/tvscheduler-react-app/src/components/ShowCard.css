@@ -72,25 +72,35 @@
 		}
 
 		& .cross{
-			position: absolute;
-            right: 6%;
+            position: absolute;
+            right: 4%;
             top: 11%;
             height: 20px;
-            width: 2px;
-            background: white;
+            width: 20px;
+            background: transparent;
             visibility: hidden;
-            transform: rotate(45deg);
-			cursor: pointer;
+            cursor: pointer;
 
 			&::before{
 				content: "";
 				position: absolute;
-				right: 6%;
+				right: 45%;
 				top: 0;
 				height: 20px;
 				width: 2px;
 				background: white;
-				transform: rotate(270deg);
+				transform: rotate(315deg);
+			}
+
+			&::after{
+				content: "";
+				position: absolute;
+				right: 45%;
+				top: 0;
+				height: 20px;
+				width: 2px;
+				background: white;
+				transform: rotate(45deg);
 			}
 		}
 
@@ -108,6 +118,7 @@
 			font-weight: 600;
 			color: var(--accentColor);
 			border-color: var(--accentColor);
+			visibility: hidden;
 
 			&#S{
 				transform: translateX(40px);
@@ -167,17 +178,22 @@
 	cursor: pointer;	
 	line-height: 12px;	
 	transition: none;
+	display: flex;
+		align-items: center;
+		justify-content: center;
 	
 	&::before{
-		content: "Add to schedule";
+		content: attr(tooltip-text);
+		height: 24px;
 		font-size: 0.8em;
 		font-weight: 600;
 		position: absolute;
-		transform: translate(-45%, -130%);
+		transform: translate(0%, -110%);
 		background: white;
 		border-radius: 5px;
 		color: black;
 		padding: 5px;
+		letter-spacing: 0px;
 		
 		visibility: hidden;
 		opacity: 0;
@@ -188,7 +204,7 @@
 	&::after{
 		content: "";
 		position: absolute;
-		transform: translate(-73%, -70%);
+		transform: translate(0%, -70%);
 		border: 8px solid;
 		border-color: white transparent transparent transparent;
 		visibility: hidden;
@@ -204,11 +220,11 @@
 		&::before, &::after{
 			visibility: visible;
 			opacity: 1;
-			transform: translate(-45%, -145%);
+			transform: translate(0%, -125%);
 		}
 
 		&::after{
-			transform: translate(-78%, -100%);
+			transform: translate(0%, -120%);
 		}
 	}
 }
