@@ -1,5 +1,5 @@
 import "./App.css";
-import MainSchedulePage from "./pages/mainSchedulePage";
+import MainSchedulePage from "./pages/mainSchedulePage.jsx";
 
 function App() {
   return <MainSchedulePage />;
