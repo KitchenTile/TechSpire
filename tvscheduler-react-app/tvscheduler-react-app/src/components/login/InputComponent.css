@@ -1,0 +1,74 @@
+/* register form */
+
+.form-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40%;
+    height: 90%;
+    margin-left: 5%;
+    background: rgba(0, 0, 0, 1);
+    border-radius: 40px;
+    gap: 30px;
+
+    & span{
+            transition: all 0.3s ease;
+            width: 40%;
+
+            &:hover{
+                letter-spacing: 5px;
+                transform: scale(1.1);
+                padding-left: 4px;
+            }
+    }
+}
+  
+  .input-field {
+    position: relative;
+  }
+  
+  .input-field input {
+    font-size: 1.2rem;
+    color: white;
+    
+    padding-left: 1em;
+    height: 3.5em;
+    width: 15em;
+    border-radius: 5px;
+    border: 2px solid white;
+    background: rgba(0, 0, 0, 0.5);
+  }
+  
+  .input-field label {
+    position: absolute;
+    top: 0.8em;
+    left: 1em;
+    font-size: 1.3rem;
+    pointer-events: none;
+    transition: all 0.1s ease;
+  }
+  
+  .input-field:focus-within label, .filled label{
+    top: -0.5em;
+    left: -0.7em;
+    font-size: 1.1rem;
+    font-weight: 600;
+    width: 6em;
+    height: 30px;
+    color: white;
+    background: rgba(0, 0, 0, 1);
+    transition: all 0.1s ease;
+  }
+  
+  .button{
+    position: relative;
+    font-size: 1.2rem;
+    height: 3.5em;
+    width: 15em;
+    border-radius: 5px;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    border: 1px solid ;
+    /* transition: all 0.2s ease; */
+  }

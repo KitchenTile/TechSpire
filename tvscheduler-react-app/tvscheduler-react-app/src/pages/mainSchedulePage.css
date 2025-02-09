@@ -71,11 +71,9 @@
   border: 2px solid #121212;
   width: 360px;
   height: 200px;
-  padding-left: 10px;
   border-radius: 5px;
   color: white;
   z-index: 1;
-  text-align: center;
 
   & h3{
     white-space: nowrap;
@@ -98,11 +96,11 @@
 
     & img{
       transform: translateY(20%);
-      animation: arrow 1s infinite;
     }
   }
 
   & .add-button{
+    cursor: default;
     &:hover{
       color: white
     }

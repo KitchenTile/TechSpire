@@ -40,7 +40,7 @@ const MainSchedulePage = () => {
   };
 
   return (
-    <>
+    <div className="page-container">
       {channels ? (
         <>
           {/* my shows display */}
@@ -111,7 +111,7 @@ const MainSchedulePage = () => {
       ) : (
         <p>loading...</p>
       )}
-    </>
+    </div>
   );
 };
 
