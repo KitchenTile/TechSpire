@@ -19,26 +19,15 @@ builder.Services.AddCors(options =>
 });
 
 // Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
 builder.Services.AddHttpClient();
 var app = builder.Build();
 app.UseCors("AllowFrontend");
 
-
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 
-
 var scheduleRoute = app.MapGroup("schedule");
 var mySchedule = new List<Show>();
-
-
 
 // creating mock data
 var mockChannel1 = ChannelGenerator.GenerateMockChannel(
@@ -87,43 +76,19 @@ async Task<Dictionary<int, JsonElement>> FetchMultipleProgramData(HttpClient htt
         return new KeyValuePair<int, JsonElement>(channelId, programData);
     });
 
-
-async Task<JsonElement> FetchGuideData(HttpClient httpClient)
-{
-    try
-    {
-        var response = await httpClient.GetAsync("https://www.freesat.co.uk/tv-guide/api");
-        response.EnsureSuccessStatusCode();
-
-        var responseBody = await response.Content.ReadAsStringAsync();
-        var guideData = JsonSerializer.Deserialize<JsonElement>(responseBody);
-
-        return guideData;
-    }
-    catch (HttpRequestException ex)
-    {
-        Console.WriteLine($"Request error: {ex.Message}");
-        // Return an empty JsonElement or some default data
-        return new JsonElement();
-    }
-}
-
     var results = await Task.WhenAll(fetchTasks);
 
     return results.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 }
 
-
 // playing with database
-
-
 var server = "mariadb";
 var dbName = "tvscheduler";
 var userName = "root";
 var password = "rootpassword";
 var port = "3306";
 
-static void Connect(string server, string dbName, string userName, string password,string port)
+static void Connect(string server, string dbName, string userName, string password, string port)
 {
     string connectionString = $"Server={server};Port={port};Database={dbName};User={userName};Password={password};";
     using (var connection = new MySqlConnection(connectionString))
@@ -143,9 +108,8 @@ static void Connect(string server, string dbName, string userName, string passwo
 // entry endpoint with external API calls
 app.MapGet("/", async (HttpClient httpClient) =>
 {
-   Console.WriteLine("Endpoint hit: /");
+    Console.WriteLine("Endpoint hit: /");
     var guideData = await FetchGuideData(httpClient);
-    // var programData = await FetchProgramData(httpClient);
     var channelIds = new List<int> { 560, 700, 10005, 1540, 1547 }; //first 5 ids in guideData - needs change
     var programData = await FetchMultipleProgramData(httpClient, channelIds);
     Console.WriteLine("Calling Connect method...");
@@ -156,19 +120,6 @@ app.MapGet("/", async (HttpClient httpClient) =>
         programData
     });
 });
-
-/*
-// entry endpoint
-app.MapGet("/", () =>
-{
-    return Results.Ok(new
-    {
-        channels,
-        mySchedule
-    });
-});
-*/
-
 
 // add to schedule
 // ex: /schedule/add?id=500
@@ -190,13 +141,10 @@ scheduleRoute.MapGet("add", (int id, int channel) =>
     return Results.Ok("ok");
 });
 
-
-
 // remove from the schedule
 scheduleRoute.MapGet("remove", (int id) =>
 {
     var showObject = mySchedule.FirstOrDefault(s => s.EvtID == id);
-
 
     if (showObject != null)
     {
@@ -209,7 +157,5 @@ scheduleRoute.MapGet("remove", (int id) =>
 
     return Results.Ok("ok");
 });
-
-
 
 app.Run();

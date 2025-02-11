@@ -1,5 +1,5 @@
 # Build stage for .NET application
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers
@@ -25,7 +25,7 @@ COPY tvscheduler-react-app/tvscheduler-react-app/. ./
 RUN npm run build
 
 # Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:9.0
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 
 # Expose ports
