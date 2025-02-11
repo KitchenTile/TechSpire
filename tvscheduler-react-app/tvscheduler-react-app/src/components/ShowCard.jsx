@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./ShowCard.css";
 
-const ShowCard = ({ show, addShow }) => {
+const ShowCard = ({ show, addShow, isAdded }) => {
   const [expanded, setExpanded] = useState(false);
 
   // Unix conversion
@@ -11,13 +11,27 @@ const ShowCard = ({ show, addShow }) => {
   // Manage description tags
   const descriptionTags = ["HD", "S", "AD", "SL"];
 
+  const formattedDescription = show.description.replace(
+    //insane regex lmao
+    /\[([^\]]+)\]/g,
+    (_, tags) =>
+      tags
+        .split(",")
+        .map((tag) => `[${tag.trim()}]`)
+        .join(" ")
+  );
+
   const checkActiveTags = descriptionTags.map((tag) => ({
     tag,
-    active: show.description.includes(`[${tag}]`),
+    active: formattedDescription.includes(`[${tag}]`),
   }));
 
   const readMore = () => {
     setExpanded(!expanded);
+  };
+
+  const addShowFunction = () => {
+    addShow(show.evtId);
   };
 
   return (
@@ -50,7 +64,7 @@ const ShowCard = ({ show, addShow }) => {
           {/* needs work */}
           {expanded
             ? show.description.split("[", 1)
-            : show.description.slice(0, 80) + " "}
+            : show.description.slice(0, 80).split("[", 1) + " "}
           <span className="read-more" onClick={readMore}>
             {expanded ? "" : "Read More..."}
           </span>
@@ -60,6 +74,7 @@ const ShowCard = ({ show, addShow }) => {
               <span
                 className={`littleTag small ${active ? "" : "disabled"}`}
                 id={tag}
+                key={tag}
               >
                 {tag}
               </span>
@@ -67,8 +82,12 @@ const ShowCard = ({ show, addShow }) => {
           </div>
         </p>
       </div>
-      <button className="add-button" onClick={() => addShow(show.evtId)}>
-        +
+      <button
+        className="add-button small"
+        tooltip-text={isAdded ? "Remove show" : "Add to schedule"}
+        onClick={addShowFunction}
+      >
+        {isAdded ? "-" : "+"}
       </button>
     </div>
   );
