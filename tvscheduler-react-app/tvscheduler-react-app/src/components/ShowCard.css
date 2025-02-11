@@ -21,10 +21,6 @@
 	}
 }
 
-.card-container:hover {
-	cursor: pointer;
-}
-
 .img-container{
 	position: absolute;	
   	overflow: hidden;
