@@ -14,10 +14,10 @@ public class TvApi
 
             var response = await httpClient.SendAsync(request);
             
-            if (!response.IsSuccessStatusCode) // ✅ Check status code before proceeding
+            if (!response.IsSuccessStatusCode)
             {
                 Console.WriteLine($"API request failed: {response.StatusCode}");
-                return null; // ✅ Return null instead of crashing
+                return null;
             }
 
             var responseBody = await response.Content.ReadAsStringAsync();
@@ -25,7 +25,7 @@ public class TvApi
 
             return guideData;
         }
-        catch (JsonException jsonEx) // ✅ Handle JSON parsing errors
+        catch (JsonException jsonEx) 
         {
             Console.WriteLine($"JSON parsing error: {jsonEx.Message}");
             return null;
@@ -37,9 +37,8 @@ public class TvApi
         }
     }
 
-
-
-
+    
+    
 
     public static async Task<Dictionary<int, JsonElement>> FetchMultipleProgramData(HttpClient httpClient,
         List<int> channelIds)
@@ -77,7 +76,4 @@ public class TvApi
 
         return results; // ✅ Returns only successfully fetched data
     }
-
-
-
 }

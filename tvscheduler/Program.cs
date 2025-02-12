@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using tvscheduler;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,6 +23,15 @@ builder.Services.AddCors(options =>
                 .AllowCredentials();
         });
 });
+
+
+// database <-> ORM (Entity Framework) DI
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+    )
+);
 
 
 var app = builder.Build();
