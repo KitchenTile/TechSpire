@@ -74,6 +74,6 @@ public class TvApi
             }
         }
 
-        return results; // ✅ Returns only successfully fetched data
+        return results;
     }
 }
