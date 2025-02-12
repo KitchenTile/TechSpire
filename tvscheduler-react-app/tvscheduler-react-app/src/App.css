@@ -1,8 +1,7 @@
 #root {
   width: 100vw;
   margin: 0;
-  padding: 2rem;
-
+  overflow-x: hidden;
 }
 
 

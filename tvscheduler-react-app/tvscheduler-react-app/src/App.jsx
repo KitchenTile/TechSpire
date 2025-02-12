@@ -5,8 +5,8 @@ import LoginRegisterPage from "./pages/loginPage.jsx";
 function App() {
   return (
     <>
-      {/* <MainSchedulePage /> */}
-      <LoginRegisterPage />
+      <MainSchedulePage />
+      {/* <LoginRegisterPage /> */}
     </>
   );
 }

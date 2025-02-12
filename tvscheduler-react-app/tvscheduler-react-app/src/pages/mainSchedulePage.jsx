@@ -1,17 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./mainSchedulePage.css";
 import ShowCard from "../components/ShowCard";
 import rightArrow from "../assets/rightArrow.svg";
+import LoadingComponent from "../components/loadingComponent";
 
 const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
   const [myShows, setMyShows] = useState([]);
 
+  const showContainerRef = useRef(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(true);
+  const [showRightArrow, setShowRightArrow] = useState(true);
+
   //fetch Data on page load
   useEffect(() => {
     const loadChannels = async () => {
       try {
-        const response = await fetch("http://localhost:5171");
+        const response = await fetch("http://localhost:8080");
         if (!response.ok) {
           throw new Error("Failed to fetch channels :(");
         }
@@ -30,13 +35,42 @@ const MainSchedulePage = () => {
     console.log(myShows);
   }, [myShows]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const container = showContainerRef.current;
+
+      if (container) {
+        const { scrollLeft, clientWidth, scrollWidth } = container;
+
+        scrollLeft > 5 ? setShowLeftArrow(true) : setShowLeftArrow(false);
+
+        console.log(scrollLeft);
+
+        setShowRightArrow(scrollLeft + clientWidth > scrollWidth - 5);
+      }
+    };
+    const container = showContainerRef.current;
+
+    container && console.log(container);
+    container && container.addEventListener("scroll", handleScroll);
+
+    handleScroll();
+
+    return () =>
+      container && container.removeEventListener("scroll", handleScroll);
+  }, []);
+
   //add shows to state pass -- pass function to component as prop (ShowCard)
-  const addShow = (showId) => {
+  const addRemoveShow = (showId) => {
     if (!myShows.includes(showId)) {
       setMyShows((myShows) => [...myShows, showId]);
     } else {
       setMyShows(myShows.filter((id) => id !== showId));
     }
+  };
+
+  const compareStartTime = (a, b) => {
+    return a.startTime - b.startTime;
   };
 
   return (
@@ -55,11 +89,12 @@ const MainSchedulePage = () => {
                   )
                 )
                 .flat()
+                .sort(compareStartTime)
                 .map((show) => (
                   <ShowCard
                     key={show.evtId}
                     show={show}
-                    addShow={addShow}
+                    addRemoveShow={addRemoveShow}
                     isAdded={myShows.includes(show.evtId)}
                   />
                 ))
@@ -87,29 +122,64 @@ const MainSchedulePage = () => {
                     <img src={channel.logourl} alt={channel.channelname} />
                   </span>
                 </div>
-                <div className="shows-row">
-                  {/* if the channel has shows, get the first x shows for each channel -- consider writing a variable for more readable code */}
-                  {channels.programData[channel.channelid].length > 0 ? (
-                    channels.programData[channel.channelid][0].event
-                      .slice(0, 5)
-                      .map((show, id) => (
-                        <ShowCard
-                          key={id}
-                          show={show}
-                          addShow={addShow}
-                          isAdded={myShows.includes(show.evtId)}
+                <div className="show-container" ref={showContainerRef}>
+                  {showLeftArrow && (
+                    <span className="left-arrow">
+                      <svg
+                        width="15"
+                        height="30"
+                        viewBox="0 0 9 15"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="arrow"
+                      >
+                        <path
+                          d="M8.57129 2.14285L3.21415 7.5L8.57129 12.8571L7.49986 15L-0.000140326 7.5L7.49986 -3.57628e-06L8.57129 2.14285Z"
+                          fill="white"
                         />
-                      ))
-                  ) : (
-                    <p>No shows available for ${channel.name}</p>
+                      </svg>
+                    </span>
                   )}
+
+                  <div className="shows-row">
+                    {/* if the channel has shows, get the first x shows for each channel -- consider writing a variable for more readable code */}
+                    {channels.programData[channel.channelid].length > 0 ? (
+                      channels.programData[channel.channelid][0].event
+                        .slice(0, 5)
+                        .map((show, id) => (
+                          <ShowCard
+                            key={id}
+                            show={show}
+                            addRemoveShow={addRemoveShow}
+                            isAdded={myShows.includes(show.evtId)}
+                          />
+                        ))
+                    ) : (
+                      <p>No shows available for ${channel.name}</p>
+                    )}
+                  </div>
+                  <span className="right-arrow">
+                    <svg
+                      width="15"
+                      height="30"
+                      viewBox="0 0 22 37"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="arrow"
+                    >
+                      <path
+                        d="M0 31.7143L13.75 18.5L0 5.28571L2.75 0L22 18.5L2.75 37L0 31.7143Z"
+                        fill="white"
+                      />
+                    </svg>
+                  </span>
                 </div>
               </div>
             ))}
           </div>
         </>
       ) : (
-        <p>loading...</p>
+        <LoadingComponent />
       )}
     </div>
   );

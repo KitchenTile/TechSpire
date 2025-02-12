@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./ShowCard.css";
 
-const ShowCard = ({ show, addShow, isAdded }) => {
+const ShowCard = ({ show, addRemoveShow, isAdded }) => {
   const [expanded, setExpanded] = useState(false);
 
   // Unix conversion
@@ -30,8 +30,8 @@ const ShowCard = ({ show, addShow, isAdded }) => {
     setExpanded(!expanded);
   };
 
-  const addShowFunction = () => {
-    addShow(show.evtId);
+  const handleAddShow = () => {
+    addRemoveShow(show.evtId);
   };
 
   return (
@@ -60,11 +60,11 @@ const ShowCard = ({ show, addShow, isAdded }) => {
             })}
           </span>
         </div>
-        <p className={`show-description ${expanded ? "expanded" : ""}`}>
+        <div className={`show-description ${expanded ? "expanded" : ""}`}>
           {/* needs work */}
           {expanded
             ? show.description.split("[", 1)
-            : show.description.slice(0, 80).split("[", 1) + " "}
+            : show.description.slice(0, 70).split("[", 1) + " "}
           <span className="read-more" onClick={readMore}>
             {expanded ? "" : "Read More..."}
           </span>
@@ -80,12 +80,12 @@ const ShowCard = ({ show, addShow, isAdded }) => {
               </span>
             ))}
           </div>
-        </p>
+        </div>
       </div>
       <button
         className="add-button small"
         tooltip-text={isAdded ? "Remove show" : "Add to schedule"}
-        onClick={addShowFunction}
+        onClick={handleAddShow}
       >
         {isAdded ? "-" : "+"}
       </button>
