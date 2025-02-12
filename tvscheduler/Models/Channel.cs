@@ -1,3 +1,5 @@
+using tvscheduler.Models;
+
 namespace tvscheduler;
 
 public class Channel
@@ -8,4 +10,6 @@ public class Channel
     public required int Lcn { get; set; }
     public required string LogoUrl { get; set; }
     public required bool Tstv { get; set; }
+    
+    public List<Tag>? Tags { get; set; }
 }

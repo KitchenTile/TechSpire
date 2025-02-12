@@ -12,9 +12,9 @@ public class Show
     [ForeignKey("Channel")]
     public int ChannelId { get; set; }
 
-    public string Name { get; set; }
-    public string Description { get; set; }
+    public required string Name { get; set; }
+    public string? Description { get; set; }
     public long StartTime { get; set; }
     public int Duration { get; set; }
-    public Channel Channel { get; set; }
+    public required Channel Channel { get; set; }
 }
