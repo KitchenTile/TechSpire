@@ -64,6 +64,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 
 
+builder.Services.AddScoped<UpdateChannelSchedule>();
+
+
 var app = builder.Build();
 
 
@@ -75,6 +78,9 @@ using (var serviceScope = app.Services.CreateScope())
         var databaseInit = new DatabaseChannelsInit(dbContext);
         databaseInit.SeedDatabase();
     }
+
+    var channelUpdater = serviceScope.ServiceProvider.GetRequiredService<UpdateChannelSchedule>();
+    await channelUpdater.UpdateDailySchedule();
 }
 
 // Configure the HTTP request pipeline.
