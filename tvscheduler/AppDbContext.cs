@@ -11,7 +11,8 @@ public class AppDbContext : IdentityDbContext<User>
     public DbSet<ShowEvent> ShowEvents { get; set; }
     public DbSet<Tag> Tags { get; set; }
     
-    
+    public DbSet<ChannelTag> ChannelTags { get; set; }
+    public DbSet<ScheduleEvent> ScheduleEvents { get; set; }
     
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 }

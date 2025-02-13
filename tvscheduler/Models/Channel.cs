@@ -11,5 +11,8 @@ public class Channel
     public required string LogoUrl { get; set; }
     public required bool Tstv { get; set; }
     
-    public List<Tag>? Tags { get; set; }
+    public List<ShowEvent> ShowEvents { get; set; } = new List<ShowEvent>();
+    
+    public List<ChannelTag> ChannelTags { get; set; } = new();
+
 }

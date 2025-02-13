@@ -4,6 +4,6 @@ namespace tvscheduler.Models;
 
 public class User : IdentityUser
 {
-    public List<ShowEvent>? ShowEvents { get; set; }
+    public List<ShowEvent> MySchedule { get; set; } = new List<ShowEvent>();
     public List<Tag>? FavouriteTags { get; set; }
 }

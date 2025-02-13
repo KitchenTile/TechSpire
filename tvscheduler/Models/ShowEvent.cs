@@ -6,7 +6,7 @@ namespace tvscheduler.Models;
 public class ShowEvent
 {
     [Key]
-    public required int Id { get; set; }
+    public int Id { get; set; }
     
     [ForeignKey("Channel")]
     public int ChannelId { get; set; }
@@ -16,6 +16,6 @@ public class ShowEvent
     public int ShowId { get; set; }
     public required Show Show { get; set; }
 
-    public DateTime TimeStart { get; set; }
+    public int TimeStart { get; set; }
     public int Duration { get; set; }
 }
