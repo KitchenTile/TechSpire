@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using tvscheduler.Models;
 
 namespace tvscheduler;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<User>
 {
     public  DbSet<Show> Shows { get; set; }
     public DbSet<Channel> Channels { get; set; }
