@@ -65,6 +65,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 builder.Services.AddScoped<UpdateChannelSchedule>();
+builder.Services.AddScoped<TagsManager>();
 
 
 var app = builder.Build();
@@ -72,15 +73,18 @@ var app = builder.Build();
 
 using (var serviceScope = app.Services.CreateScope())
 {
-    var dbContext = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
-    if (dbContext.Channels.IsNullOrEmpty())
-    {
-        var databaseInit = new DatabaseChannelsInit(dbContext);
-        databaseInit.SeedDatabase();
-    }
+    //var dbContext = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
+    //if (dbContext.Channels.IsNullOrEmpty())
+    //{
+    //    var databaseInit = new DatabaseChannelsInit(dbContext);
+    //    databaseInit.SeedDatabase();
+    //}
 
-    var channelUpdater = serviceScope.ServiceProvider.GetRequiredService<UpdateChannelSchedule>();
-    await channelUpdater.UpdateDailySchedule();
+    //var channelUpdater = serviceScope.ServiceProvider.GetRequiredService<UpdateChannelSchedule>();
+    //await channelUpdater.UpdateDailySchedule();
+    
+    var tagManager = serviceScope.ServiceProvider.GetRequiredService<TagsManager>();
+    await tagManager.getTagForShow("Harry Potter");
 }
 
 // Configure the HTTP request pipeline.

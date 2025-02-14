@@ -20,9 +20,25 @@ public class TagsManager
 
         if (show == null)
         {
-            var openAiHandler = new OpenAiHandler(_httpClient);
-
-            return openAiHandler.RequestTag(showName);
+            List<string> tagList = new List<string>
+            {
+                "Action",
+                "Comedy",
+                "Drama",
+                "News",
+                "Horror",
+                "Sci-Fi",
+                "Thriller",
+                "Romance",
+                "Documentary",
+                "Animation",
+                "Fantasy"
+            };
+            var openAiHandler = new OpenAiHandler(_httpClient, tagList, showName);
+            
+            var gptresponse =  await openAiHandler.RequestTag();
+            Console.WriteLine("HERES THE TAG FROM GPT: : : : " + gptresponse);
+            return gptresponse;
         }
         return show.Name;
     }
