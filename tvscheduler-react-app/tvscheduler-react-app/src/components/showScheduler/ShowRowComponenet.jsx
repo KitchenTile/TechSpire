@@ -1,0 +1,106 @@
+import { useEffect, useRef, useState } from "react";
+import ShowCard from "./ShowCard";
+import "./ShowRowComponent.css";
+
+const ShowRowComponent = ({ channels, channel, myShows, addRemoveShow }) => {
+  const showContainerRef = useRef(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(true);
+  const [showRightArrow, setShowRightArrow] = useState(true);
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const container = showContainerRef.current;
+
+      if (container) {
+        const { scrollLeft, clientWidth, scrollWidth } = container;
+
+        setScrollPosition(scrollLeft);
+        setShowLeftArrow(scrollLeft > 5);
+        setShowRightArrow(scrollLeft + clientWidth < scrollWidth - 5);
+      }
+    };
+
+    const container = showContainerRef.current;
+
+    container && container.addEventListener("scroll", handleScroll);
+
+    handleScroll();
+
+    return () =>
+      container && container.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleClick = (skipAmount) => {
+    setScrollPosition(scrollPosition + skipAmount);
+
+    showContainerRef.current.scrollLeft = scrollPosition + skipAmount;
+  };
+
+  return (
+    <>
+      <div className="show-container">
+        <span
+          className={`left-arrow ${showLeftArrow ? "visible" : ""}`}
+          onClick={() => {
+            handleClick(-750);
+          }}
+        >
+          <svg
+            width="15"
+            height="30"
+            viewBox="0 0 9 15"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="arrow"
+          >
+            <path
+              d="M8.57129 2.14285L3.21415 7.5L8.57129 12.8571L7.49986 15L-0.000140326 7.5L7.49986 -3.57628e-06L8.57129 2.14285Z"
+              fill="white"
+            />
+          </svg>
+        </span>
+
+        <div className="shows-row" ref={showContainerRef}>
+          {/* if the channel has shows, get the first x shows for each channel -- consider writing a variable for more readable code */}
+          {channels.programData[channel.channelid].length > 0 ? (
+            channels.programData[channel.channelid][0].event
+              .slice(0, 5)
+              .map((show) => (
+                <ShowCard
+                  key={show.evtId}
+                  show={show}
+                  addRemoveShow={addRemoveShow}
+                  isAdded={myShows.includes(show.evtId)}
+                />
+              ))
+          ) : (
+            <p>No shows available for ${channel.name}</p>
+          )}
+        </div>
+        <span
+          className={`right-arrow ${showRightArrow ? "visible" : ""}`}
+          onClick={() => {
+            handleClick(750);
+          }}
+        >
+          <svg
+            width="15"
+            height="30"
+            viewBox="0 0 22 37"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="arrow"
+          >
+            <path
+              d="M0 31.7143L13.75 18.5L0 5.28571L2.75 0L22 18.5L2.75 37L0 31.7143Z"
+              fill="white"
+            />
+          </svg>
+        </span>
+      </div>
+    </>
+  );
+};
+
+export default ShowRowComponent;
