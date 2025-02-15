@@ -1,0 +1,69 @@
+.show-container{
+    position: relative;
+    overflow-x: scroll;
+
+    &::-webkit-scrollbar
+    {
+      display: none;
+    }
+  }
+
+  .shows-row, .myshow-container {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 10px 0;
+    scroll-behavior: smooth;
+    
+    &::-webkit-scrollbar
+    {
+      display: none;
+    }
+  }
+
+  .right-arrow, .left-arrow{
+    z-index: 2;
+    width: 70px;
+    height: 201px;
+    position: absolute;
+    background: #0000003f;
+    top: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+
+    &.visible{
+      opacity: 1;
+      visibility: visible;
+    }
+
+    &:hover{
+      background: hsla(0, 0%, 0%, 0.5);
+
+      & .arrow path{
+        fill: rgba(255, 255, 255, 0.9);
+      }
+    }
+
+    & .arrow{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+
+      & path{
+        fill: rgba(255, 255, 255, 0.25);
+        transition: all 0.3s ease;
+
+      }
+    }
+  }
+
+  .left-arrow{
+    left: 0;
+  }
+
+  .right-arrow{
+    right: 0;
+  }

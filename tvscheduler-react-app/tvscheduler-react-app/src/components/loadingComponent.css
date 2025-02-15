@@ -1,0 +1,48 @@
+.loading-container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.main-circle{
+	width: 100px;
+	height: 100px;
+	fill: none;
+	stroke: white;
+	stroke-width: 4px;
+	stroke-dasharray: 252;
+	
+	animation: circle 5s linear infinite, rotate 3s linear infinite;
+}
+
+.background{
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	fill: none;
+	stroke: #7a7a7a;
+	stroke-width: 4px;
+	stroke-dasharray: 252;
+	transform: translateX(-100%);
+  z-index: -1;
+}
+
+@keyframes circle{
+	0%{
+		stroke-dashoffset: 252;
+	}
+	50%{
+		stroke-dashoffset: 0;
+		
+	}
+	100%{
+		stroke-dashoffset: -252;
+	}
+}
+
+@keyframes rotate{
+	100%{
+		transform: rotate(360deg);
+	}
+}

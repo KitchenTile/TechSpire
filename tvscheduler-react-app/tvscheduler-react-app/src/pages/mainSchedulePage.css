@@ -6,9 +6,10 @@
 
 .channel-show-container {
     display: flex;
+    position: relative;
     flex-direction: row;
     align-items: center;
-    width: max-content;
+    width: calc(100vw - 4em);
     border-bottom: 1px solid;
 
     & h3{
@@ -24,24 +25,16 @@
     }
   }
 
-
-  .shows-row, .myshow-container {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding: 10px 0;
-  }
-
   .title-image-container{
     position: relative;
   }
   .image-container {
     position: absolute;
-    top: 58px;
-    left: -42px;
+    top: 46px;
+    left: -35px;
     transform: rotate(270deg);
-    height: 52%;
-    width: 74%;
+    height: 60%;
+    width: 80%;
     z-index: 1;
 }
 
@@ -71,11 +64,9 @@
   border: 2px solid #121212;
   width: 360px;
   height: 200px;
-  padding-left: 10px;
   border-radius: 5px;
   color: white;
   z-index: 1;
-  text-align: center;
 
   & h3{
     white-space: nowrap;
@@ -98,11 +89,11 @@
 
     & img{
       transform: translateY(20%);
-      animation: arrow 1s infinite;
     }
   }
 
   & .add-button{
+    cursor: default;
     &:hover{
       color: white
     }

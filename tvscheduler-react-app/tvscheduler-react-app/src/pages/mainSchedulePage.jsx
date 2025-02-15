@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import "./mainSchedulePage.css";
-import ShowCard from "../components/ShowCard";
+import ShowCard from "../components/showScheduler/ShowCard";
 import rightArrow from "../assets/rightArrow.svg";
+import LoadingComponent from "../components/loadingComponent";
+import ShowRowComponent from "../components/showScheduler/ShowRowComponenet";
+import useIntersectionObserver from "../hooks/useIntersectionObserver";
+import ChannelShowComponent from "../components/showScheduler/ChannelShowComponent";
 
 const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
@@ -11,7 +15,7 @@ const MainSchedulePage = () => {
   useEffect(() => {
     const loadChannels = async () => {
       try {
-        const response = await fetch("http://localhost:5171");
+        const response = await fetch("http://localhost:8080");
         if (!response.ok) {
           throw new Error("Failed to fetch channels :(");
         }
@@ -31,7 +35,7 @@ const MainSchedulePage = () => {
   }, [myShows]);
 
   //add shows to state pass -- pass function to component as prop (ShowCard)
-  const addShow = (showId) => {
+  const addRemoveShow = (showId) => {
     if (!myShows.includes(showId)) {
       setMyShows((myShows) => [...myShows, showId]);
     } else {
@@ -39,8 +43,12 @@ const MainSchedulePage = () => {
     }
   };
 
+  const compareStartTime = (a, b) => {
+    return a.startTime - b.startTime;
+  };
+
   return (
-    <>
+    <div className="page-container">
       {channels ? (
         <>
           {/* my shows display */}
@@ -55,11 +63,12 @@ const MainSchedulePage = () => {
                   )
                 )
                 .flat()
+                .sort(compareStartTime)
                 .map((show) => (
                   <ShowCard
                     key={show.evtId}
                     show={show}
-                    addShow={addShow}
+                    addRemoveShow={addRemoveShow}
                     isAdded={myShows.includes(show.evtId)}
                   />
                 ))
@@ -80,38 +89,20 @@ const MainSchedulePage = () => {
           <div className="grid-container">
             {/* get the first x elements of the guide data array -- 129 is too long man */}
             {channels.guideData.slice(0, 5).map((channel) => (
-              <div key={channel.channelid} className="channel-show-container">
-                <div className="title-image-container">
-                  <h3>{channel.channelname}</h3>
-                  <span className="image-container">
-                    <img src={channel.logourl} alt={channel.channelname} />
-                  </span>
-                </div>
-                <div className="shows-row">
-                  {/* if the channel has shows, get the first x shows for each channel -- consider writing a variable for more readable code */}
-                  {channels.programData[channel.channelid].length > 0 ? (
-                    channels.programData[channel.channelid][0].event
-                      .slice(0, 5)
-                      .map((show, id) => (
-                        <ShowCard
-                          key={id}
-                          show={show}
-                          addShow={addShow}
-                          isAdded={myShows.includes(show.evtId)}
-                        />
-                      ))
-                  ) : (
-                    <p>No shows available for ${channel.name}</p>
-                  )}
-                </div>
-              </div>
+              <ChannelShowComponent
+                key={channel.channelid}
+                channels={channels}
+                channel={channel}
+                addRemoveShow={addRemoveShow}
+                myShows={myShows}
+              />
             ))}
           </div>
         </>
       ) : (
-        <p>loading...</p>
+        <LoadingComponent />
       )}
-    </>
+    </div>
   );
 };
 
