@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import "./mainSchedulePage.css";
 import ShowCard from "../components/showScheduler/ShowCard";
 import rightArrow from "../assets/rightArrow.svg";
 import LoadingComponent from "../components/loadingComponent";
 import ShowRowComponent from "../components/showScheduler/ShowRowComponenet";
+import useIntersectionObserver from "../hooks/useIntersectionObserver";
+import ChannelShowComponent from "../components/showScheduler/ChannelShowComponent";
 
 const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
@@ -87,20 +89,13 @@ const MainSchedulePage = () => {
           <div className="grid-container">
             {/* get the first x elements of the guide data array -- 129 is too long man */}
             {channels.guideData.slice(0, 5).map((channel) => (
-              <div key={channel.channelid} className="channel-show-container">
-                <div className="title-image-container">
-                  <h3>{channel.channelname}</h3>
-                  <span className="image-container">
-                    <img src={channel.logourl} alt={channel.channelname} />
-                  </span>
-                </div>
-                <ShowRowComponent
-                  channels={channels}
-                  channel={channel}
-                  addRemoveShow={addRemoveShow}
-                  myShows={myShows}
-                />
-              </div>
+              <ChannelShowComponent
+                key={channel.channelid}
+                channels={channels}
+                channel={channel}
+                addRemoveShow={addRemoveShow}
+                myShows={myShows}
+              />
             ))}
           </div>
         </>

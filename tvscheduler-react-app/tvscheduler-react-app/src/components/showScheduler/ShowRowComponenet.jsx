@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import ShowCard from "./ShowCard";
 import "./ShowRowComponent.css";
+import useThrottle from "../../hooks/useThrottle";
 
 const ShowRowComponent = ({ channels, channel, myShows, addRemoveShow }) => {
   const showContainerRef = useRef(null);
@@ -8,11 +9,14 @@ const ShowRowComponent = ({ channels, channel, myShows, addRemoveShow }) => {
   const [showRightArrow, setShowRightArrow] = useState(true);
   const [scrollPosition, setScrollPosition] = useState(0);
 
+  //effect hook to determine the component's scroll position so we can show and hide side arrows
   useEffect(() => {
     const handleScroll = () => {
+      //the container is the row we are referencing to
       const container = showContainerRef.current;
 
       if (container) {
+        // get information that we need like the scroll amount from the left, the width of the container etc.
         const { scrollLeft, clientWidth, scrollWidth } = container;
 
         setScrollPosition(scrollLeft);
@@ -36,6 +40,8 @@ const ShowRowComponent = ({ channels, channel, myShows, addRemoveShow }) => {
 
     showContainerRef.current.scrollLeft = scrollPosition + skipAmount;
   };
+
+  // useThrottle(showContainerRef, handleScroll);
 
   return (
     <>
