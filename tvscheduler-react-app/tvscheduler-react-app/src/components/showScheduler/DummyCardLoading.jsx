@@ -1,6 +1,7 @@
-// import "./DummyCardLoading.css";
+import "./DummyCardLoading.css";
 
 const DummyCardLoading = () => {
+  //placeholder for the cards who have not rendered yet
   return (
     <div className="dummy-show">
       <span className="line"></span>

@@ -18,7 +18,6 @@ const ShowRowComponent = ({ channels, channel, myShows, addRemoveShow }) => {
       if (container) {
         // get information that we need like the scroll amount from the left, the width of the container etc.
         const { scrollLeft, clientWidth, scrollWidth } = container;
-
         setScrollPosition(scrollLeft);
         setShowLeftArrow(scrollLeft > 5);
         setShowRightArrow(scrollLeft + clientWidth < scrollWidth - 5);
@@ -27,6 +26,7 @@ const ShowRowComponent = ({ channels, channel, myShows, addRemoveShow }) => {
 
     const container = showContainerRef.current;
 
+    //add and then remove scroll listener on cleanup function
     container && container.addEventListener("scroll", handleScroll);
 
     handleScroll();
@@ -35,6 +35,7 @@ const ShowRowComponent = ({ channels, channel, myShows, addRemoveShow }) => {
       container && container.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // function to skip forwards and backwards between the show cards
   const handleClick = (skipAmount) => {
     setScrollPosition(scrollPosition + skipAmount);
 

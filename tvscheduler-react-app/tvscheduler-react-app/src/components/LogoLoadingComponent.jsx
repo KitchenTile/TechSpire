@@ -1,5 +1,6 @@
 import "./LogoLoadingComponent.css";
 
+//loading component for the transition between login and main page
 const LogoLoadingComponent = () => {
   return (
     <div className="logo-container">

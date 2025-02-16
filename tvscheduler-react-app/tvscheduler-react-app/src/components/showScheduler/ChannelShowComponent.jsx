@@ -4,6 +4,7 @@ import ShowRowComponent from "./ShowRowComponenet";
 import "./ChannelShowComponent.css";
 
 const ChannelShowComponent = ({
+  // we will hopefully remove the two channel props
   channels,
   channel,
   addRemoveShow,
