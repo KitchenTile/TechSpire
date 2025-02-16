@@ -12,14 +12,39 @@
     gap: 30px;
 
     & span{
-            transition: all 0.3s ease;
-            width: 40%;
+      transition: all 0.3s ease;
+      width: 40%;
 
-            &:hover{
-                letter-spacing: 5px;
-                transform: scale(1.1);
-                padding-left: 4px;
-            }
+      &:hover{
+        letter-spacing: 5px;
+        transform: scale(1.1);
+        padding-left: 4px;
+      }
+    }
+
+
+}
+
+.text-button{
+  display: inherit;
+}
+
+.login{
+  display: block;
+  border-radius: 8px;
+  border: none;
+  padding: 0;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: transparent;
+  cursor: pointer;
+  transition: color 0.25s;
+  font-style: italic;
+  padding-left: 0.3em;
+
+    &:hover{
+      color: var(--accentColor)
     }
 }
   
@@ -49,15 +74,19 @@
   }
   
   .input-field:focus-within label, .filled label{
-    top: -0.5em;
-    left: -0.7em;
+    /* top: -0.5em;
+    left: -0.7em; */
     font-size: 1.1rem;
     font-weight: 600;
     width: 6em;
     height: 30px;
     color: white;
-    background: rgba(0, 0, 0, 1);
+    /* background: rgba(0, 0, 0, 1); */
     transition: all 0.1s ease;
+
+    top: -1.5em;
+    left: 0.5em;
+    background: rgba(0, 0,0, 0);
   }
   
   .button{

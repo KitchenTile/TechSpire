@@ -1,3 +1,8 @@
+.page-container{
+    padding: 2%;
+    width: 100vw;
+}
+
 .grid-container{
     display: flex;
     flex-direction: column;
