@@ -59,13 +59,16 @@ public class AccountController : ControllerBase
     
 
     [HttpPost("add-show-to-schedule")]
-    public async Task<IActionResult> AddShowToSchedule([FromBody] AddToScheduleDTO request)
+    public async Task<IActionResult> AddShowToSchedule([FromBody] UserScheduleDTO request)
     {
-        var user = await _userManager.FindByIdAsync(request.UserId);
         
         var showEvent = await _DbContext.ShowEvents.FirstOrDefaultAsync(ev => ev.Id == request.ShowEventId);
+        if (showEvent == null)
+        {
+            return NotFound("Show event not found.");
+        }
 
-        var scheduleEvent = _DbContext.ScheduleEvents.Add(new ScheduleEvent
+        var scheduleEvent = _DbContext.ScheduleEvents.Add(new UserScheduleEvent
             {
                 ShowEventId = request.ShowEventId,
                 UserId = request.UserId,
@@ -73,5 +76,33 @@ public class AccountController : ControllerBase
         var result = await _DbContext.SaveChangesAsync();
          
         return Ok();
+        
     }
+
+
+    [HttpPost("remove-show-from-schedule")]
+    public async Task<IActionResult> RemoveShowFromSchedule([FromBody] UserScheduleDTO request)
+    {
+
+        var showEvent = await _DbContext.ShowEvents.FirstOrDefaultAsync(ev => ev.Id == request.ShowEventId);
+        if (showEvent == null)
+        {
+            return NotFound("Show event not found.");
+        }
+
+        var scheduleEvent = await _DbContext.ScheduleEvents.FirstOrDefaultAsync(se => 
+            se.UserId == request.UserId && se.ShowEventId == request.ShowEventId);
+
+        if (scheduleEvent == null)
+        {
+            return NotFound("Schedule event not found.");
+        }
+
+        _DbContext.ScheduleEvents.Remove(scheduleEvent);
+        await _DbContext.SaveChangesAsync();
+
+        return Ok("Show event removed from schedule.");
+        
+    }
+
 }
