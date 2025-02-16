@@ -4,6 +4,7 @@ import ShowCard from "../components/showScheduler/ShowCard";
 import rightArrow from "../assets/rightArrow.svg";
 import LoadingComponent from "../components/loadingComponent";
 import ChannelShowComponent from "../components/showScheduler/ChannelShowComponent";
+import LogoLoadingComponent from "../components/LogoLoadingComponent";
 
 const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
@@ -98,7 +99,8 @@ const MainSchedulePage = () => {
           </div>
         </>
       ) : (
-        <LoadingComponent />
+        // <LoadingComponent />
+        <LogoLoadingComponent />
       )}
     </div>
   );
