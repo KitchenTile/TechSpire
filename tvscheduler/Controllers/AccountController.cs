@@ -1,7 +1,11 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using tvscheduler.Models;
 
 namespace tvscheduler.Controllers;
@@ -13,13 +17,16 @@ public class AccountController : ControllerBase
     private readonly AppDbContext _DbContext;
     private readonly string _message = "u alright mate";
     private readonly UserManager<User> _userManager;
+    private readonly IConfiguration _configuration;
     
     
 
-    public AccountController(AppDbContext dbContext, UserManager<User> userManager)
+    public AccountController(AppDbContext dbContext, UserManager<User> userManager, IConfiguration configuration)
     {
         _DbContext = dbContext;
         _userManager = userManager;
+        _configuration = configuration;
+        
     }
 
     [HttpPost]
@@ -55,7 +62,37 @@ public class AccountController : ControllerBase
             });
         }
     }
+    
+    // login
+    [HttpPost]
+    [Route("login")]
+    public async Task<IActionResult> Login(LoginDTO request)
+    {
+        var user = await _userManager.FindByNameAsync(request.Name);
+        if (user != null)
+        {
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"] ?? string.Empty),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim("UserId", user.Id.ToString()),
+            };
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? string.Empty));
+            var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+                _configuration["Jwt:Issuer"],
+                _configuration["Jwt:Audience"],
+                claims,
+                expires: DateTime.UtcNow.AddMinutes(30),
+                signingCredentials: signIn);
 
+            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+        }
+
+        return Unauthorized(new { message = "Invalid email or password" }); 
+    }
+    
+    
     
 
     [HttpPost("add-show-to-schedule")]

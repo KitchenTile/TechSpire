@@ -9,17 +9,7 @@ public class TagsManager
     private readonly HttpClient _httpClient;
     public readonly List<string> tagList = new List<string>
     {
-        "Action",
-        "Comedy",
-        "Drama",
-        "News",
-        "Horror",
-        "Sci-Fi",
-        "Thriller",
-        "Romance",
-        "Documentary",
-        "Animation",
-        "Fantasy"
+        "Action", "Comedy", "Drama", "News", "Horror", "Sci-Fi", "Thriller", "Romance", "Documentary", "Animation", "Fantasy"
     };
 
     public TagsManager(AppDbContext dbContext, HttpClient httpClient)
@@ -27,7 +17,6 @@ public class TagsManager
         _dbContext = dbContext;
         _httpClient = httpClient;
     }
-    
     
     // assign tag() to separate checking if the show exsists from getTagForShow()
     public async Task AssignTag(Show show)
@@ -37,9 +26,8 @@ public class TagsManager
         {
             
             var openAiHandler = new OpenAiHandler(_httpClient, tagList, show.Name);
-            
             var gptresponse =  await openAiHandler.RequestTag();
-            //                                                                                  !! verify gpt answer!!!
+            //                                             !! verify gpt answer!!!
             
             Console.WriteLine("TAG GENERATED FOR " + show.Name, " === ", gptresponse);
             
@@ -56,8 +44,6 @@ public class TagsManager
                 // no need to run save because if will be run in the show creator after this function returns
                 //      - well not really because then tag == null was always true on line 48
             }
-            
-          
             show.Tag = tag;  // assign tag to the show
         }
     }
@@ -75,7 +61,6 @@ public class TagsManager
             }
         }
         await _dbContext.SaveChangesAsync();
-        
     }
     
     // reassign tags for all shows after changing the tags list
@@ -98,8 +83,6 @@ public class TagsManager
     
     // should i rewrite it in a more functional way ? 
     // create an iterator which takes a callback (like remove, find tag etc?
-
-
     
     // removes link from Show to Tag for all the shows in the DB 
     public async Task DeleteTagIdsFromAllShows()
