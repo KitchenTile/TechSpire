@@ -20,37 +20,22 @@ public class UpdateChannelSchedule
     
     public async Task UpdateDailySchedule()
     { 
-        //List<int> channelIds = new List<int>();
-        var channelIds = new List<int> { 10005, 1540, 1547 };
-        var channels = _dbContext.Channels;
-
-     //   foreach (var channel in channels)
-     //   {
-     //       channelIds.Add(channel.ChannelId);     //   }
-        Console.WriteLine("Channel IDs:" + string.Join(", ", channelIds));
-        
-        if (_httpClient == null)
-        {
-            Console.WriteLine("Error: httpClient is null.");
-            return;
-        }
+        var channelIds = _dbContext.Channels.Select(c => c.ChannelId).ToList();
 
         var channelData = await TvApi.FetchMultipleProgramData(_httpClient, channelIds);
         
         foreach (var entry in channelData)
         {
             string formattedJson = JsonSerializer.Serialize(entry.Value, new JsonSerializerOptions { WriteIndented = true });
-            //Console.WriteLine($"Channel {entry.Key}:\n{formattedJson}");
+
             
         }
-        //Console.WriteLine("Channel Data:" + channelData[1540]);
 
-        foreach (var kvp in channelData) // kvp = KeyValuePair<int, Channel>
+        foreach (var kvp in channelData) // KeyValuePair<int, Channel>
         {
             int channelId = kvp.Key;
             var channel = kvp.Value; // Channel object
-
-            Console.WriteLine($"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Channel ID: {channelId}");
+            
     
             foreach (var showEvent in channel[0].GetProperty("event").EnumerateArray())
             {

@@ -106,6 +106,11 @@ using (var serviceScope = app.Services.CreateScope())
 using (var scope = app.Services.CreateScope())
 {
     var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+    
+    recurringJobs.AddOrUpdate("Update Channels Schedule for today",
+        ()=> scope.ServiceProvider.GetRequiredService<UpdateChannelSchedule>(),
+        Cron.Never());
+    
     recurringJobs.AddOrUpdate("Fing Tags For Untagged Shows",
         ()=> scope.ServiceProvider.GetRequiredService<TagsManager>().CheckDatabaseForUntagged(),
         Cron.Never());
@@ -123,12 +128,6 @@ using (var scope = app.Services.CreateScope())
         Cron.Never());
     
 }
-
-
-
-
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
