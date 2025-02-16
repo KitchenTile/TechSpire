@@ -1,6 +1,7 @@
 import useIntersectionObserver from "../../hooks/useIntersectionObserver";
 import LoadingComponent from "../loadingComponent";
 import ShowRowComponent from "./ShowRowComponenet";
+import "./ChannelShowComponent.css";
 
 const ChannelShowComponent = ({
   channels,

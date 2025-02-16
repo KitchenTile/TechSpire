@@ -3,8 +3,6 @@ import "./mainSchedulePage.css";
 import ShowCard from "../components/showScheduler/ShowCard";
 import rightArrow from "../assets/rightArrow.svg";
 import LoadingComponent from "../components/loadingComponent";
-import ShowRowComponent from "../components/showScheduler/ShowRowComponenet";
-import useIntersectionObserver from "../hooks/useIntersectionObserver";
 import ChannelShowComponent from "../components/showScheduler/ChannelShowComponent";
 
 const MainSchedulePage = () => {

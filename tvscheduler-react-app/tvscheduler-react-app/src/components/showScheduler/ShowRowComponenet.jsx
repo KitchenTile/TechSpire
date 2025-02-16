@@ -78,6 +78,7 @@ const ShowRowComponent = ({ channels, channel, myShows, addRemoveShow }) => {
                   show={show}
                   addRemoveShow={addRemoveShow}
                   isAdded={myShows.includes(show.evtId)}
+                  rowRef={showContainerRef}
                 />
               ))
           ) : (
