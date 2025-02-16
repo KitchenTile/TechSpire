@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tvscheduler.Models;
 
-public class ScheduleEvent
+public class UserScheduleEvent
 { 
     [Key] 
     public int Id { get; set; }
