@@ -56,10 +56,9 @@ public class TagsManager
                 // no need to run save because if will be run in the show creator after this function returns
                 //      - well not really because then tag == null was always true on line 48
             }
-             
             
-            // assign tag to the show
-            show.Tag = tag;
+          
+            show.Tag = tag;  // assign tag to the show
         }
     }
     

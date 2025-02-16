@@ -9,23 +9,24 @@ public class UpdateChannelSchedule
 {
     private readonly HttpClient _httpClient;
     private readonly AppDbContext _dbContext;
+    private readonly TagsManager _tagsManager;
 
-    public UpdateChannelSchedule(AppDbContext dbContext, HttpClient httpClient)
+    public UpdateChannelSchedule(AppDbContext dbContext, HttpClient httpClient, TagsManager tagsManager)
     {
         _dbContext = dbContext;
         _httpClient = httpClient;
+        _tagsManager = tagsManager;
     }
     
     public async Task UpdateDailySchedule()
-    {
+    { 
         //List<int> channelIds = new List<int>();
         var channelIds = new List<int> { 10005, 1540, 1547 };
         var channels = _dbContext.Channels;
 
      //   foreach (var channel in channels)
      //   {
-     //       channelIds.Add(channel.ChannelId);
-     //   }
+     //       channelIds.Add(channel.ChannelId);     //   }
         Console.WriteLine("Channel IDs:" + string.Join(", ", channelIds));
         
         if (_httpClient == null)
@@ -47,7 +48,7 @@ public class UpdateChannelSchedule
         foreach (var kvp in channelData) // kvp = KeyValuePair<int, Channel>
         {
             int channelId = kvp.Key;
-            var channel = kvp.Value; // This is the Channel object
+            var channel = kvp.Value; // Channel object
 
             Console.WriteLine($"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Channel ID: {channelId}");
     
@@ -64,6 +65,7 @@ public class UpdateChannelSchedule
                         Description = showEvent.GetProperty("description").GetString(),
                         ImageUrl = showEvent.GetProperty("image").GetString(),
                     }).Entity;
+                    await _tagsManager.AssignTag(show);
                     await _dbContext.SaveChangesAsync();
                 }
 
@@ -79,9 +81,8 @@ public class UpdateChannelSchedule
         }
 
     }
+    
     // get the schedule
     
     // for show in schedule map to channel - showevent - show relation
-    
-    
 }
