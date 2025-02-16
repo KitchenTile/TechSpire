@@ -79,6 +79,8 @@ builder.Services.AddHangfireServer();
 
 builder.Services.AddScoped<UpdateChannelSchedule>();
 builder.Services.AddScoped<TagsManager>();
+builder.Services.AddSingleton<HangfireJobs>();
+
 
 
 var app = builder.Build();
@@ -91,11 +93,11 @@ using (var serviceScope = app.Services.CreateScope())
     if (dbContext.Channels.IsNullOrEmpty())
     {
         var databaseInit = new DatabaseChannelsInit(dbContext);
-        databaseInit.SeedDatabase();
+        databaseInit.SeedDatabase(); // adding hard coded channels to the database if no channels exist
     }
 
-    var channelUpdater = serviceScope.ServiceProvider.GetRequiredService<UpdateChannelSchedule>();
-    await channelUpdater.UpdateDailySchedule();
+    //var channelUpdater = serviceScope.ServiceProvider.GetRequiredService<UpdateChannelSchedule>();
+    //await channelUpdater.UpdateDailySchedule();
     
     //var tagManager = serviceScope.ServiceProvider.GetRequiredService<TagsManager>();
     //await tagManager.CheckDatabaseForUntagged();
@@ -106,25 +108,27 @@ using (var serviceScope = app.Services.CreateScope())
 using (var scope = app.Services.CreateScope())
 {
     var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+    var hangfireJobs = scope.ServiceProvider.GetRequiredService<HangfireJobs>();
     
-    recurringJobs.AddOrUpdate("Update Channels Schedule for today",
-        ()=> scope.ServiceProvider.GetRequiredService<UpdateChannelSchedule>(),
+
+    recurringJobs.AddOrUpdate("Update the channel schedule for two days",
+        ()=> hangfireJobs.UpdateChannelScheduleJob(),
         Cron.Never());
     
-    recurringJobs.AddOrUpdate("Fing Tags For Untagged Shows",
-        ()=> scope.ServiceProvider.GetRequiredService<TagsManager>().CheckDatabaseForUntagged(),
+    recurringJobs.AddOrUpdate("Find Tags For Untagged Shows",
+        () => hangfireJobs.CheckDatabaseForUntagged(),
         Cron.Never());
-    
+
     recurringJobs.AddOrUpdate("Reassign tags for all shows",
-        ()=> scope.ServiceProvider.GetRequiredService<TagsManager>().ReassignAllTags(),
+        () => hangfireJobs.ReassignAllTags(),
         Cron.Never());
-    
+
     recurringJobs.AddOrUpdate("Set tag field in every show to NULL",
-        ()=> scope.ServiceProvider.GetRequiredService<TagsManager>().DeleteTagIdsFromAllShows(),
+        () => hangfireJobs.DeleteTagIdsFromAllShows(),
         Cron.Never());
-    
-    recurringJobs.AddOrUpdate("Delete Tags From the Databse",
-        ()=> scope.ServiceProvider.GetRequiredService<TagsManager>().DeleteAllTags(),
+
+    recurringJobs.AddOrUpdate("Delete Tags From the Database",
+        () => hangfireJobs.DeleteAllTags(),
         Cron.Never());
     
 }
