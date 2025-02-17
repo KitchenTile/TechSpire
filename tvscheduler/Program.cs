@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using Hangfire;
 using Hangfire.MySql;
@@ -101,6 +102,7 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey =
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty)),
+        NameClaimType = ClaimTypes.NameIdentifier
 
     };
 });

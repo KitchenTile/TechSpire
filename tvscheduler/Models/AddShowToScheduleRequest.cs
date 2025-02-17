@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tvscheduler.Models;
 
-public class UserScheduleDTO
+public class AddShowToScheduleRequest
 {
-    public string UserId { get; set; }
     public int ShowEventId { get; set; }
     
 }

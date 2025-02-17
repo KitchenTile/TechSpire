@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +29,8 @@ public class AccountController : ControllerBase
         _configuration = configuration;
         
     }
-
+    
+    
     [HttpPost]
     [Route("register")]
     public async Task<IActionResult> Registration(LoginDTO user)
@@ -73,9 +75,9 @@ public class AccountController : ControllerBase
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"] ?? string.Empty),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("UserId", user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? string.Empty));
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -96,9 +98,10 @@ public class AccountController : ControllerBase
     
 
     [HttpPost("add-show-to-schedule")]
-    public async Task<IActionResult> AddShowToSchedule([FromBody] UserScheduleDTO request)
+    public async Task<IActionResult> AddShowToSchedule([FromBody] AddShowToScheduleRequest request)
     {
-        
+        /// HTTP CONTEXT
+        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         var showEvent = await _DbContext.ShowEvents.FirstOrDefaultAsync(ev => ev.Id == request.ShowEventId);
         if (showEvent == null)
         {
@@ -108,7 +111,7 @@ public class AccountController : ControllerBase
         var scheduleEvent = _DbContext.ScheduleEvents.Add(new UserScheduleEvent
             {
                 ShowEventId = request.ShowEventId,
-                UserId = request.UserId,
+                UserId = userId,
             });
         var result = await _DbContext.SaveChangesAsync();
          
@@ -118,7 +121,7 @@ public class AccountController : ControllerBase
 
 
     [HttpPost("remove-show-from-schedule")]
-    public async Task<IActionResult> RemoveShowFromSchedule([FromBody] UserScheduleDTO request)
+    public async Task<IActionResult> RemoveShowFromSchedule([FromBody] AddShowToScheduleRequest request)
     {
 
         var showEvent = await _DbContext.ShowEvents.FirstOrDefaultAsync(ev => ev.Id == request.ShowEventId);
@@ -139,7 +142,5 @@ public class AccountController : ControllerBase
         await _DbContext.SaveChangesAsync();
 
         return Ok("Show event removed from schedule.");
-        
     }
-
 }
