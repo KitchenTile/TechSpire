@@ -123,7 +123,7 @@ public class AccountController : ControllerBase
     [HttpPost("remove-show-from-schedule")]
     public async Task<IActionResult> RemoveShowFromSchedule([FromBody] AddShowToScheduleRequest request)
     {
-
+        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         var showEvent = await _DbContext.ShowEvents.FirstOrDefaultAsync(ev => ev.Id == request.ShowEventId);
         if (showEvent == null)
         {
@@ -131,7 +131,7 @@ public class AccountController : ControllerBase
         }
 
         var scheduleEvent = await _DbContext.ScheduleEvents.FirstOrDefaultAsync(se => 
-            se.UserId == request.UserId && se.ShowEventId == request.ShowEventId);
+            se.UserId == userId && se.ShowEventId == request.ShowEventId);
 
         if (scheduleEvent == null)
         {

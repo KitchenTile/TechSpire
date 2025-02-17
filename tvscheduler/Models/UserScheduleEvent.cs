@@ -16,4 +16,3 @@ public class UserScheduleEvent
     public required int ShowEventId { get; set; }
     public ShowEvent ShowEvent { get; set; } = null!;
 }
-

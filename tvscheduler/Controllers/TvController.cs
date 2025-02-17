@@ -52,7 +52,7 @@ public class TvController : ControllerBase
         
             // For testing purposes, we're just returning a message.
             // You could return the schedule as needed:
-            var response = new 
+            //var response = new 
             return Ok(new { schedule = userSchedule });
         }
 
