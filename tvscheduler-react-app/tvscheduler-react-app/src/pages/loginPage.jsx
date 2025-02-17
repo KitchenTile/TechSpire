@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./loginPage.css";
 import InputComponent from "../components/login/InputComponent";
+import { Link } from "react-router-dom";
 
 const LoginRegisterPage = () => {
   const [registered, setRegistered] = useState(false);
@@ -45,7 +46,7 @@ const LoginRegisterPage = () => {
           ))}
 
           <span> -- ♦ --</span>
-          <button type="submit" className="button">
+          <button type="submit" className="button" onClick={handleLogin}>
             Sign Up!
           </button>
           <p className="text-button">
@@ -68,9 +69,11 @@ const LoginRegisterPage = () => {
           ))}
 
           <span> -- ♦ --</span>
-          <button type="submit" className="button">
-            Log In!
-          </button>
+          <Link as={Link} to={"/main"}>
+            <button type="submit" className="button">
+              Log In!
+            </button>
+          </Link>
           <p className="text-button">
             Don't have an account?{" "}
             <button className="login" onClick={handleLogin}>
