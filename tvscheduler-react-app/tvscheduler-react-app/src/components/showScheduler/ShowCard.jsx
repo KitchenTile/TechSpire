@@ -1,15 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./ShowCard.css";
 import useIntersectionObserver from "../../hooks/useIntersectionObserver";
+import DummyCardLoading from "./DummyCardLoading";
 
-const ShowCard = ({ show, addRemoveShow, isAdded }) => {
+const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
   const [expanded, setExpanded] = useState(false);
 
   //options for intersection observer custom hook
   const options = {
-    root: null,
-    threshhold: 0.1,
-    rootMargin: "0px",
+    // imporntat: we use the parent ref as the ref in our options so that the lazy loading
+    //  is NOT relative to the window, we add the conditional to avoid undefined error
+    //  when adding shows
+
+    root: rowRef ? rowRef.current : null,
+    // root: null,
+    threshold: 0,
+    rootMargin: "20px",
   };
 
   const [cardRef, isVisible] = useIntersectionObserver(options);
@@ -102,7 +108,9 @@ const ShowCard = ({ show, addRemoveShow, isAdded }) => {
             {isAdded ? "-" : "+"}
           </button>
         </>
-      ) : null}
+      ) : (
+        <DummyCardLoading />
+      )}
     </div>
   );
 };

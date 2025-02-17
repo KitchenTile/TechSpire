@@ -1,0 +1,94 @@
+.logo-container{
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+svg{
+
+    & path{
+        fill: var(--accentColor);
+    }
+	& .screen{
+		transform-origin: 50% 65%;
+		transform: scaleY(1);
+        fill: var(--accentColor);
+		animation: 0.3s logoloading ease-out forwards;
+	}
+}
+
+.tv-off{
+	height: 8px;
+	width: 200px;
+	background: var(--accentColor);
+	position: absolute;
+	top: 65%;
+	left: 50%;
+	border-radius: 5px;
+	transform: translate(-52%, -50%) scaleX(1) scaleY(0);
+	
+	animation: slide-middle 0.8s ease-out 0.2s;
+}
+
+.dots{
+	position: absolute;
+	top: 65%;
+	left: 50%;
+	background: var(--accentColor);
+	z-index: 2;
+	transform: translate(-50%, -50%);
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	opacity: 0;
+	animation: left-circle 1s infinite 1s;
+
+	&:nth-of-type(4){
+		animation: right-circle 1s infinite 1s;
+	}
+		&:nth-child(3){
+		animation: middle-circle 1s infinite 1s;
+	}
+}
+
+@keyframes logoloading{
+	100%{
+		trnasform-origin: 50% 65%;
+		transform: scaleY(0);
+	}
+}
+
+@keyframes slide-middle{
+	40%{
+		transform: translate(-52%, -50%) scaleX(1) scaleY(1);
+	}
+	100%{
+		opacity: 1;
+		transform: translate(-52%, -50%) scaleX(0);
+	}
+}
+
+@keyframes left-circle{
+	0%, 100%{
+		opacity: 1;
+	}
+	50%{
+		transform: translate(-300%, -50%);
+	}
+}
+@keyframes middle-circle{
+	0%, 100%{
+		opacity: 1;
+	}
+	50%{
+	transform: translate(-50%, -50%) scale(2);
+	}
+}
+@keyframes right-circle{
+	0%, 100%{
+		opacity: 1;
+	}
+	50%{
+		transform: translate(200%, -50%);
+	}
+}

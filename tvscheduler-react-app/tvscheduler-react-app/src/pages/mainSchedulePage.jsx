@@ -1,11 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./mainSchedulePage.css";
-import ShowCard from "../components/showScheduler/ShowCard";
-import rightArrow from "../assets/rightArrow.svg";
-import LoadingComponent from "../components/loadingComponent";
-import ShowRowComponent from "../components/showScheduler/ShowRowComponenet";
-import useIntersectionObserver from "../hooks/useIntersectionObserver";
 import ChannelShowComponent from "../components/showScheduler/ChannelShowComponent";
+import LogoLoadingComponent from "../components/LogoLoadingComponent";
+import MyShowsComponent from "../components/showScheduler/myShowsComponent";
 
 const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
@@ -43,48 +40,16 @@ const MainSchedulePage = () => {
     }
   };
 
-  const compareStartTime = (a, b) => {
-    return a.startTime - b.startTime;
-  };
-
   return (
     <div className="page-container">
       {channels ? (
         <>
           {/* my shows display */}
-          <h1 className="title h1">My Shows</h1>
-          <div className="myshow-container">
-            {/* if my shows is not empty, flatten the show per channel object and match the ids of the show's we added to our My Shows array to all fetched shows. Then display cards */}
-            {myShows.length > 0 ? (
-              Object.entries(channels.programData)
-                .map(([channelId, channelData]) =>
-                  channelData[0].event.filter((show) =>
-                    myShows.includes(show.evtId)
-                  )
-                )
-                .flat()
-                .sort(compareStartTime)
-                .map((show) => (
-                  <ShowCard
-                    key={show.evtId}
-                    show={show}
-                    addRemoveShow={addRemoveShow}
-                    isAdded={myShows.includes(show.evtId)}
-                  />
-                ))
-            ) : (
-              <div className="dummy-show">
-                <h3>Nothing here yet!</h3>
-                <p>
-                  Click on the "+" to add shows{" "}
-                  <span>
-                    <img src={rightArrow}></img>
-                  </span>
-                </p>
-                <span className="add-button small">+</span>
-              </div>
-            )}
-          </div>
+          <MyShowsComponent
+            channels={channels}
+            myShows={myShows}
+            addRemoveShow={addRemoveShow}
+          />
           <h1 className="title h1">All Shows</h1>
           <div className="grid-container">
             {/* get the first x elements of the guide data array -- 129 is too long man */}
@@ -100,7 +65,7 @@ const MainSchedulePage = () => {
           </div>
         </>
       ) : (
-        <LoadingComponent />
+        <LogoLoadingComponent />
       )}
     </div>
   );

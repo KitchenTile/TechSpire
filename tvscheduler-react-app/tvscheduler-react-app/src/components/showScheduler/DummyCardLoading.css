@@ -1,0 +1,32 @@
+span.line{
+    background: linear-gradient(180deg, #adadad85 20%, #a9a9a9b5 65%, #b1b1b18a 75%, #adadad85 0) 100% / 100% 500% no-repeat;
+    position: absolute;
+    top: 40%;
+    left: 8%;
+    display: block;
+    height: 15px;
+    width: 142px;
+    border-radius: 3px;
+    animation: loading 2s ease-in-out infinite;
+    
+    &:nth-child(1){
+      top: 72%;
+      width: 195px;
+      height: 8px;
+    }
+    
+    &:nth-child(2){
+      top: 65%;
+      width: 262px;
+      height: 8px;
+    }
+  }
+  
+  @keyframes loading{
+    0% {
+    background-position: 0 0; 
+  }
+  100% {
+    background-position: 0 100%;
+  }
+  }

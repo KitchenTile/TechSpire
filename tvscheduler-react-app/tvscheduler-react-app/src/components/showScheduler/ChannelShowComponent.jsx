@@ -1,8 +1,10 @@
 import useIntersectionObserver from "../../hooks/useIntersectionObserver";
 import LoadingComponent from "../loadingComponent";
 import ShowRowComponent from "./ShowRowComponenet";
+import "./ChannelShowComponent.css";
 
 const ChannelShowComponent = ({
+  // we will hopefully remove the two channel props
   channels,
   channel,
   addRemoveShow,

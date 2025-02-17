@@ -1,0 +1,46 @@
+.dummy-show{
+    box-sizing: border-box;
+    overflow:hidden;
+    position: relative;
+    background: #1c1c1c;
+    border: 2px solid #121212;
+    width: 360px;
+    height: 200px;
+    border-radius: 5px;
+    color: white;
+    z-index: 1;
+  
+    & h3{
+      white-space: nowrap;
+      margin-block: 0;
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  
+    & p{
+      position: absolute;
+      top: 68%;
+      left: 14%;
+    }
+  
+    & span{
+      position: absolute;
+      margin-left: 2.5%;
+  
+      & img{
+        transform: translateY(20%);
+      }
+    }
+  
+    & .add-button{
+      cursor: default;
+      &:hover{
+        color: white
+      }
+      &::before, &::after{
+        display: none;
+      }
+    }
+  }
