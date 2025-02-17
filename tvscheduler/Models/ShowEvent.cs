@@ -9,7 +9,7 @@ public class ShowEvent
     public int Id { get; set; }
     
     [ForeignKey("Channel")]
-    public int? ChannelId { get; set; }
+    public int ChannelId { get; set; }
     public Channel? Channel { get; set; }
 
     [ForeignKey("Show")]

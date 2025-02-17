@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using tvscheduler.network_services;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -27,9 +28,9 @@ public class TvController : ControllerBase
         _userManager = userManager;
     }
     
-    
+    // ENTRY ENDPOINT
     [HttpGet("/")]
-    public async Task<IActionResult> MainEndpoint()
+    public async Task<IActionResult> EntryEndpoint()
     {
         // Check if the user is authenticated
         if (HttpContext.User?.Identity?.IsAuthenticated ?? false)
@@ -53,7 +54,57 @@ public class TvController : ControllerBase
             // For testing purposes, we're just returning a message.
             // You could return the schedule as needed:
             //var response = new 
-            return Ok(new { schedule = userSchedule });
+            var userScheduleResponse = userSchedule.Select(se => new UserScheduleResponseDto
+            {
+                UserScheduleItemId = se.Id,
+                ShowEvent = new ShowEventDto
+                {
+                    ShowEventId = se.ShowEvent.Id,
+                    ChannelId = se.ShowEvent.ChannelId,
+                    Show = new ShowDto
+                    {
+                        ShowId = se.ShowEvent.Show.ShowId,
+                        Name = se.ShowEvent.Show.Name,
+                        Description = se.ShowEvent.Show.Description,
+                        ImageUrl = se.ShowEvent.Show.ImageUrl
+                    },
+                    TimeStart = se.ShowEvent.TimeStart,
+                    Duration = se.ShowEvent.Duration
+                }
+            }).ToList();
+            
+            var channelsData = await _DbContext.Channels
+                .Include(c => c.ShowEvents)
+                .ToListAsync();
+
+            var channelsResponse = channelsData.Select(c => new ChannelDto
+            {
+                ChannelId = c.ChannelId,
+                Name = c.Name,
+                Description = c.Description,
+                ShowEvents = c.ShowEvents.Select(se => new ShowEventDto
+                {
+                    ShowEventId = se.Id,
+                    TimeStart = se.TimeStart,
+                    Duration = se.Duration,
+                    ShowId = se.ShowId,
+                })
+                
+            });
+            // create channelsResponse and add to endpoint response 
+            
+            // include all the shows
+            var shows = await _DbContext.Shows.ToListAsync();
+
+            var showsResponse = shows.Select(s => new ShowDto
+            {
+                ShowId = s.ShowId,
+                Name = s.Name,
+                Description = s.Description,
+                ImageUrl = s.ImageUrl,
+            });
+            
+            return Ok(new { schedule = userScheduleResponse, channels = channelsResponse, shows = showsResponse });
         }
 
         return Unauthorized();
