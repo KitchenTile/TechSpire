@@ -14,8 +14,8 @@ services:
 
   app:
     build:
-      context: ../tvscheduler  # Ensure it's inside TechSpire/
-      dockerfile: Dockerfile
+      context: ../
+      dockerfile: tvscheduler/Dockerfile
     container_name: tvscheduler-app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -24,11 +24,11 @@ services:
     depends_on:
       - mariadb
     volumes:
-      - ./tvscheduler:/app  # Ensures local changes sync with the container
+      - ../tvscheduler:/app  # Ensures local changes sync with the container
 
   frontend:
     build:
-      context: ../tvscheduler-react-app  # Adjusted to match TechSpire structure
+      context: ../tvscheduler-react-app/tvscheduler-react-app
       dockerfile: Dockerfile
     container_name: tvscheduler-frontend
     ports:
@@ -36,7 +36,7 @@ services:
     depends_on:
       - app
     volumes:
-      - ./tvscheduler-react-app:/app  # Syncs React app code with the container
+      - ../tvscheduler-react-app/tvscheduler-react-app:/app  # Syncs React app code with the container
 
 volumes:
   mariadb_data:
