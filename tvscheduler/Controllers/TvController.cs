@@ -29,7 +29,7 @@ public class TvController : ControllerBase
     }
     
     // ENTRY ENDPOINT
-    [HttpGet("/")]
+    [HttpGet("/main")]
     public async Task<IActionResult> EntryEndpoint()
     {
         // Check if the user is authenticated
