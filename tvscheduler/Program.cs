@@ -1,161 +1,217 @@
-using System.Net.Http;
-using System.Text.Json;
+using System.Security.Claims;
+using System.Text;
+using Hangfire;
+using Hangfire.MySql;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using tvscheduler;
-using MySqlConnector;
+using tvscheduler.Models;
+using tvscheduler.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//add cors policies
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient();
+builder.Services.AddSwaggerGen(x =>
+{
+    x.SwaggerDoc( "v1", new OpenApiInfo
+    {
+        Title = "DM Web API's",
+        Version = "v1"
+    });
+
+    var security = new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme.Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+    };
+
+    x.AddSecurityDefinition("Bearer", security);
+
+    var securityRequirement = new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    };
+    x.AddSecurityRequirement(securityRequirement);
+});
+
+
+
+
+// protectagaint circular dependencies when rendering json
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    options.JsonSerializerOptions.MaxDepth = 64; // Increase depth limit if needed
+});
+
+
+// ADJUST USER CREATION REGEX
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Password settings
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 1;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequiredUniqueChars = 0;
+});
+
+
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey =
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty)),
+        NameClaimType = ClaimTypes.NameIdentifier
+
+    };
+});
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
         policy =>
         {
             policy.WithOrigins("http://localhost:5173")
-                  .AllowAnyMethod()
-                  .AllowAnyHeader()
-                  .AllowCredentials();
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
         });
 });
 
-// Add services to the container.
-builder.Services.AddHttpClient();
-var app = builder.Build();
-app.UseCors("AllowFrontend");
 
-app.UseStaticFiles();
-app.UseHttpsRedirection();
-
-var scheduleRoute = app.MapGroup("schedule");
-var mySchedule = new List<Show>();
-
-// creating mock data
-var mockChannel1 = ChannelGenerator.GenerateMockChannel(
-        channelId: 1,
-        scheduleStartTime: DateTime.Now,
-        showCount: 5,
-        showDuration: 5
-        );
-var mockChannel2 = ChannelGenerator.GenerateMockChannel(
-        channelId: 2,
-        scheduleStartTime: DateTime.Now,
-        showCount: 5,
-        showDuration: 5
+// database <-> ORM (Entity Framework) DI
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+    )
 );
 
-var channels = new List<Channel>
+
+
+builder.Services.AddHangfire(opts =>
 {
-    mockChannel1,
-    mockChannel2
-};
+    opts.UseStorage(new MySqlStorage(builder.Configuration.GetConnectionString("DefaultConnection")+"Allow User Variables=true;",
+        new MySqlStorageOptions() {TablesPrefix = "hangfire_"}));
+    opts.UseColouredConsoleLogProvider();
+});
+builder.Services.AddHangfireServer();
 
-// Fetch TV Guide data from the API
-async Task<JsonElement> FetchGuideData(HttpClient httpClient)
+
+
+builder.Services.AddScoped<UpdateChannelSchedule>();
+builder.Services.AddScoped<TagsManager>();
+builder.Services.AddSingleton<HangfireJobs>();
+
+
+
+var app = builder.Build();
+
+
+// run on program startup
+using (var serviceScope = app.Services.CreateScope())
 {
-    var response = await httpClient.GetAsync("https://www.freesat.co.uk/tv-guide/api");
-    response.EnsureSuccessStatusCode();
+    var dbContext = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
+    if (dbContext.Channels.IsNullOrEmpty())
+    {
+        var databaseInit = new DatabaseChannelsInit(dbContext);
+        databaseInit.SeedDatabase(); // adding hard coded channels to the database if no channels exist
+    }
 
-    var responseBody = await response.Content.ReadAsStringAsync();
-    var guideData = JsonSerializer.Deserialize<JsonElement>(responseBody);
-
-    return guideData;
+    //var channelUpdater = serviceScope.ServiceProvider.GetRequiredService<UpdateChannelSchedule>();
+    //await channelUpdater.UpdateDailySchedule();
+    
+    //var tagManager = serviceScope.ServiceProvider.GetRequiredService<TagsManager>();
+    //await tagManager.CheckDatabaseForUntagged();
 }
 
-// New func to fetch multiple channels' data at once using a list of ids
-async Task<Dictionary<int, JsonElement>> FetchMultipleProgramData(HttpClient httpClient, List<int> channelIds)
+//HANGFIRE
+//add the job to hangfire
+using (var scope = app.Services.CreateScope())
 {
-    var fetchTasks = channelIds.Select(async channelId =>
-    {
-        var response = await httpClient.GetAsync($"https://www.freesat.co.uk/tv-guide/api/0?channel={channelId}");
-        response.EnsureSuccessStatusCode();
+    var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+    var hangfireJobs = scope.ServiceProvider.GetRequiredService<HangfireJobs>();
+    
 
-        var responseBody = await response.Content.ReadAsStringAsync();
-        var programData = JsonSerializer.Deserialize<JsonElement>(responseBody);
+    recurringJobs.AddOrUpdate("Update the channel schedule for two days",
+        ()=> hangfireJobs.UpdateChannelScheduleJob(),
+        Cron.Never());
+    
+    recurringJobs.AddOrUpdate("Find Tags For Untagged Shows",
+        () => hangfireJobs.CheckDatabaseForUntagged(),
+        Cron.Never());
 
-        //returns a kvp of {id -> data}
-        return new KeyValuePair<int, JsonElement>(channelId, programData);
-    });
+    recurringJobs.AddOrUpdate("Reassign tags for all shows",
+        () => hangfireJobs.ReassignAllTags(),
+        Cron.Never());
 
-    var results = await Task.WhenAll(fetchTasks);
+    recurringJobs.AddOrUpdate("Set tag field in every show to NULL",
+        () => hangfireJobs.DeleteTagIdsFromAllShows(),
+        Cron.Never());
 
-    return results.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+    recurringJobs.AddOrUpdate("Delete Tags From the Database",
+        () => hangfireJobs.DeleteAllTags(),
+        Cron.Never());
+    
 }
 
-// playing with database
-var server = "mariadb";
-var dbName = "tvscheduler";
-var userName = "root";
-var password = "rootpassword";
-var port = "3306";
-
-static void Connect(string server, string dbName, string userName, string password, string port)
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
 {
-    string connectionString = $"Server={server};Port={port};Database={dbName};User={userName};Password={password};";
-    using (var connection = new MySqlConnection(connectionString))
-    {
-        try
-        {
-            connection.Open();
-            Console.WriteLine("Connection succeeded.");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Connection error: {ex.Message}");
-        }
-    }
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    app.UseHangfireDashboard();
 }
 
-// entry endpoint with external API calls
-app.MapGet("/", async (HttpClient httpClient) =>
-{
-    Console.WriteLine("Endpoint hit: /");
-    var guideData = await FetchGuideData(httpClient);
-    var channelIds = new List<int> { 560, 700, 10005, 1540, 1547 }; //first 5 ids in guideData - needs change
-    var programData = await FetchMultipleProgramData(httpClient, channelIds);
-    Console.WriteLine("Calling Connect method...");
-    Connect(server, dbName, userName, password, port);
-    return Results.Ok(new
-    { 
-        guideData,
-        programData
-    });
-});
+app.UseHttpsRedirection();
 
-// add to schedule
-// ex: /schedule/add?id=500
-scheduleRoute.MapGet("add", (int id, int channel) =>
-{
-    var channelObject = channels.FirstOrDefault(c => c.ChannelId == channel);
+app.UseCors("AllowFrontend");
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 
-    var showObject = channelObject?.ShowList.FirstOrDefault(s => s.EvtID == id);
-
-    if (showObject != null)
-    {
-        mySchedule.Add(showObject);
-    }
-    else
-    {
-        return Results.NotFound();
-    }
-
-    return Results.Ok("ok");
-});
-
-// remove from the schedule
-scheduleRoute.MapGet("remove", (int id) =>
-{
-    var showObject = mySchedule.FirstOrDefault(s => s.EvtID == id);
-
-    if (showObject != null)
-    {
-        mySchedule.Remove(showObject);
-    }
-    else
-    {
-        return Results.NotFound();
-    }
-
-    return Results.Ok("ok");
-});
+app.MapControllers();
 
 app.Run();
