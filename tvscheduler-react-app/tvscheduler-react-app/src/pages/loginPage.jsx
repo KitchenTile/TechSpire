@@ -4,24 +4,96 @@ import InputComponent from "../components/login/InputComponent";
 import { Link } from "react-router-dom";
 
 const LoginRegisterPage = () => {
-  const [registered, setRegistered] = useState(false);
+  const [registered, setRegistered] = useState(true);
+  const [validPassword, setValidPassword] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log(registered);
 
     const formData = new FormData(event.target);
+    const loginData = Object.fromEntries(formData.entries());
+
     console.log(Object.fromEntries(formData.entries()));
+
+    if (registered) {
+      try {
+        const response = await fetch("http://localhost:5171/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(loginData),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to post data 1");
+        }
+        console.log("Login succesfull");
+        const data = await response.json();
+        console.log(data);
+        const JWToken = data.token;
+        if (JWToken) {
+          localStorage.setItem("JWToken", JWToken);
+          console.log(JWToken);
+        } else {
+          console.error("No JWT");
+        }
+      } catch (error) {
+        console.error("Login error: ", error);
+      }
+    } else if (!registered) {
+      try {
+        const response = await fetch("http://localhost:5171/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(loginData),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to post data");
+        }
+        console.log("Register succesfull");
+        const data = await response.json();
+        console.log(data);
+        const JWToken = data.token;
+        if (JWToken) {
+          localStorage.setItem("JWToken", JWToken);
+          console.log(JWToken);
+        } else {
+          console.error("No JWT");
+        }
+      } catch (error) {
+        console.error("Login error: ", error);
+      }
+    }
   };
+
+  // const validateJWT = async (token) => {
+  //   try{
+  //     const response = await fetch("http://localhost:5171/login")
+  //   }
+  // }
 
   const inputs = [
     [
-      { name: "fullName", label: "Full Name" },
-      { name: "email", label: "Email" },
-      { name: "username", label: "Username" },
-      { name: "password", label: "Password" },
+      {
+        name: "email",
+        label: "Email",
+        errorMessage: "Please enter a valid email",
+      },
+      {
+        name: "username",
+        label: "Username",
+        errorMessage: "Username should be 3-10 characters long",
+      },
+      {
+        name: "password",
+        label: "Password",
+        errorMessage:
+          "Password should be at least 8 characters, including 1 number and 1 special character",
+      },
     ],
     [
-      { name: "email", label: "Email" },
+      { name: "name", label: "Email" },
       { name: "password", label: "Password" },
     ],
   ];
@@ -30,11 +102,12 @@ const LoginRegisterPage = () => {
     e.preventDefault();
 
     setRegistered(!registered);
+    console.log(registered);
   };
 
   return (
     <div className="login-page-container">
-      {registered ? (
+      {!registered ? (
         <form
           className="login-form-container"
           id="createForm"
@@ -42,7 +115,12 @@ const LoginRegisterPage = () => {
         >
           <h1 className="form-title h1">Join us now!</h1>
           {inputs[0].map((input, index) => (
-            <InputComponent key={index} name={input.name} label={input.label} />
+            <InputComponent
+              key={index}
+              name={input.name}
+              label={input.label}
+              errorMessage={input.errorMessage}
+            />
           ))}
 
           <span> -- ♦ --</span>
@@ -69,11 +147,11 @@ const LoginRegisterPage = () => {
           ))}
 
           <span> -- ♦ --</span>
-          <Link as={Link} to={"/main"}>
-            <button type="submit" className="button">
-              Log In!
-            </button>
-          </Link>
+          {/* <Link as={Link} to={"/main"}> */}
+          <button type="submit" className="button">
+            Log In!
+          </button>
+          {/* </Link> */}
           <p className="text-button">
             Don't have an account?{" "}
             <button className="login" onClick={handleLogin}>

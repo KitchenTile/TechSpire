@@ -14,9 +14,13 @@ const MyShowsComponent = ({ channels, myShows, addRemoveShow }) => {
     if (!channels) {
       return [];
     }
-    return Object.entries(channels.programData)
-      .map(([channelId, channelData]) =>
-        channelData[0].event.filter((show) => myShows.includes(show.evtId))
+    return Object.entries(channels.channels.$values)
+      .map(([channelId, showEvents]) =>
+        // channelData[0].showEvents.$values.filter((show) =>
+        //   myShows.includes(show.evtId)
+        showEvents.$values.forEach((value) => {
+          console.log(value.$id);
+        })
       )
       .flat()
       .sort(compareStartTime);

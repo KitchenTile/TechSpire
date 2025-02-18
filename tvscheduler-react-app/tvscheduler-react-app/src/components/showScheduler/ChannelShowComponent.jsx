@@ -26,7 +26,7 @@ const ChannelShowComponent = ({
       ref={channelRef}
     >
       <div className={`title-image-container `}>
-        <h3>{channel.channelname}</h3>
+        <h3>{channel.name}</h3>
         <span className="image-container">
           <img src={channel.logourl} alt={channel.channelname} />
         </span>

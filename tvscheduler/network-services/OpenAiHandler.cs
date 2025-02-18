@@ -8,7 +8,8 @@ public class OpenAiHandler
     public readonly HttpClient _httpClient;
     public readonly List<string> tags;
     public readonly string show;
-    
+
+
 
 
     public OpenAiHandler(HttpClient httpClient, List<string> tagList, string showname)
@@ -37,7 +38,7 @@ public class OpenAiHandler
             Console.WriteLine("Sending request: " + jsonRequest);  // Debugging
 
             using var request = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/chat/completions");
-            request.Headers.Add("Authorization", "Bearer "); 
+            request.Headers.Add("Authorization", "Bearer ");
             request.Content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
             using HttpResponseMessage response = await _httpClient.SendAsync(request);
@@ -71,11 +72,11 @@ public class OpenAiHandler
     private string ProomptGenerator(List<string> tags)
     {
         string proompt = "Please respond with a single string only which will be one of those tags which best fits the given tv show or movie: ";
-        
+
         string tagString = string.Join(", ", tags);
         // add list of tags
-        
+
         return proompt + tagString;
     }
-    
+
 }

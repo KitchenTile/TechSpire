@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./InputComponent.css";
 
-const InputComponent = ({ name, label }) => {
+const InputComponent = ({ name, label, errorMessage }) => {
   const [isFilled, setIsFilled] = useState(false);
 
   const handleInputChange = (event) => {

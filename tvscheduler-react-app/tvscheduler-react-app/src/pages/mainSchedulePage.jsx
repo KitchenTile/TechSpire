@@ -11,8 +11,16 @@ const MainSchedulePage = () => {
   //fetch Data on page load
   useEffect(() => {
     const loadChannels = async () => {
+      const token = localStorage.getItem("JWToken");
+      console.log(token);
       try {
-        const response = await fetch("http://localhost:8080");
+        const response = await fetch("http://localhost:5171/main", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch channels :(");
         }
@@ -40,20 +48,28 @@ const MainSchedulePage = () => {
     }
   };
 
+  // channels
+  //   ? console.log(
+  //       channels.channels.$values[0].showEvents.$values.forEach((value) => {
+  //         console.log(value.$id);
+  //       })
+  //     )
+  //   : null;
+
   return (
     <div className="page-container">
       {channels ? (
         <>
           {/* my shows display */}
-          <MyShowsComponent
+          {/* <MyShowsComponent
             channels={channels}
             myShows={myShows}
             addRemoveShow={addRemoveShow}
-          />
+          /> */}
           <h1 className="title h1">All Shows</h1>
           <div className="grid-container">
             {/* get the first x elements of the guide data array -- 129 is too long man */}
-            {channels.guideData.slice(0, 5).map((channel) => (
+            {channels.channels.$values.map((channel) => (
               <ChannelShowComponent
                 key={channel.channelid}
                 channels={channels}
@@ -65,6 +81,7 @@ const MainSchedulePage = () => {
           </div>
         </>
       ) : (
+        // <></>
         <LogoLoadingComponent />
       )}
     </div>
