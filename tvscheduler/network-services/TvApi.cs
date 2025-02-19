@@ -38,7 +38,6 @@ public class TvApi
     }
 
     
-    
 
     public static async Task<Dictionary<int, JsonElement>> FetchMultipleProgramData(HttpClient httpClient,
         List<int> channelIds)
@@ -56,7 +55,7 @@ public class TvApi
                 {
                     Console.WriteLine(
                         $"Failed to fetch data for channel {channelId}, status code: {response.StatusCode}");
-                    continue; // ✅ Skip this channel if it fails
+                    continue; // Skip this channel if it fails
                 }
 
                 var responseBody = await response.Content.ReadAsStringAsync();
