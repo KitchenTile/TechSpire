@@ -11,7 +11,7 @@ using tvscheduler.Models;
 
 namespace tvscheduler.Controllers;
 
-[Route("api/[controller]")]
+[Route("[controller]")]
 [ApiController]
 public class AccountController : ControllerBase
 {
@@ -32,7 +32,7 @@ public class AccountController : ControllerBase
     
     
     [HttpPost]
-    [Route("register")]
+    [Route("/register")]
     public async Task<IActionResult> Registration(LoginDTO user)
     {
         var exsistingUser = await _userManager.FindByNameAsync(user.Name);
@@ -125,7 +125,7 @@ public async Task<IActionResult> Login(LoginDTO request)
     }
 
 
-    [HttpPost("remove-show-from-schedule")]
+    [HttpPost("/remove-show-from-schedule")]
     public async Task<IActionResult> RemoveShowFromSchedule([FromBody] AddShowToScheduleRequest request)
     {
         var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);

@@ -8,8 +8,10 @@ public class ShowEvent
     [Key]
     public int Id { get; set; }
     
+    public string Description { get; set; }
+    
     [ForeignKey("Channel")]
-    public int? ChannelId { get; set; }
+    public int ChannelId { get; set; }
     public Channel? Channel { get; set; }
 
     [ForeignKey("Show")]

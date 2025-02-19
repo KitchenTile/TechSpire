@@ -47,7 +47,6 @@ public class UpdateChannelSchedule
                     show = _dbContext.Shows.Add(new Show
                     {
                         Name = showEvent.GetProperty("name").GetString(),
-                        Description = showEvent.GetProperty("description").GetString(),
                         ImageUrl = showEvent.GetProperty("image").GetString(),
                     }).Entity;
                     await _tagsManager.AssignTag(show);
@@ -58,16 +57,14 @@ public class UpdateChannelSchedule
                 {
                     ChannelId = channelId,
                     ShowId = show.ShowId,
+                    Description = showEvent.GetProperty("description").GetString(),
                     TimeStart = showEvent.GetProperty("startTime").GetInt32(),
                     Duration = showEvent.GetProperty("duration").GetInt32(),
                 });
             }
             await _dbContext.SaveChangesAsync();
         }
-
     }
-    
     // get the schedule
-    
     // for show in schedule map to channel - showevent - show relation
 }
