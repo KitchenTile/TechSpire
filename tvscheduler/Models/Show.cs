@@ -11,7 +11,6 @@ public class Show
 
     [MaxLength(100)]
     public required string Name { get; set; }
-    public string? Description { get; set; }
     [MaxLength(100)]
     public required string ImageUrl { get; set; }
     public Tag? Tag { get; set; }

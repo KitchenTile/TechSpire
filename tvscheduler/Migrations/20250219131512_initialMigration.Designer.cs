@@ -11,7 +11,7 @@ using tvscheduler;
 namespace tvscheduler.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250216184403_initialMigration")]
+    [Migration("20250219131512_initialMigration")]
     partial class initialMigration
     {
         /// <inheritdoc />
@@ -200,36 +200,11 @@ namespace tvscheduler.Migrations
                     b.ToTable("ChannelTags");
                 });
 
-            modelBuilder.Entity("tvscheduler.Models.ScheduleEvent", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShowEventId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ShowEventId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ScheduleEvents");
-                });
-
             modelBuilder.Entity("tvscheduler.Models.Show", b =>
                 {
                     b.Property<int>("ShowId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
@@ -259,6 +234,10 @@ namespace tvscheduler.Migrations
 
                     b.Property<int>("ChannelId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Duration")
                         .HasColumnType("int");
@@ -367,6 +346,28 @@ namespace tvscheduler.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("tvscheduler.Models.UserScheduleEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShowEventId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShowEventId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ScheduleEvents");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -437,25 +438,6 @@ namespace tvscheduler.Migrations
                     b.Navigation("Tag");
                 });
 
-            modelBuilder.Entity("tvscheduler.Models.ScheduleEvent", b =>
-                {
-                    b.HasOne("tvscheduler.Models.ShowEvent", "ShowEvent")
-                        .WithMany()
-                        .HasForeignKey("ShowEventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("tvscheduler.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ShowEvent");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("tvscheduler.Models.Show", b =>
                 {
                     b.HasOne("tvscheduler.Models.Tag", "Tag")
@@ -493,6 +475,25 @@ namespace tvscheduler.Migrations
                     b.HasOne("tvscheduler.Models.User", null)
                         .WithMany("FavouriteTags")
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("tvscheduler.Models.UserScheduleEvent", b =>
+                {
+                    b.HasOne("tvscheduler.Models.ShowEvent", "ShowEvent")
+                        .WithMany()
+                        .HasForeignKey("ShowEventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("tvscheduler.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ShowEvent");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("tvscheduler.Channel", b =>

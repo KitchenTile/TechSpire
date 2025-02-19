@@ -28,6 +28,8 @@ public class TvController : ControllerBase
         _userManager = userManager;
     }
     
+    
+    
     // ENTRY ENDPOINT
     [HttpGet("/main")]
     public async Task<IActionResult> EntryEndpoint()
@@ -50,33 +52,28 @@ public class TvController : ControllerBase
                 .ThenInclude(s=>s.Show)
                 .Where(s => s.UserId == user.Id)
                 .ToListAsync();
+            
+            var channelsData = await _DbContext.Channels
+                .Include(c => c.ShowEvents)
+                .ToListAsync();
+
         
-            // For testing purposes, we're just returning a message.
-            // You could return the schedule as needed:
-            //var response = new 
-            var userScheduleResponse = userSchedule.Select(se => new UserScheduleResponseDto
+
+            var response = userSchedule.Select(se => new MainEndpointResponseDto
             {
                 UserScheduleItemId = se.Id,
                 ShowEvent = new ShowEventDto
                 {
                     ShowEventId = se.ShowEvent.Id,
                     ChannelId = se.ShowEvent.ChannelId,
-                    Show = new ShowDto
-                    {
-                        ShowId = se.ShowEvent.Show.ShowId,
-                        Name = se.ShowEvent.Show.Name,
-                        Description = se.ShowEvent.Show.Description,
-                        ImageUrl = se.ShowEvent.Show.ImageUrl
-                    },
+                    Description = se.ShowEvent.Description,
+                    ShowId = se.ShowEvent.ShowId,
                     TimeStart = se.ShowEvent.TimeStart,
                     Duration = se.ShowEvent.Duration
                 }
             }).ToList();
             
-            var channelsData = await _DbContext.Channels
-                .Include(c => c.ShowEvents)
-                .ToListAsync();
-
+            
             var channelsResponse = channelsData.Select(c => new ChannelDto
             {
                 ChannelId = c.ChannelId,
@@ -85,28 +82,32 @@ public class TvController : ControllerBase
                 ShowEvents = c.ShowEvents.Select(se => new ShowEventDto
                 {
                     ShowEventId = se.Id,
+                    Description = se.Description,
                     TimeStart = se.TimeStart,
                     Duration = se.Duration,
                     ShowId = se.ShowId,
                 })
                 
             });
-            // create channelsResponse and add to endpoint response 
+            
             
             // include all the shows
-            var shows = await _DbContext.Shows.ToListAsync();
+            var shows = await _DbContext.Shows
+                .Include(s => s.Tag)
+                .ToListAsync();
 
             var showsResponse = shows.Select(s => new ShowDto
             {
                 ShowId = s.ShowId,
                 Name = s.Name,
-                Description = s.Description,
+                TagName = s.Tag?.Name,
                 ImageUrl = s.ImageUrl,
             });
             
-            return Ok(new { schedule = userScheduleResponse, channels = channelsResponse, shows = showsResponse });
+            return Ok(new { schedule = response, channels = channelsResponse, shows = showsResponse });
         }
 
+        // IF USER NOT AUTHENTICATED
         return Unauthorized();
     }
 
@@ -131,7 +132,6 @@ public class TvController : ControllerBase
             ?? _DbContext.Shows.Add(new Show
             {
                 Name = request.ShowName,
-                Description = request.Description,
                 ImageUrl = request.ImageUrl,
                 Tag = tag
             }).Entity;
