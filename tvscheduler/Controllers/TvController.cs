@@ -79,6 +79,7 @@ public class TvController : ControllerBase
                 ChannelId = c.ChannelId,
                 Name = c.Name,
                 Description = c.Description,
+                LogoUrl = c.LogoUrl,
                 ShowEvents = c.ShowEvents.Select(se => new ShowEventDto
                 {
                     ShowEventId = se.Id,
