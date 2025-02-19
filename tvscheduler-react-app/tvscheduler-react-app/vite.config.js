@@ -10,5 +10,10 @@ export default defineConfig({
   },
   resolve: {
     extensions: ['.js', '.jsx']
+  },
+  build: {
+    rollupOptions: {
+      external: ['react-router-dom']
+    }
   }
 })
