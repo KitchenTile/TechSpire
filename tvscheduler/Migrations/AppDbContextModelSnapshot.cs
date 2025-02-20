@@ -203,9 +203,6 @@ namespace tvscheduler.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -234,6 +231,10 @@ namespace tvscheduler.Migrations
 
                     b.Property<int>("ChannelId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Duration")
                         .HasColumnType("int");

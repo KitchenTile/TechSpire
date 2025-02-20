@@ -66,6 +66,8 @@ dist-ssr
 .DS_Store
 *.suo
 *.ntvs*
+# Ignore package-lock.json
+package-lock.json
 *.njsproj
 *.sln
 *.sw?

@@ -8,4 +8,12 @@ export default defineConfig({
     host: true, // This allows the server to be accessible externally
     port: 5173,
   },
+  resolve: {
+    extensions: ['.js', '.jsx']
+  },
+  build: {
+    rollupOptions: {
+      external: ['react-router-dom']
+    }
+  }
 })
