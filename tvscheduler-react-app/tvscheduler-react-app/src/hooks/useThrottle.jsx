@@ -13,11 +13,10 @@ const useThrottle = (ref, func) => {
   };
 
   useEffect(() => {
-    const component = ref.current;
-    if (!component) return;
-    component.addEventListener("scroll", handleScroll);
-    console.log("throttling");
-    return () => component.removeEventListener("scroll", handleScroll);
+    // Decide where to attach the scroll event listener:
+    const element = ref && ref.current ? ref.current : window;
+    element.addEventListener("scroll", handleScroll);
+    return () => element.removeEventListener("scroll", handleScroll);
   }, [ref, func]);
 };
 

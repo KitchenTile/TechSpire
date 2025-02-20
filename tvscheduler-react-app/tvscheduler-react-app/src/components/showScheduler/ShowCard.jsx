@@ -15,7 +15,7 @@ const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
     root: rowRef ? rowRef.current : null,
     // root: null,
     threshold: 0,
-    rootMargin: "20px",
+    rootMargin: "250px",
   };
 
   const [cardRef, isVisible] = useIntersectionObserver(options);
@@ -47,7 +47,7 @@ const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
   };
 
   const handleAddShow = () => {
-    addRemoveShow(show.evtId);
+    addRemoveShow(show.showEventId);
   };
 
   return (

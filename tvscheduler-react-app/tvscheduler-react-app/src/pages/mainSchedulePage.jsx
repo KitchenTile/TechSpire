@@ -39,39 +39,43 @@ const MainSchedulePage = () => {
     console.log(myShows);
   }, [myShows]);
 
+  // const addShowCall = async (showEventId) => {
+  //   try {
+  //     const response = await fetch("http://localhost:5171/", {
+  //       method: "POST",
+  // headers: { "Content-Type": "application/json" },
+  // body: JSON.stringify(loginData),
+  //     });
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
+
   //add shows to state pass -- pass function to component as prop (ShowCard)
-  const addRemoveShow = (showId) => {
-    if (!myShows.includes(showId)) {
-      setMyShows((myShows) => [...myShows, showId]);
+  const addRemoveShow = (showEventId) => {
+    if (!myShows.includes(showEventId)) {
+      setMyShows((myShows) => [...myShows, showEventId]);
     } else {
-      setMyShows(myShows.filter((id) => id !== showId));
+      setMyShows(myShows.filter((id) => id !== showEventId));
     }
   };
-
-  // channels
-  //   ? console.log(
-  //       channels.channels.$values[0].showEvents.$values.forEach((value) => {
-  //         console.log(value.$id);
-  //       })
-  //     )
-  //   : null;
 
   return (
     <div className="page-container">
       {channels ? (
         <>
           {/* my shows display */}
-          {/* <MyShowsComponent
+          <MyShowsComponent
             channels={channels}
             myShows={myShows}
             addRemoveShow={addRemoveShow}
-          /> */}
+          />
           <h1 className="title h1">All Shows</h1>
           <div className="grid-container">
             {/* get the first x elements of the guide data array -- 129 is too long man */}
             {channels.channels.$values.map((channel) => (
               <ChannelShowComponent
-                key={channel.channelid}
+                key={channel.$id}
                 channels={channels}
                 channel={channel}
                 addRemoveShow={addRemoveShow}

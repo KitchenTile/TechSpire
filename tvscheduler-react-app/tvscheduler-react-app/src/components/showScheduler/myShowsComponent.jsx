@@ -2,28 +2,35 @@ import ShowCard from "./ShowCard";
 import rightArrow from "../../assets/rightArrow.svg";
 import { useMemo } from "react";
 import "./MyShowsComponent.css";
+import useShowLookup from "../../hooks/useShowLookup";
 
 const MyShowsComponent = ({ channels, myShows, addRemoveShow }) => {
   // sorting function for the sort my schedule sort method
   const compareStartTime = (a, b) => {
-    return a.startTime - b.startTime;
+    return a.timeStart - b.timeStart;
   };
 
-  const flatAndMap = useMemo(() => {
-    console.log("floatandmap");
-    if (!channels) {
-      return [];
-    }
-    return Object.entries(channels.channels.$values)
-      .map(([channelId, showEvents]) =>
-        // channelData[0].showEvents.$values.filter((show) =>
-        //   myShows.includes(show.evtId)
-        showEvents.$values.forEach((value) => {
-          console.log(value.$id);
-        })
-      )
-      .flat()
-      .sort(compareStartTime);
+  const showLookup = useShowLookup(channels);
+
+  //this function replaces previous
+  const mergeAndSort = useMemo(() => {
+    const mergeShows = channels.channels.$values
+      .map((channel) => {
+        // Check if the channel has events:
+        if (!channel.showEvents || !channel.showEvents.$values) return [];
+        // Map each event to merge its details from the lookup:
+        return channel.showEvents.$values.map((event) => {
+          // Merge event with show details (if available)
+          return { ...event, ...showLookup[event.showId] };
+        });
+      })
+      .flat();
+
+    const filtered = mergeShows.filter((event) =>
+      myShows.includes(event.showEventId)
+    );
+
+    return filtered.sort(compareStartTime);
   }, [channels, myShows]);
 
   return (
@@ -33,12 +40,12 @@ const MyShowsComponent = ({ channels, myShows, addRemoveShow }) => {
         {/* if my shows is not empty, flatten the show per channel object and match the ids of the show's we added to our My Shows array to all fetched shows. Then display cards */}
         {myShows.length > 0 ? (
           <>
-            {flatAndMap.map((show) => (
+            {mergeAndSort.map((show) => (
               <ShowCard
-                key={show.evtId}
+                key={show.showEventId}
                 show={show}
                 addRemoveShow={addRemoveShow}
-                isAdded={myShows.includes(show.evtId)}
+                isAdded={myShows.includes(show.showEventId)}
               />
             ))}
           </>

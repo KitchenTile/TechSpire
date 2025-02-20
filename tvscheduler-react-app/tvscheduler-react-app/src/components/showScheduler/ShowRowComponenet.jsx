@@ -36,17 +36,14 @@ const ShowRowComponent = ({ channel, channels, myShows, addRemoveShow }) => {
       container && container.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const showLookup = useShowLookup(channels);
+  const showsLookup = useShowLookup(channels);
 
   // Merge each event with its corresponding show details
-  const mergedShows = channel.showEvents.$values.map((event) => {
-    const showDetails = showLookup[event.showId] || {};
-    return {
-      // Include all event properties (like timeStart, duration)
-      ...event,
-      // Add the show details (like name, description, imageUrl)
-      ...showDetails,
-    };
+  const events = channel.showEvents.$values || [];
+  const mergedShows = events.map((event) => {
+    const showDetails = showsLookup[event.showId] || {};
+    //Add show instance's details
+    return { ...event, ...showDetails };
   });
 
   // function to skip forwards and backwards between the show cards
