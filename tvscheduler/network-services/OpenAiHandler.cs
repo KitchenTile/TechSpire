@@ -16,6 +16,7 @@ public class OpenAiHandler
         _httpClient = httpClient;
         tags = tagList;
         show = showname;
+
     }
 
 
@@ -37,7 +38,8 @@ public class OpenAiHandler
             Console.WriteLine("Sending request: " + jsonRequest);  // Debugging
 
             using var request = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/chat/completions");
-            request.Headers.Add("Authorization", "Bearer "); 
+            request.Headers.Add("Authorization", "Bearer"); 
+
             request.Content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
             using HttpResponseMessage response = await _httpClient.SendAsync(request);

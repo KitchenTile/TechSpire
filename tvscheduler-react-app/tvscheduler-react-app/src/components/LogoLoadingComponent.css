@@ -53,7 +53,7 @@ svg{
 
 @keyframes logoloading{
 	100%{
-		trnasform-origin: 50% 65%;
+		transform-origin: 50% 65%;
 		transform: scaleY(0);
 	}
 }
