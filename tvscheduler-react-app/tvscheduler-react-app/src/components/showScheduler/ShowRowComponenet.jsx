@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import ShowCard from "./ShowCard";
 import "./ShowRowComponent.css";
 import useThrottle from "../../hooks/useThrottle";
+import useShowLookup from "../../hooks/useShowLookup";
 
-const ShowRowComponent = ({ channels, channel, myShows, addRemoveShow }) => {
+const ShowRowComponent = ({ channel, channels, myShows, addRemoveShow }) => {
   const showContainerRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(true);
   const [showRightArrow, setShowRightArrow] = useState(true);
@@ -34,6 +35,16 @@ const ShowRowComponent = ({ channels, channel, myShows, addRemoveShow }) => {
     return () =>
       container && container.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const showsLookup = useShowLookup(channels);
+
+  // Merge each event with its corresponding show details
+  const events = channel.showEvents.$values || [];
+  const mergedShows = events.map((event) => {
+    const showDetails = showsLookup[event.showId] || {};
+    //Add show instance's details
+    return { ...event, ...showDetails };
+  });
 
   // function to skip forwards and backwards between the show cards
   const handleClick = (skipAmount) => {
@@ -70,15 +81,15 @@ const ShowRowComponent = ({ channels, channel, myShows, addRemoveShow }) => {
 
         <div className="shows-row" ref={showContainerRef}>
           {/* if the channel has shows, get the first x shows for each channel -- consider writing a variable for more readable code */}
-          {channels.programData[channel.channelid].length > 0 ? (
-            channels.programData[channel.channelid][0].event
+          {mergedShows.length > 0 ? (
+            mergedShows
               .slice(0, 5)
               .map((show) => (
                 <ShowCard
-                  key={show.evtId}
+                  key={show.showEventId}
                   show={show}
                   addRemoveShow={addRemoveShow}
-                  isAdded={myShows.includes(show.evtId)}
+                  isAdded={myShows.includes(show.showEventId)}
                   rowRef={showContainerRef}
                 />
               ))
