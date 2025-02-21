@@ -28,7 +28,7 @@ const ChannelShowComponent = ({
       <div className={`title-image-container `}>
         <h3>{channel.name}</h3>
         <span className="image-container">
-          <img src={channel.logourl} alt={channel.channelname} />
+          <img src={channel.logoUrl} alt={channel.channelname} />
         </span>
       </div>
       {isVisible ? (

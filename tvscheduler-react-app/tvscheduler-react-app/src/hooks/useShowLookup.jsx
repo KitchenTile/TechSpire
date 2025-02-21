@@ -11,21 +11,11 @@ const useShowLookup = (channelsData) => {
     }
     // Create a lookup for show details:
     const showLookup = {};
-    channelsData.shows.$values.forEach((show) => {
+    channelsData.shows.forEach((show) => {
       //keyvalue pair -- ID: show
       showLookup[show.showId] = show;
     });
     return showLookup;
-
-    // // Merge each event with its corresponding show details
-    // const events = channel.showEvents.$values || [];
-    // const mergedShows = events.map((event) => {
-    //   const showDetails = showLookup[event.showId] || {};
-    //   //Add show instance's details
-    //   return { ...event, ...showDetails };
-    // });
-
-    // return mergedShows;
   }, [channelsData]);
 };
 

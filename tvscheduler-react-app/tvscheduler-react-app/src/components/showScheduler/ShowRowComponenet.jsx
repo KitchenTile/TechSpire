@@ -39,7 +39,7 @@ const ShowRowComponent = ({ channel, channels, myShows, addRemoveShow }) => {
   const showsLookup = useShowLookup(channels);
 
   // Merge each event with its corresponding show details
-  const events = channel.showEvents.$values || [];
+  const events = channel.showEvents || [];
   const mergedShows = events.map((event) => {
     const showDetails = showsLookup[event.showId] || {};
     //Add show instance's details
