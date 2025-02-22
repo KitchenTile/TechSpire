@@ -3,7 +3,7 @@ import "./mainSchedulePage.css";
 import ChannelShowComponent from "../components/showScheduler/ChannelShowComponent";
 import LogoLoadingComponent from "../components/LogoLoadingComponent";
 import MyShowsComponent from "../components/showScheduler/myShowsComponent";
-import SectionCarouselComponent from "../components/showScheduler/sectionCarouselComponent";
+import SectionCarouselComponent from "../components/showScheduler/Carousels/SectionCarouselComponent";
 
 const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
