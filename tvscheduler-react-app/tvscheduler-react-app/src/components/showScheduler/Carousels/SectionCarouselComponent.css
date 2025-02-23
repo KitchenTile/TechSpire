@@ -1,5 +1,4 @@
 .carousel-container{
-  background: red;
   position: relative;
   display: flex;
   overflow: scroll;
@@ -10,6 +9,11 @@
     {
       display: none;
     }
+}
+
+.carousel-section{
+  position: relative;
+  scroll-snap-align: center;
 }
 
 
@@ -43,5 +47,9 @@
         left: 50%;
         top: 50%;
         transform: translate(-45%, -50%);
+
+        & path{
+          fill: white; 
+        }
   }
 }

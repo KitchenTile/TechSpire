@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./SectionCarouselComponent.css";
 import HighlightCarousel from "./HighlightCarousel";
 import morning from "../../../assets/MORNING.png";
 
 const SectionCarouselComponent = () => {
-  const [activeSection, setActiveSection] = useState(0);
+  const [activeSection, setActiveSection] = useState(1);
+  const carouselSectionRef = useRef(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   const sections = [
     { section: "Morning", src: morning },
@@ -12,12 +14,28 @@ const SectionCarouselComponent = () => {
     { section: "evening", src: morning },
   ];
 
+  const updateScrollPosition = () => {
+    const container = carouselSectionRef.current;
+    if (container) {
+      const desiredScrollLeft = activeSection * container.clientWidth;
+      container.scrollTo({ left: desiredScrollLeft, behavior: "smooth" });
+    }
+  };
+
+  // Update scroll position when activeSection changes
+  useEffect(() => {
+    updateScrollPosition();
+    console.log(activeSection);
+  }, [activeSection]);
+
   return (
-    <div className="carousel-container">
-      {sections.map((section, id) => (
-        <HighlightCarousel key={id} section={section} />
-      ))}
-      <span className="arrows left">
+    <div className="carousel-section">
+      <span
+        className="arrows left"
+        onClick={() => {
+          activeSection > 0 ? setActiveSection(activeSection - 1) : null;
+        }}
+      >
         <svg
           width="30"
           height="50"
@@ -32,7 +50,19 @@ const SectionCarouselComponent = () => {
           />
         </svg>
       </span>
-      <soan className="arrows right">
+      <div className="carousel-container" ref={carouselSectionRef}>
+        {sections.map((section, id) => (
+          <HighlightCarousel key={id} section={section} />
+        ))}
+      </div>
+      <span
+        className="arrows right"
+        onClick={() => {
+          activeSection < sections.length - 1
+            ? setActiveSection(activeSection + 1)
+            : null;
+        }}
+      >
         <svg
           width="30"
           height="50"
@@ -46,7 +76,7 @@ const SectionCarouselComponent = () => {
             fill="white"
           />
         </svg>
-      </soan>
+      </span>
     </div>
   );
 };

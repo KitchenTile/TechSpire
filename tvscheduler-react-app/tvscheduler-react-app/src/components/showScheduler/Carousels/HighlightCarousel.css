@@ -4,6 +4,7 @@
     display: flex;
     align-items: center;
     position: relative;
+    scroll-snap-align: center;
 }
 
 .carousel-card{
