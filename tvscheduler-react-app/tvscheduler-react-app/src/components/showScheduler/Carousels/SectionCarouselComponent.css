@@ -27,7 +27,7 @@
   height: 80px;
   position: absolute;
   background: #0000003f;
-  top: 50%;
+  top: 60%;
   cursor: pointer;
   transform: translateY(-50%);
   transition: all 0.3s ease;

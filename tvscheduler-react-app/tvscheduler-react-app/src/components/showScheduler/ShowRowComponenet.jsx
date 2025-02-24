@@ -36,6 +36,13 @@ const ShowRowComponent = ({ channel, channels, myShows, addRemoveShow }) => {
       container && container.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // function to skip forwards and backwards between the show cards
+  const handleClick = (skipAmount) => {
+    setScrollPosition(scrollPosition + skipAmount);
+
+    showContainerRef.current.scrollLeft = scrollPosition + skipAmount;
+  };
+
   const showsLookup = useShowLookup(channels);
 
   // Merge each event with its corresponding show details
@@ -45,13 +52,6 @@ const ShowRowComponent = ({ channel, channels, myShows, addRemoveShow }) => {
     //Add show instance's details
     return { ...event, ...showDetails };
   });
-
-  // function to skip forwards and backwards between the show cards
-  const handleClick = (skipAmount) => {
-    setScrollPosition(scrollPosition + skipAmount);
-
-    showContainerRef.current.scrollLeft = scrollPosition + skipAmount;
-  };
 
   // useThrottle(showContainerRef, handleScroll);
 

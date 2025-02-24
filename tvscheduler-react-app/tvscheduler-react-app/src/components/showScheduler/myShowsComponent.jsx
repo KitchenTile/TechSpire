@@ -16,11 +16,11 @@ const MyShowsComponent = ({ channels, myShows, addRemoveShow }) => {
   const mergeAndSort = useMemo(() => {
     const mergeShows = channels.channels
       .map((channel) => {
-        // Check if the channel has events:
+        // Check if the channel has events
         if (!channel.showEvents || !channel.showEvents) return [];
-        // Map each event to merge its details from the lookup:
+        // Map each event to merge its details from the lookup
         return channel.showEvents.map((event) => {
-          // Merge event with show details (if available)
+          // Merge event with show details
           return { ...event, ...showLookup[event.showId] };
         });
       })

@@ -1,15 +1,14 @@
-import { useState, useEffect } from "react";
-import morning from "../../../assets/MORNING.png";
-
+import { useState, useEffect, useMemo } from "react";
 import "./HighlightCarousel.css";
 import useIntersectionObserver from "../../../hooks/useIntersectionObserver";
+import CarouselCard from "./CarouselCard";
 
-const HighlightCarousel = ({ section, carouselRef }) => {
+const HighlightCarousel = ({ carouselRef, section }) => {
   const [activeShow, setActiveShow] = useState(0);
 
   useEffect(() => {
     setTimeout(() => {
-      setActiveShow(activeShow === cards.length - 1 ? 0 : activeShow + 1);
+      setActiveShow(activeShow === section.length - 1 ? 0 : activeShow + 1);
     }, 4000);
   });
 
@@ -21,24 +20,17 @@ const HighlightCarousel = ({ section, carouselRef }) => {
 
   const [cardRef, isVisible] = useIntersectionObserver(options);
 
-  const cards = [
-    { section: "Morning", src: morning },
-    { section: "Afternoon", src: morning },
-    { section: "evening", src: morning },
-  ];
-
   return (
     <div className="highlight-carousel-container" ref={cardRef}>
       {isVisible ? (
         <>
-          {cards.map((card, id) => (
-            <div
-              className={`carousel-card ${id === activeShow ? "" : "hidden"}`}
-              key={`${card}${id}`}
-            >
-              <h1 className="section-title h1">{`shows to improve your ${card.section}`}</h1>
-              <img src={card.src} alt="" className="carousel-image" />
-            </div>
+          {section.map((show, id) => (
+            <CarouselCard
+              key={show.timeStart + show.showEventId}
+              show={show}
+              activeShow={activeShow}
+              id={id}
+            />
           ))}
         </>
       ) : null}

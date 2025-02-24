@@ -72,14 +72,13 @@ const MainSchedulePage = () => {
             addRemoveShow={addRemoveShow}
           />
           {/* day section carrousel */}
-
-          <SectionCarouselComponent />
+          <SectionCarouselComponent channels={channels} />
           <h1 className="title h1">All Shows</h1>
           <div className="grid-container">
             {/* get the first x elements of the guide data array -- 129 is too long man */}
             {channels.channels.map((channel) => (
               <ChannelShowComponent
-                key={channel.$id}
+                key={channel.channelId}
                 channels={channels}
                 channel={channel}
                 addRemoveShow={addRemoveShow}
