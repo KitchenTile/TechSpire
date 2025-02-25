@@ -18,7 +18,7 @@ const LoginRegisterPage = () => {
 
     if (registered) {
       try {
-        const response = await fetch("http://localhost:5171/login", {
+        const response = await fetch("http://localhost:5171/Account/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(loginData),

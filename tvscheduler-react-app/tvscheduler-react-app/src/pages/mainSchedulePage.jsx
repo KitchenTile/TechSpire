@@ -3,6 +3,7 @@ import "./mainSchedulePage.css";
 import ChannelShowComponent from "../components/showScheduler/ChannelShowComponent";
 import LogoLoadingComponent from "../components/LogoLoadingComponent";
 import MyShowsComponent from "../components/showScheduler/myShowsComponent";
+import SectionCarouselComponent from "../components/showScheduler/Carousels/SectionCarouselComponent";
 
 const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
@@ -70,12 +71,14 @@ const MainSchedulePage = () => {
             myShows={myShows}
             addRemoveShow={addRemoveShow}
           />
+          {/* day section carrousel */}
+          <SectionCarouselComponent channels={channels} />
           <h1 className="title h1">All Shows</h1>
           <div className="grid-container">
             {/* get the first x elements of the guide data array -- 129 is too long man */}
-            {channels.channels.$values.map((channel) => (
+            {channels.channels.map((channel) => (
               <ChannelShowComponent
-                key={channel.$id}
+                key={channel.channelId}
                 channels={channels}
                 channel={channel}
                 addRemoveShow={addRemoveShow}
