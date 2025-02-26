@@ -1,9 +1,10 @@
 import { useState } from "react";
 import "./loginPage.css";
 import InputComponent from "../components/login/InputComponent";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const LoginRegisterPage = () => {
+  const navigate = useNavigate();
   const [registered, setRegistered] = useState(true);
   const [validPassword, setValidPassword] = useState(false);
 
@@ -34,6 +35,7 @@ const LoginRegisterPage = () => {
         if (JWToken) {
           localStorage.setItem("JWToken", JWToken);
           console.log(JWToken);
+          navigate("/main");
         } else {
           console.error("No JWT");
         }
@@ -66,12 +68,6 @@ const LoginRegisterPage = () => {
       }
     }
   };
-
-  // const validateJWT = async (token) => {
-  //   try{
-  //     const response = await fetch("http://localhost:5171/login")
-  //   }
-  // }
 
   const inputs = [
     [
@@ -147,11 +143,9 @@ const LoginRegisterPage = () => {
           ))}
 
           <span> -- ♦ --</span>
-          {/* <Link as={Link} to={"/main"}> */}
           <button type="submit" className="button">
             Log In!
           </button>
-          {/* </Link> */}
           <p className="text-button">
             Don't have an account?{" "}
             <button className="login" onClick={handleLogin}>

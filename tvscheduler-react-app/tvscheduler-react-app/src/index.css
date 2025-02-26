@@ -102,6 +102,7 @@ button:focus-visible {
   font-size: 3em;
   font-weight: 800;
   word-spacing: 0.15rem;
+  padding-left: 1em;
 }
 
 @media (prefers-color-scheme: light) {
