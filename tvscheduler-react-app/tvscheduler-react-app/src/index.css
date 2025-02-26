@@ -5,7 +5,8 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* background-color: #242424; */
+  background: black;
   scroll-behavior: smooth;
 
   font-synthesis: none;
@@ -21,7 +22,6 @@
 
     &::-webkit-scrollbar-track
   {
-    /* -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); */
     background-color: transparent;
   }
 

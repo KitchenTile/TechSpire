@@ -2,8 +2,9 @@ import { useEffect, useState, useRef, useMemo } from "react";
 import "./SectionCarouselComponent.css";
 import HighlightCarousel from "./HighlightCarousel";
 import useShowLookup from "../../../hooks/useShowLookup";
+import useThrottle from "../../../hooks/useThrottle";
 
-const SectionCarouselComponent = ({ channels }) => {
+const SectionCarouselComponent = ({ channels, addRemoveShow }) => {
   const [activeSection, setActiveSection] = useState(0);
   const carouselSectionRef = useRef(null);
 
@@ -33,10 +34,29 @@ const SectionCarouselComponent = ({ channels }) => {
     container && container.addEventListener("scroll", handleScroll);
 
     handleScroll();
-
     return () =>
       container && container.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // const handleScroll = () => {
+  //   //the container is the row we are referencing to
+  //   const container = carouselSectionRef.current;
+
+  //   if (container) {
+  //     // get information that we need like the scroll amount from the left, the width of the container etc.
+  //     const { scrollLeft, clientWidth } = container;
+  //     if (scrollLeft < clientWidth) {
+  //       setActiveSection(0);
+  //     } else if (clientWidth <= scrollLeft && scrollLeft < clientWidth * 2) {
+  //       setActiveSection(1);
+  //     } else {
+  //       setActiveSection(2);
+  //     }
+  //     console.log(clientWidth);
+  //   }
+  // };
+
+  // useThrottle(carouselSectionRef, handleScroll);
 
   // function to skip forwards and backwards between the show cards
   const handleClick = (skipAmount) => {
@@ -45,8 +65,8 @@ const SectionCarouselComponent = ({ channels }) => {
   };
 
   //Fisher-Yates shuffle to get random elements
-  const getRandomElements = (arr, n) => {
-    const copy = [...arr];
+  const getRandomElements = (array, n) => {
+    const copy = [...array];
     for (let i = copy.length - 1; i > 0; i--) {
       const random = Math.floor(Math.random() * (i + 1));
       [copy[i], copy[random]] = [copy[random], copy[i]];
@@ -96,17 +116,7 @@ const SectionCarouselComponent = ({ channels }) => {
       evening: getRandomElements(eveningShows, 5),
     };
     return sectionsObject;
-  }, [channels, showLookup]);
-
-  // console.log(Object.entries(mergeShowsPerSection));
-
-  // {
-  //   Object.entries(mergeShowsPerSection).map(
-  //     (section, idx) =>
-  //       console.log(section[1][1].showEventId + section[1][1].timeStart)
-  //     // console.log(section[1][1])
-  //   );
-  // }
+  }, [channels]);
 
   return (
     <div className="carousel-section">
@@ -130,13 +140,17 @@ const SectionCarouselComponent = ({ channels }) => {
           />
         </svg>
       </span>
-      <h1 className="sectionSection">
+      <h1 className="section-title">
         Highlights for your {Object.keys(mergeShowsPerSection)[activeSection]}
       </h1>
       <div className="carousel-container" ref={carouselSectionRef}>
         {Object.entries(mergeShowsPerSection).map((section, idx) => (
           <>
-            <HighlightCarousel key={idx} section={section[1]} />
+            <HighlightCarousel
+              key={idx}
+              section={section[1]}
+              addRemoveShow={addRemoveShow}
+            />
           </>
         ))}
       </div>
