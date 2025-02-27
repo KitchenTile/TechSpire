@@ -15,14 +15,14 @@ const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
     root: rowRef ? rowRef.current : null,
     // root: null,
     threshold: 0,
-    rootMargin: "20px",
+    rootMargin: "250px",
   };
 
   const [cardRef, isVisible] = useIntersectionObserver(options);
 
   // Unix conversion
-  const unixToHuman = new Date(show.startTime * 1000);
-  const unixToHumanEnd = new Date((show.startTime + show.duration) * 1000);
+  const unixToHuman = new Date(show.timeStart * 1000);
+  const unixToHumanEnd = new Date((show.timeStart + show.duration) * 1000);
 
   // Manage description tags
   const descriptionTags = ["HD", "S", "AD", "SL"];
@@ -47,7 +47,7 @@ const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
   };
 
   const handleAddShow = () => {
-    addRemoveShow(show.evtId);
+    addRemoveShow(show.showEventId);
   };
 
   return (
@@ -56,7 +56,7 @@ const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
         <>
           <span className="img-container">
             <img
-              src={`https://msaas.img.freeviewplay.net/cache/${show.image}`}
+              src={`https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`}
               alt={show.name}
             />
           </span>

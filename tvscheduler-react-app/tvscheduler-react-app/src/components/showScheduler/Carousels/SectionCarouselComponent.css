@@ -1,0 +1,55 @@
+.carousel-container{
+  position: relative;
+  display: flex;
+  overflow: scroll;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+
+    &::-webkit-scrollbar
+    {
+      display: none;
+    }
+}
+
+.carousel-section{
+  position: relative;
+  scroll-snap-align: center;
+}
+
+
+.section-title{
+    color: red;
+}
+
+.arrows{
+  z-index: 2;
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  background: #0000003f;
+  top: 60%;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: all 0.3s ease;
+  border-radius: 100%;
+
+
+  &.left{
+    left: 10%;
+  }
+
+  &.right{
+    right: 10%;
+  }
+
+  & .arrow{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-45%, -50%);
+
+        & path{
+          fill: white; 
+        }
+  }
+}
