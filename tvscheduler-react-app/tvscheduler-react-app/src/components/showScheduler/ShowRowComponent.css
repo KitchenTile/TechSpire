@@ -8,7 +8,7 @@
     }
   }
 
-  .shows-row, .myshow-container {
+  .shows-row{
     display: flex;
     gap: 10px;
     overflow-x: auto;

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import "./DummyCardLoading.css";
 
 const DummyCardLoading = () => {
@@ -12,4 +13,4 @@ const DummyCardLoading = () => {
   );
 };
 
-export default DummyCardLoading;
+export default memo(DummyCardLoading);

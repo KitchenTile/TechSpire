@@ -1,10 +1,12 @@
 import ShowCard from "./ShowCard";
 import rightArrow from "../../assets/rightArrow.svg";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import "./MyShowsComponent.css";
 import useShowLookup from "../../hooks/useShowLookup";
+import ChannelsContext from "../../contexts/channelsContext";
 
-const MyShowsComponent = ({ channels, myShows, addRemoveShow }) => {
+const MyShowsComponent = ({ myShows, addRemoveShow }) => {
+  const channels = useContext(ChannelsContext);
   // sorting function for the sort my schedule sort method
   const compareStartTime = (a, b) => {
     return a.timeStart - b.timeStart;

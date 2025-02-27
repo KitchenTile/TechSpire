@@ -1,9 +1,16 @@
+.carousel-section{
+  position: relative;
+  scroll-snap-align: center;
+  height: 85vh;
+} 
+
 .carousel-container{
   position: relative;
   display: flex;
   overflow: scroll;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
+  height: 100%;
 
     &::-webkit-scrollbar
     {
@@ -11,14 +18,14 @@
     }
 }
 
-.carousel-section{
-  position: relative;
-  scroll-snap-align: center;
-}
-
-
 .section-title{
-    color: red;
+  position: absolute;
+  z-index: 2;
+  top: 0%;
+  left: 1em;
+  margin: 0;
+  display: none;
+  /* color: red; */
 }
 
 .arrows{
@@ -27,7 +34,7 @@
   height: 80px;
   position: absolute;
   background: #0000003f;
-  top: 60%;
+  top: 50%;
   cursor: pointer;
   transform: translateY(-50%);
   transition: all 0.3s ease;
@@ -35,11 +42,11 @@
 
 
   &.left{
-    left: 10%;
+    left: 2%;
   }
 
   &.right{
-    right: 10%;
+    right: 2%;
   }
 
   & .arrow{
