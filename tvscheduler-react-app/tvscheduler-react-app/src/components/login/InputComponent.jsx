@@ -9,9 +9,6 @@ const InputComponent = ({ name, label, errorMessage }) => {
     setIsFilled(event.target.value === "" ? false : true);
   };
 
-  const handleError = () => {
-    //write down logic for error handling once we have the info on how the error's are passed
-  };
 
   return (
     <div className={`input-field ${isFilled ? "filled" : ""} `}>
@@ -21,8 +18,9 @@ const InputComponent = ({ name, label, errorMessage }) => {
         name={name}
         type={inputType}
         onChange={handleInputChange}
-        onBlur={handleError}
+        className={errorMessage ? 'error' : ''} 
       />
+      {errorMessage && <span className="error-message">{errorMessage}</span>}
     </div>
   );
 };
