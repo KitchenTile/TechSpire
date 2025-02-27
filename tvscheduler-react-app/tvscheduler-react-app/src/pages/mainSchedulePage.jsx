@@ -4,10 +4,15 @@ import ChannelShowComponent from "../components/showScheduler/ChannelShowCompone
 import LogoLoadingComponent from "../components/LogoLoadingComponent";
 import MyShowsComponent from "../components/showScheduler/myShowsComponent";
 import SectionCarouselComponent from "../components/showScheduler/Carousels/SectionCarouselComponent";
+import ChannelsContext from "../contexts/channelsContext";
 
 const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
   const [myShows, setMyShows] = useState([]);
+
+  useEffect(() => {
+    console.log(myShows);
+  }, [myShows]);
 
   //fetch Data on page load
   useEffect(() => {
@@ -50,11 +55,6 @@ const MainSchedulePage = () => {
   //       setMyShows((myShows) => [...myShows, show.showEvent.showEventId]);
   //     })
   //   : null;
-
-  //console log the array every time it's modified -- debugging
-  useEffect(() => {
-    console.log(myShows);
-  }, [myShows]);
 
   const addShowCall = async (showEventId) => {
     const token = localStorage.getItem("JWToken");
@@ -101,48 +101,42 @@ const MainSchedulePage = () => {
   };
 
   //add shows to state pass -- pass function to component as prop (ShowCard)
-  const addRemoveShow = useCallback(
-    (showEventId) => {
-      if (!myShows.includes(showEventId)) {
-        setMyShows((myShows) => [...myShows, showEventId]);
+  const addRemoveShow = useCallback((showEventId) => {
+    setMyShows((prevMyShows) => {
+      if (!prevMyShows.includes(showEventId)) {
+        console.log("Perv: " + prevMyShows);
         addShowCall(showEventId);
+        return [...prevMyShows, showEventId];
       } else {
-        setMyShows(myShows.filter((id) => id !== showEventId));
         removeShowCall(showEventId);
+        return prevMyShows.filter((id) => id !== showEventId);
       }
-    },
-    [myShows]
-  );
+    });
+  }, []);
 
   return (
     <div className="page-container">
       {channels ? (
-        <>
-          {/* day section carrousel */}
-          <SectionCarouselComponent
-            channels={channels}
-            addRemoveShow={addRemoveShow}
-          />
-          {/* my shows display */}
-          <MyShowsComponent
-            channels={channels}
-            myShows={myShows}
-            addRemoveShow={addRemoveShow}
-          />
-          <h1 className="title h1">All Shows</h1>
-          <div className="grid-container">
-            {/* get the first x elements of the guide data array -- 129 is too long man */}
-            {channels.channels.map((channel) => (
-              <ChannelShowComponent
-                key={channel.channelId}
-                channels={channels}
-                channel={channel}
-                addRemoveShow={addRemoveShow}
-                myShows={myShows}
-              />
-            ))}
-          </div>
-        </>
+        <ChannelsContext.Provider value={channels}>
+          <>
+            {/* day section carrousel */}
+            <SectionCarouselComponent addRemoveShow={addRemoveShow} />
+            {/* my shows display */}
+            <MyShowsComponent myShows={myShows} addRemoveShow={addRemoveShow} />
+            <h1 className="title h1">All Shows</h1>
+            <div className="grid-container">
+              {/* get the first x elements of the guide data array -- 129 is too long man */}
+              {channels.channels.map((channel) => (
+                <ChannelShowComponent
+                  key={channel.channelId}
+                  channel={channel}
+                  addRemoveShow={addRemoveShow}
+                  myShows={myShows}
+                />
+              ))}
+            </div>
+          </>
+        </ChannelsContext.Provider>
       ) : (
         // <></>
         <LogoLoadingComponent />

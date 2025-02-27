@@ -1,68 +1,80 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+  useContext,
+} from "react";
 import "./SectionCarouselComponent.css";
 import HighlightCarousel from "./HighlightCarousel";
 import useShowLookup from "../../../hooks/useShowLookup";
 import useThrottle from "../../../hooks/useThrottle";
+import ChannelsContext from "../../../contexts/channelsContext";
 
-const SectionCarouselComponent = ({ channels, addRemoveShow }) => {
+const SectionCarouselComponent = ({ addRemoveShow }) => {
   const [activeSection, setActiveSection] = useState(0);
   const carouselSectionRef = useRef(null);
+  const channels = useContext(ChannelsContext);
 
   //effect hook to determine the component's scroll position so we can show and hide side arrows
-  useEffect(() => {
-    const handleScroll = () => {
-      //the container is the row we are referencing to
-      const container = carouselSectionRef.current;
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     //the container is the row we are referencing to
+  //     const container = carouselSectionRef.current;
 
-      if (container) {
-        // get information that we need like the scroll amount from the left, the width of the container etc.
-        const { scrollLeft, clientWidth } = container;
-        if (scrollLeft < clientWidth) {
-          setActiveSection(0);
-        } else if (clientWidth <= scrollLeft && scrollLeft < clientWidth * 2) {
-          setActiveSection(1);
-        } else {
-          setActiveSection(2);
-        }
-        console.log(clientWidth);
-      }
-    };
+  //     if (container) {
+  //       // get information that we need like the scroll amount from the left, the width of the container etc.
+  //       const { scrollLeft, clientWidth } = container;
+  //       if (scrollLeft < clientWidth) {
+  //         setActiveSection(0);
+  //       } else if (clientWidth <= scrollLeft && scrollLeft < clientWidth * 2) {
+  //         setActiveSection(1);
+  //       } else {
+  //         setActiveSection(2);
+  //       }
+  //       console.log(clientWidth);
+  //     }
+  //   };
 
-    const container = carouselSectionRef.current;
-
-    //add and then remove scroll listener on cleanup function
-    container && container.addEventListener("scroll", handleScroll);
-
-    handleScroll();
-    return () =>
-      container && container.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // const handleScroll = () => {
-  //   //the container is the row we are referencing to
   //   const container = carouselSectionRef.current;
 
-  //   if (container) {
-  //     // get information that we need like the scroll amount from the left, the width of the container etc.
-  //     const { scrollLeft, clientWidth } = container;
-  //     if (scrollLeft < clientWidth) {
-  //       setActiveSection(0);
-  //     } else if (clientWidth <= scrollLeft && scrollLeft < clientWidth * 2) {
-  //       setActiveSection(1);
-  //     } else {
-  //       setActiveSection(2);
-  //     }
-  //     console.log(clientWidth);
-  //   }
-  // };
+  //   //add and then remove scroll listener on cleanup function
+  //   container && container.addEventListener("scroll", handleScroll);
 
-  // useThrottle(carouselSectionRef, handleScroll);
+  //   handleScroll();
+  //   return () =>
+  //     container && container.removeEventListener("scroll", handleScroll);
+  // }, []);
+
+  const handleScroll = useCallback(() => {
+    //the container is the row we are referencing to
+    const container = carouselSectionRef.current;
+
+    if (container) {
+      // get information that we need like the scroll amount from the left, the width of the container etc.
+      const { scrollLeft, clientWidth } = container;
+      if (scrollLeft < clientWidth) {
+        setActiveSection(0);
+      } else if (clientWidth <= scrollLeft && scrollLeft < clientWidth * 2) {
+        setActiveSection(1);
+      } else {
+        setActiveSection(2);
+      }
+      console.log(clientWidth);
+    }
+  }, []);
+
+  useThrottle(carouselSectionRef, handleScroll);
 
   // function to skip forwards and backwards between the show cards
-  const handleClick = (skipAmount) => {
-    carouselSectionRef.current.scrollLeft =
-      carouselSectionRef.current.scrollLeft + skipAmount;
-  };
+  const handleClick = useCallback(
+    (skipAmount) => {
+      carouselSectionRef.current.scrollLeft =
+        carouselSectionRef.current.scrollLeft + skipAmount;
+    },
+    [carouselSectionRef]
+  );
 
   //Fisher-Yates shuffle to get random elements
   const getRandomElements = (array, n) => {

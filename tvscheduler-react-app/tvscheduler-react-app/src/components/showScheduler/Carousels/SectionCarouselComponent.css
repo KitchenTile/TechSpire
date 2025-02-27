@@ -1,3 +1,9 @@
+.carousel-section{
+  position: relative;
+  scroll-snap-align: center;
+  height: 85vh;
+} 
+
 .carousel-container{
   position: relative;
   display: flex;
@@ -10,12 +16,6 @@
     {
       display: none;
     }
-}
-
-.carousel-section{
-  position: relative;
-  scroll-snap-align: center;
-  height: 80vh;
 }
 
 .section-title{
