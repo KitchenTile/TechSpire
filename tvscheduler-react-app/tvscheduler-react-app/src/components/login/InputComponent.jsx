@@ -3,6 +3,7 @@ import "./InputComponent.css";
 
 const InputComponent = ({ name, label, errorMessage }) => {
   const [isFilled, setIsFilled] = useState(false);
+  const inputType = name === 'password' ? 'password' : 'text';
 
   const handleInputChange = (event) => {
     setIsFilled(event.target.value === "" ? false : true);
@@ -18,7 +19,7 @@ const InputComponent = ({ name, label, errorMessage }) => {
       <input
         id={name}
         name={name}
-        type="text"
+        type={inputType}
         onChange={handleInputChange}
         onBlur={handleError}
       />

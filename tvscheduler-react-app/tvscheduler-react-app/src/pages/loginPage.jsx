@@ -5,7 +5,20 @@ import { Link } from "react-router-dom";
 
 const LoginRegisterPage = () => {
   const [registered, setRegistered] = useState(true);
-  const [validPassword, setValidPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const validateInput = (loginData) => {
+    if (!loginData.email || !loginData.email.includes("@")) {
+      return "Please enter a valid email";
+    }
+    if (loginData.password.length < 8 || !/\d/.test(loginData.password) || !/[!@#$%^&*]/.test(loginData.password)) {
+      return "Password should be at least 8 characters, including 1 number and 1 special character";
+    }
+    if(loginData.username.length < 3 || loginData.username.length > 10){
+      return "Username should be 3-10 characters long";
+    }
+    return null;
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -13,7 +26,13 @@ const LoginRegisterPage = () => {
 
     const formData = new FormData(event.target);
     const loginData = Object.fromEntries(formData.entries());
+    console.log(loginData);
 
+    const validationError = validateInput(loginData);
+    if (validationError) {
+      setErrorMessage(validationError);
+      return;
+    }
     console.log(Object.fromEntries(formData.entries()));
 
     if (registered) {
@@ -25,7 +44,8 @@ const LoginRegisterPage = () => {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to post data 1");
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to post data");
         }
         console.log("Login succesfull");
         const data = await response.json();
@@ -49,7 +69,8 @@ const LoginRegisterPage = () => {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to post data");
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to post data");
         }
         console.log("Register succesfull");
         const data = await response.json();
@@ -61,8 +82,10 @@ const LoginRegisterPage = () => {
         } else {
           console.error("No JWT");
         }
+        setErrorMessage(""); // Clear error message on successful login/register
       } catch (error) {
-        console.error("Login error: ", error);
+        console.error("Login/Register error: ", error);
+        setErrorMessage(error.message);
       }
     }
   };
@@ -103,6 +126,7 @@ const LoginRegisterPage = () => {
 
     setRegistered(!registered);
     console.log(registered);
+    setErrorMessage(""); // Clear error message when toggling between login and register
   };
 
   return (
@@ -124,7 +148,7 @@ const LoginRegisterPage = () => {
           ))}
 
           <span> -- ♦ --</span>
-          <button type="submit" className="button" onClick={handleLogin}>
+          <button type="submit" className="button">
             Sign Up!
           </button>
           <p className="text-button">
@@ -132,8 +156,8 @@ const LoginRegisterPage = () => {
             <button className="login" onClick={handleLogin}>
               Login here!
             </button>
-          </p>
-          <div className="error-message" id="error message"></div>
+          </p>v
+          {errorMessage && <div className="error-message">{errorMessage}</div>}
         </form>
       ) : (
         <form
@@ -158,7 +182,7 @@ const LoginRegisterPage = () => {
               Register here!
             </button>
           </p>
-          <div className="error-message" id="error message"></div>
+          {errorMessage && <div className="error-message">{errorMessage}</div>}
         </form>
       )}
     </div>

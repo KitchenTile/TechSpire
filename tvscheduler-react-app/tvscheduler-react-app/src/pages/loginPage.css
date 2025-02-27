@@ -38,3 +38,10 @@
         }
 }
 }
+
+.error-message{
+    color: red;
+    font-size: 0.8em;
+    margin-top: 0;
+    margin: 0.5rem;
+}
