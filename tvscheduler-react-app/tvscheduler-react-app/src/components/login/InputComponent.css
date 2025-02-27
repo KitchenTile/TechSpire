@@ -50,8 +50,14 @@
   
   .input-field {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1em;
   }
-  
+
+    
   .input-field input {
     font-size: 1.2rem;
     color: white;
@@ -67,7 +73,7 @@
   .input-field label {
     position: absolute;
     top: 0.8em;
-    left: 1em;
+    left: 7em;
     font-size: 1.3rem;
     pointer-events: none;
     transition: all 0.1s ease;
@@ -85,10 +91,24 @@
     transition: all 0.1s ease;
 
     top: -1.5em;
-    left: 0.5em;
+    left: 8.5rem;
     background: rgba(0, 0,0, 0);
   }
+
   
+  .input-field .error-message {
+    position: absolute;
+    top: 4.5rem;
+    color: red;
+    font-size: 0.8em;
+    width: 50%;
+    text-align: left;
+  }
+  
+  .input-field  input.error {
+    border: 2px solid red;
+  }
+
   .button{
     position: relative;
     font-size: 1.2rem;
