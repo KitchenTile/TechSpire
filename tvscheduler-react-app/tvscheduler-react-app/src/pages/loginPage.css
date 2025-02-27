@@ -30,11 +30,5 @@
         width: 100%;
         text-align: center;
         cursor: default;
-        &:hover{
-            width: 100%;
-            letter-spacing: 5px;
-            transform: scale(1.1);
-            padding-left: 4px;
-        }
 }
 }

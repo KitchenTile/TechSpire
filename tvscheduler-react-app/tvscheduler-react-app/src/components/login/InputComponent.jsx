@@ -3,14 +3,12 @@ import "./InputComponent.css";
 
 const InputComponent = ({ name, label, errorMessage }) => {
   const [isFilled, setIsFilled] = useState(false);
+  const inputType = name === 'password' ? 'password' : 'text';
 
   const handleInputChange = (event) => {
     setIsFilled(event.target.value === "" ? false : true);
   };
 
-  const handleError = () => {
-    //write down logic for error handling once we have the info on how the error's are passed
-  };
 
   return (
     <div className={`input-field ${isFilled ? "filled" : ""} `}>
@@ -18,10 +16,11 @@ const InputComponent = ({ name, label, errorMessage }) => {
       <input
         id={name}
         name={name}
-        type="text"
+        type={inputType}
         onChange={handleInputChange}
-        onBlur={handleError}
+        className={errorMessage ? 'error' : ''} 
       />
+      {errorMessage && <span className="error-message">{errorMessage}</span>}
     </div>
   );
 };
