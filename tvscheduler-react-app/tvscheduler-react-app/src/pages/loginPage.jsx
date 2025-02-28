@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./loginPage.css";
 import InputComponent from "../components/login/InputComponent";
+import { useNavigate } from "react-router-dom";
 
 const LoginRegisterPage = () => {
   const navigate = useNavigate();
@@ -9,9 +10,9 @@ const LoginRegisterPage = () => {
 
   const validateInput = (loginData) => {
     const errors = {};
-    if (!loginData.email || !loginData.email.includes("@")) {
-      errors.email = "*Please enter a valid email";
-    }
+    // if (!loginData.email || !loginData.email.includes("@")) {
+    //   errors.email = "*Please enter a valid email";
+    // }
     if (
       !registered &&
       (!loginData.username ||
@@ -77,6 +78,7 @@ const LoginRegisterPage = () => {
       if (JWToken) {
         localStorage.setItem("JWToken", JWToken);
         console.log(JWToken);
+        navigate("/main");
       } else {
         console.error("No JWT");
       }

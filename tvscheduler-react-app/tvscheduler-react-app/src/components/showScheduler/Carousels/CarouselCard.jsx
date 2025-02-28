@@ -4,8 +4,6 @@ const CarouselCard = ({ show, activeShow, id, addRemoveShow }) => {
   const unixToHuman = new Date(show.timeStart * 1000);
 
   return (
-    // <div className="big-card-container">{show.name}</div>
-
     <div
       className={`carousel-card ${id === activeShow ? "" : "hidden"}`}
       key={`${show}${id}`}

@@ -17,36 +17,6 @@ const SectionCarouselComponent = ({ addRemoveShow }) => {
   const carouselSectionRef = useRef(null);
   const channels = useContext(ChannelsContext);
 
-  //effect hook to determine the component's scroll position so we can show and hide side arrows
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     //the container is the row we are referencing to
-  //     const container = carouselSectionRef.current;
-
-  //     if (container) {
-  //       // get information that we need like the scroll amount from the left, the width of the container etc.
-  //       const { scrollLeft, clientWidth } = container;
-  //       if (scrollLeft < clientWidth) {
-  //         setActiveSection(0);
-  //       } else if (clientWidth <= scrollLeft && scrollLeft < clientWidth * 2) {
-  //         setActiveSection(1);
-  //       } else {
-  //         setActiveSection(2);
-  //       }
-  //       console.log(clientWidth);
-  //     }
-  //   };
-
-  //   const container = carouselSectionRef.current;
-
-  //   //add and then remove scroll listener on cleanup function
-  //   container && container.addEventListener("scroll", handleScroll);
-
-  //   handleScroll();
-  //   return () =>
-  //     container && container.removeEventListener("scroll", handleScroll);
-  // }, []);
-
   const handleScroll = useCallback(() => {
     //the container is the row we are referencing to
     const container = carouselSectionRef.current;
@@ -123,9 +93,9 @@ const SectionCarouselComponent = ({ addRemoveShow }) => {
 
     // return this object with all the information ready to display
     const sectionsObject = {
-      morning: getRandomElements(morningShows, 5),
-      afternoon: getRandomElements(afternoonShows, 5),
-      evening: getRandomElements(eveningShows, 5),
+      Morning: getRandomElements(morningShows, 5),
+      Afternoon: getRandomElements(afternoonShows, 5),
+      Evening: getRandomElements(eveningShows, 5),
     };
     return sectionsObject;
   }, [channels]);
@@ -152,9 +122,6 @@ const SectionCarouselComponent = ({ addRemoveShow }) => {
           />
         </svg>
       </span>
-      <h1 className="section-title">
-        Highlights for your {Object.keys(mergeShowsPerSection)[activeSection]}
-      </h1>
       <div className="carousel-container" ref={carouselSectionRef}>
         {Object.entries(mergeShowsPerSection).map((section, idx) => (
           <>
@@ -164,6 +131,16 @@ const SectionCarouselComponent = ({ addRemoveShow }) => {
               addRemoveShow={addRemoveShow}
             />
           </>
+        ))}
+      </div>
+      <div className="section-indicators">
+        {Object.keys(mergeShowsPerSection).map((section, idx) => (
+          <span
+            key={idx}
+            className={`indicator ${activeSection === idx ? "active" : ""}`}
+          >
+            {section}
+          </span>
         ))}
       </div>
       <span
