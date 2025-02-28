@@ -14,12 +14,15 @@ const useIntersectionObserver = (options) => {
 
     if (component.current) {
       observer.observe(component.current);
+    } else if (!component.current) {
+      return;
     }
 
     //cleanup func to disconnects the current component being observed
     return () => {
       if (component.current) {
         observer.unobserve(component.current);
+        observer.disconnect();
       }
     };
   }, [options]);

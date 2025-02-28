@@ -1,14 +1,25 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  memo,
+  useMemo,
+  useContext,
+} from "react";
 import ShowCard from "./ShowCard";
 import "./ShowRowComponent.css";
 import useThrottle from "../../hooks/useThrottle";
 import useShowLookup from "../../hooks/useShowLookup";
+import ChannelsContext from "../../contexts/channelsContext";
 
-const ShowRowComponent = ({ channel, channels, myShows, addRemoveShow }) => {
+const ShowRowComponent = ({ channel, myShows, addRemoveShow }) => {
   const showContainerRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(true);
   const [showRightArrow, setShowRightArrow] = useState(true);
   const [scrollPosition, setScrollPosition] = useState(0);
+
+  const channels = useContext(ChannelsContext);
 
   //effect hook to determine the component's scroll position so we can show and hide side arrows
   useEffect(() => {
@@ -37,21 +48,23 @@ const ShowRowComponent = ({ channel, channels, myShows, addRemoveShow }) => {
   }, []);
 
   // function to skip forwards and backwards between the show cards
-  const handleClick = (skipAmount) => {
+  const handleClick = useCallback((skipAmount) => {
     setScrollPosition(scrollPosition + skipAmount);
 
     showContainerRef.current.scrollLeft = scrollPosition + skipAmount;
-  };
+  }, []);
 
   const showsLookup = useShowLookup(channels);
 
   // Merge each event with its corresponding show details
   const events = channel.showEvents || [];
-  const mergedShows = events.map((event) => {
-    const showDetails = showsLookup[event.showId] || {};
-    //Add show instance's details
-    return { ...event, ...showDetails };
-  });
+  const mergedShows = useMemo(() => {
+    return events.map((event) => {
+      const showDetails = showsLookup[event.showId] || {};
+      //Add show instance's details
+      return { ...event, ...showDetails };
+    });
+  }, [events]);
 
   // useThrottle(showContainerRef, handleScroll);
 
@@ -122,4 +135,4 @@ const ShowRowComponent = ({ channel, channels, myShows, addRemoveShow }) => {
   );
 };
 
-export default ShowRowComponent;
+export default memo(ShowRowComponent);

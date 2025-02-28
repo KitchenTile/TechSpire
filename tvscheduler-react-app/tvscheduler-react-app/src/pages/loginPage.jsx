@@ -1,26 +1,42 @@
 import { useState } from "react";
 import "./loginPage.css";
 import InputComponent from "../components/login/InputComponent";
+import { useNavigate } from "react-router-dom";
 
 const LoginRegisterPage = () => {
+  const navigate = useNavigate();
   const [registered, setRegistered] = useState(true);
   const [errorMessages, setErrorMessages] = useState({});
 
   const validateInput = (loginData) => {
     const errors = {};
-    if (!loginData.email || !loginData.email.includes("@")) {
-      errors.email = "*Please enter a valid email";
-    }
-    if (!registered && (!loginData.username || loginData.username.length < 3 || loginData.username.length > 10)) {
+    // if (!loginData.email || !loginData.email.includes("@")) {
+    //   errors.email = "*Please enter a valid email";
+    // }
+    if (
+      !registered &&
+      (!loginData.username ||
+        loginData.username.length < 3 ||
+        loginData.username.length > 10)
+    ) {
       errors.username = "*Username should be 3-10 characters long";
     }
     if (registered) {
-      if (loginData.password.length < 8 || !/\d/.test(loginData.password) || !/[!@#$%^&*]/.test(loginData.password)) {
+      if (
+        loginData.password.length < 8 ||
+        !/\d/.test(loginData.password) ||
+        !/[!@#$%^&*]/.test(loginData.password)
+      ) {
         errors.password = "*Please enter a correct password";
       }
     } else {
-      if (loginData.password.length < 8 || !/\d/.test(loginData.password) || !/[!@#$%^&*]/.test(loginData.password)) {
-        errors.password = "*Password should be at least 8 characters, including 1 number and 1 special character";
+      if (
+        loginData.password.length < 8 ||
+        !/\d/.test(loginData.password) ||
+        !/[!@#$%^&*]/.test(loginData.password)
+      ) {
+        errors.password =
+          "*Password should be at least 8 characters, including 1 number and 1 special character";
       }
     }
     return errors;
@@ -42,7 +58,9 @@ const LoginRegisterPage = () => {
 
     try {
       const response = await fetch(
-        registered ? "http://localhost:5171/Account/login" : "http://localhost:5171/register",
+        registered
+          ? "http://localhost:5171/Account/login"
+          : "http://localhost:5171/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -60,6 +78,7 @@ const LoginRegisterPage = () => {
       if (JWToken) {
         localStorage.setItem("JWToken", JWToken);
         console.log(JWToken);
+        navigate("/main");
       } else {
         console.error("No JWT");
       }
@@ -96,17 +115,32 @@ const LoginRegisterPage = () => {
     ],
     [
       { name: "name", label: "Email", errorMessage: errorMessages.email },
-      { name: "password", label: "Password", errorMessage: errorMessages.password, type: "password" },
+      {
+        name: "password",
+        label: "Password",
+        errorMessage: errorMessages.password,
+        type: "password",
+      },
     ],
   ];
 
   return (
     <div className="login-page-container">
       {!registered ? (
-        <form className="login-form-container" id="createForm" onSubmit={handleSubmit}>
+        <form
+          className="login-form-container"
+          id="createForm"
+          onSubmit={handleSubmit}
+        >
           <h1 className="form-title h1">Join us now!</h1>
           {inputs[0].map((input, index) => (
-            <InputComponent key={index} name={input.name} label={input.label} errorMessage={input.errorMessage} type={input.type} />
+            <InputComponent
+              key={index}
+              name={input.name}
+              label={input.label}
+              errorMessage={input.errorMessage}
+              type={input.type}
+            />
           ))}
           <span> -- ♦ --</span>
           <button type="submit" className="button">
@@ -118,13 +152,25 @@ const LoginRegisterPage = () => {
               Login here!
             </button>
           </p>
-          {errorMessages.form && <div className="error-message">{errorMessages.form}</div>}
+          {errorMessages.form && (
+            <div className="error-message">{errorMessages.form}</div>
+          )}
         </form>
       ) : (
-        <form className="login-form-container" id="createForm" onSubmit={handleSubmit}>
+        <form
+          className="login-form-container"
+          id="createForm"
+          onSubmit={handleSubmit}
+        >
           <h1 className="form-title h1">Join us now!</h1>
           {inputs[1].map((input, index) => (
-            <InputComponent key={index} name={input.name} label={input.label} errorMessage={input.errorMessage} type={input.type} />
+            <InputComponent
+              key={index}
+              name={input.name}
+              label={input.label}
+              errorMessage={input.errorMessage}
+              type={input.type}
+            />
           ))}
           <span> -- ♦ --</span>
           <button type="submit" className="button">
@@ -136,7 +182,9 @@ const LoginRegisterPage = () => {
               Register here!
             </button>
           </p>
-          {errorMessages.form && <div className="error-message">{errorMessages.form}</div>}
+          {errorMessages.form && (
+            <div className="error-message">{errorMessages.form}</div>
+          )}
         </form>
       )}
     </div>

@@ -5,7 +5,7 @@ import "./ChannelShowComponent.css";
 
 const ChannelShowComponent = ({
   // we will hopefully remove the two channel props
-  channels,
+  // channels,
   channel,
   addRemoveShow,
   myShows,
@@ -34,7 +34,7 @@ const ChannelShowComponent = ({
       {isVisible ? (
         <>
           <ShowRowComponent
-            channels={channels}
+            // channels={channels}
             channel={channel}
             addRemoveShow={addRemoveShow}
             myShows={myShows}

@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { memo, useState } from "react";
 import "./ShowCard.css";
 import useIntersectionObserver from "../../hooks/useIntersectionObserver";
 import DummyCardLoading from "./DummyCardLoading";
 
 const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
   const [expanded, setExpanded] = useState(false);
+
+  console.log(`card ${show.name} redering`);
 
   //options for intersection observer custom hook
   const options = {
@@ -13,7 +15,6 @@ const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
     //  when adding shows
 
     root: rowRef ? rowRef.current : null,
-    // root: null,
     threshold: 0,
     rootMargin: "250px",
   };
@@ -28,7 +29,6 @@ const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
   const descriptionTags = ["HD", "S", "AD", "SL"];
 
   const formattedDescription = show.description.replace(
-    //insane regex lmao
     /\[([^\]]+)\]/g,
     (_, tags) =>
       tags
@@ -115,4 +115,13 @@ const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
   );
 };
 
-export default ShowCard;
+const areEqual = (prevProps, nextProps) => {
+  return (
+    prevProps.show === nextProps.show &&
+    prevProps.isAdded === nextProps.isAdded &&
+    prevProps.rowRef === nextProps.rowRef &&
+    prevProps.addRemoveShow === nextProps.addRemoveShow
+  );
+};
+
+export default memo(ShowCard, areEqual);

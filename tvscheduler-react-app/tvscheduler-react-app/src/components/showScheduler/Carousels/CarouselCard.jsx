@@ -1,11 +1,9 @@
 import "./CarouselCard.css";
 
-const CarouselCard = ({ show, activeShow, id }) => {
+const CarouselCard = ({ show, activeShow, id, addRemoveShow }) => {
   const unixToHuman = new Date(show.timeStart * 1000);
 
   return (
-    // <div className="big-card-container">{show.name}</div>
-
     <div
       className={`carousel-card ${id === activeShow ? "" : "hidden"}`}
       key={`${show}${id}`}
@@ -27,7 +25,14 @@ const CarouselCard = ({ show, activeShow, id }) => {
             })}
           </span>
         </div>
-        <button className="add-button">ADD TO SCHEDULE</button>
+        <button
+          className="add-button"
+          onClick={() => {
+            addRemoveShow(show.showEventId);
+          }}
+        >
+          ADD TO SCHEDULE
+        </button>
         <button className="see-more">
           SEE MORE <span>{show.section}</span> SHOWS
           <span>

@@ -1,13 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import "./mainSchedulePage.css";
 import ChannelShowComponent from "../components/showScheduler/ChannelShowComponent";
 import LogoLoadingComponent from "../components/LogoLoadingComponent";
 import MyShowsComponent from "../components/showScheduler/myShowsComponent";
 import SectionCarouselComponent from "../components/showScheduler/Carousels/SectionCarouselComponent";
+import ChannelsContext from "../contexts/channelsContext";
 
 const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
   const [myShows, setMyShows] = useState([]);
+
+  useEffect(() => {
+    console.log(myShows);
+  }, [myShows]);
 
   //fetch Data on page load
   useEffect(() => {
@@ -27,6 +32,7 @@ const MainSchedulePage = () => {
         }
         const data = await response.json();
         setChannels(data);
+
         console.log("fetched data: ", data);
       } catch (error) {
         console.log("error: ", error);
@@ -35,58 +41,102 @@ const MainSchedulePage = () => {
     loadChannels();
   }, []);
 
-  //console log the array every time it's modified -- debugging
   useEffect(() => {
-    console.log(myShows);
-  }, [myShows]);
+    if (channels) {
+      const scheduledShowIds = channels.schedule.map(
+        (show) => show.showEvent.showEventId
+      );
+      setMyShows(scheduledShowIds);
+    }
+  }, [channels]);
 
-  // const addShowCall = async (showEventId) => {
-  //   try {
-  //     const response = await fetch("http://localhost:5171/", {
-  //       method: "POST",
-  // headers: { "Content-Type": "application/json" },
-  // body: JSON.stringify(loginData),
-  //     });
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
+  // channels
+  //   ? channels.schedule.map((show) => {
+  //       setMyShows((myShows) => [...myShows, show.showEvent.showEventId]);
+  //     })
+  //   : null;
 
-  //add shows to state pass -- pass function to component as prop (ShowCard)
-  const addRemoveShow = (showEventId) => {
-    if (!myShows.includes(showEventId)) {
-      setMyShows((myShows) => [...myShows, showEventId]);
-    } else {
-      setMyShows(myShows.filter((id) => id !== showEventId));
+  const addShowCall = async (showEventId) => {
+    const token = localStorage.getItem("JWToken");
+    try {
+      const response = await fetch(
+        "http://localhost:5171/Account/add-show-to-schedule",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ showEventId }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to post show addition");
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
+
+  const removeShowCall = async (showEventId) => {
+    const token = localStorage.getItem("JWToken");
+    try {
+      const response = await fetch(
+        "http://localhost:5171/remove-show-from-schedule",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ showEventId }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to post show removal");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  //add shows to state pass -- pass function to component as prop (ShowCard)
+  const addRemoveShow = useCallback((showEventId) => {
+    setMyShows((prevMyShows) => {
+      if (!prevMyShows.includes(showEventId)) {
+        console.log("Perv: " + prevMyShows);
+        addShowCall(showEventId);
+        return [...prevMyShows, showEventId];
+      } else {
+        removeShowCall(showEventId);
+        return prevMyShows.filter((id) => id !== showEventId);
+      }
+    });
+  }, []);
 
   return (
     <div className="page-container">
       {channels ? (
-        <>
-          {/* my shows display */}
-          <MyShowsComponent
-            channels={channels}
-            myShows={myShows}
-            addRemoveShow={addRemoveShow}
-          />
-          {/* day section carrousel */}
-          <SectionCarouselComponent channels={channels} />
-          <h1 className="title h1">All Shows</h1>
-          <div className="grid-container">
-            {/* get the first x elements of the guide data array -- 129 is too long man */}
-            {channels.channels.map((channel) => (
-              <ChannelShowComponent
-                key={channel.channelId}
-                channels={channels}
-                channel={channel}
-                addRemoveShow={addRemoveShow}
-                myShows={myShows}
-              />
-            ))}
-          </div>
-        </>
+        <ChannelsContext.Provider value={channels}>
+          <>
+            {/* day section carrousel */}
+            <SectionCarouselComponent addRemoveShow={addRemoveShow} />
+            {/* my shows display */}
+            <MyShowsComponent myShows={myShows} addRemoveShow={addRemoveShow} />
+            <h1 className="title h1">All Shows</h1>
+            <div className="grid-container">
+              {/* get the first x elements of the guide data array -- 129 is too long man */}
+              {channels.channels.map((channel) => (
+                <ChannelShowComponent
+                  key={channel.channelId}
+                  channel={channel}
+                  addRemoveShow={addRemoveShow}
+                  myShows={myShows}
+                />
+              ))}
+            </div>
+          </>
+        </ChannelsContext.Provider>
       ) : (
         // <></>
         <LogoLoadingComponent />
