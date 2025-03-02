@@ -1,7 +1,8 @@
 import { memo, useState } from "react";
 import "./ShowCard.css";
 import useIntersectionObserver from "../../hooks/useIntersectionObserver";
-import DummyCardLoading from "./DummyCardLoading";
+import DummyCardLoading from "../loadingComponents/DummyCardLoading";
+import LowResImgHandler from "../loadingComponents/LowResImgHandler";
 
 const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
   const [expanded, setExpanded] = useState(false);
@@ -58,7 +59,14 @@ const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
             <img
               src={`https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`}
               alt={show.name}
+              loading="lazy"
+              decoding="async"
             />
+            {/* <LowResImgHandler
+              highResSrc={`https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`}
+              alt={show.name}
+              // style={{ width: "100%", height: "auto" }}
+            /> */}
           </span>
           <div className="info-container">
             <h2 className="show-title">{show.name}</h2>

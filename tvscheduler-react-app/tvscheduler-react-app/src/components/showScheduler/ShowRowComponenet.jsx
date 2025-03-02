@@ -48,11 +48,15 @@ const ShowRowComponent = ({ channel, myShows, addRemoveShow }) => {
   }, []);
 
   // function to skip forwards and backwards between the show cards
-  const handleClick = useCallback((skipAmount) => {
-    setScrollPosition(scrollPosition + skipAmount);
+  const handleClick = useCallback(
+    (skipAmount) => {
+      setScrollPosition(scrollPosition + skipAmount);
 
-    showContainerRef.current.scrollLeft = scrollPosition + skipAmount;
-  }, []);
+      showContainerRef.current.scrollLeft = scrollPosition + skipAmount;
+      console.log(scrollPosition);
+    },
+    [scrollPosition]
+  );
 
   const showsLookup = useShowLookup(channels);
 
@@ -96,7 +100,7 @@ const ShowRowComponent = ({ channel, myShows, addRemoveShow }) => {
           {/* if the channel has shows, get the first x shows for each channel -- consider writing a variable for more readable code */}
           {mergedShows.length > 0 ? (
             mergedShows
-              .slice(0, 5)
+              .slice(0, 10)
               .map((show) => (
                 <ShowCard
                   key={show.showEventId}

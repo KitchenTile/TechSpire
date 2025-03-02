@@ -32,6 +32,7 @@
   
   & img{
 	position: absolute;
+	object-fit: cover;
 	z-index: -1;
 	width: calc(100% - 1px);
 	height: calc(100% - 1px);

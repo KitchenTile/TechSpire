@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import "./mainSchedulePage.css";
 import ChannelShowComponent from "../components/showScheduler/ChannelShowComponent";
-import LogoLoadingComponent from "../components/LogoLoadingComponent";
+import LogoLoadingComponent from "../components/loadingComponents/LogoLoadingComponent";
 import MyShowsComponent from "../components/showScheduler/myShowsComponent";
 import SectionCarouselComponent from "../components/showScheduler/Carousels/SectionCarouselComponent";
 import ChannelsContext from "../contexts/channelsContext";
+import Header from "../components/header/Header";
 
 const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
@@ -119,6 +120,7 @@ const MainSchedulePage = () => {
       {channels ? (
         <ChannelsContext.Provider value={channels}>
           <>
+            <Header />
             {/* day section carrousel */}
             <SectionCarouselComponent addRemoveShow={addRemoveShow} />
             {/* my shows display */}
