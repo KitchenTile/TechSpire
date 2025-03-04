@@ -3,7 +3,7 @@ import "./HighlightCarousel.css";
 import useIntersectionObserver from "../../../hooks/useIntersectionObserver";
 import CarouselCard from "./CarouselCard";
 
-const HighlightCarousel = ({ carouselRef, section }) => {
+const HighlightCarousel = ({ carouselRef, section, addRemoveShow }) => {
   const [activeShow, setActiveShow] = useState(0);
 
   useEffect(() => {
@@ -30,6 +30,7 @@ const HighlightCarousel = ({ carouselRef, section }) => {
               show={show}
               activeShow={activeShow}
               id={id}
+              addRemoveShow={addRemoveShow}
             />
           ))}
         </>

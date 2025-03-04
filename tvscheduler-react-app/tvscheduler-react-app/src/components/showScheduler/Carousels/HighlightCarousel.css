@@ -17,7 +17,6 @@
   flex: 1;
   height: 100%;
   width: 100%;
-  max-width: 800px;
   transform: translateX(-50%) scale(1);
   transition: all 0.5s ease-in-out;
 
@@ -34,8 +33,3 @@ img{
     object-fit: cover;
     position: absolute;
   }
-
-
-.section-title{
-    color: red;
-}

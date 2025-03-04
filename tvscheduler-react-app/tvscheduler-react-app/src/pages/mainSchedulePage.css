@@ -1,9 +1,9 @@
 .page-container{
-    padding: 2%;
     width: 100vw;
 }
 
 .grid-container{
+    padding-inline: 2em;
     display: flex;
     flex-direction: column;
     gap: 10px;
