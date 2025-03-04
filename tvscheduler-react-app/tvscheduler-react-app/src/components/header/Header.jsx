@@ -4,7 +4,7 @@ import "./Header.css";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-const Header = () => {
+const Header = ({ myShows, addRemoveShow }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
@@ -45,12 +45,12 @@ const Header = () => {
               fill="black"
             />
           </svg>
-          <span>VIEW Q</span>
+          <span id="title">VIEW Q</span>
         </li>
       </Link>
 
       <Navigation />
-      <Search />
+      <Search myShows={myShows} addRemoveShow={addRemoveShow} />
     </ul>
   );
 };

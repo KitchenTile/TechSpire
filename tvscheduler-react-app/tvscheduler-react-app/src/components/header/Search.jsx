@@ -1,13 +1,50 @@
+import { useState, useContext, useEffect, useMemo } from "react";
 import "./Search.css";
+import ChannelsContext from "../../contexts/channelsContext";
+import useShowLookup from "../../hooks/useShowLookup";
+import ShowCard from "../showScheduler/ShowCard";
 
-const Search = () => {
+const Search = ({ myShows, addRemoveShow }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const channels = useContext(ChannelsContext);
+
+  const showLookup = useShowLookup(channels);
+
+  //this function replaces previous
+  const mergeAndSort = useMemo(() => {
+    const mergeShows = channels.channels
+      .map((channel) => {
+        // Check if the channel has events
+        if (!channel.showEvents || !channel.showEvents) return [];
+        // Map each event to merge its details from the lookup
+        return channel.showEvents.map((event) => {
+          // Merge event with show details
+          return { ...event, ...showLookup[event.showId] };
+        });
+      })
+      .flat();
+
+    const filtered = mergeShows.filter((event) =>
+      event.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    return filtered.splice(0, 5);
+  }, [channels, searchTerm]);
+
+  useEffect(() => {
+    console.log(mergeAndSort);
+  }, [mergeAndSort]);
+
   return (
     <li className="search-container">
-      <form action="search" className="search-body">
+      <div className="search-body">
         <input
           type="text"
           placeholder="Channels, genres, etc."
           className="search-input"
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
         />
         <svg
           width="30"
@@ -29,7 +66,18 @@ const Search = () => {
             fill="#212529"
           />
         </svg>
-      </form>
+        <div className="search-results">
+          {searchTerm &&
+            mergeAndSort.map((show) => (
+              <ShowCard
+                key={"search" + show.showEventId}
+                show={show}
+                addRemoveShow={addRemoveShow}
+                isAdded={myShows.includes(show.showEventId)}
+              />
+            ))}
+        </div>
+      </div>
     </li>
   );
 };

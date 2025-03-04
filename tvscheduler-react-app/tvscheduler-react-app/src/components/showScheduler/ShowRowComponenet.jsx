@@ -9,7 +9,6 @@ import {
 } from "react";
 import ShowCard from "./ShowCard";
 import "./ShowRowComponent.css";
-import useThrottle from "../../hooks/useThrottle";
 import useShowLookup from "../../hooks/useShowLookup";
 import ChannelsContext from "../../contexts/channelsContext";
 

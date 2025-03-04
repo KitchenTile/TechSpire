@@ -51,12 +51,6 @@ const MainSchedulePage = () => {
     }
   }, [channels]);
 
-  // channels
-  //   ? channels.schedule.map((show) => {
-  //       setMyShows((myShows) => [...myShows, show.showEvent.showEventId]);
-  //     })
-  //   : null;
-
   const addShowCall = async (showEventId) => {
     const token = localStorage.getItem("JWToken");
     try {
@@ -120,7 +114,7 @@ const MainSchedulePage = () => {
       {channels ? (
         <ChannelsContext.Provider value={channels}>
           <>
-            <Header />
+            <Header myShows={myShows} addRemoveShow={addRemoveShow} />
             {/* day section carrousel */}
             <SectionCarouselComponent addRemoveShow={addRemoveShow} />
             {/* my shows display */}
