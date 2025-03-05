@@ -3,7 +3,6 @@
     display: flex;
     width: 360px;
     height: 100%;
-    /* flex-grow: 1; */
     position: relative;
     align-items: center;
     background-color: transparent;
@@ -27,37 +26,36 @@
             float: right;
             color: transparent;
             transition: all 0.3s ease-in-out;
-            /* transform: translateX(-6px); */
         
             &::placeholder{
                 color: transparent;
             }
-        
-            &:focus{
-                padding: 0 3em 0 2.5em;
-                background: var(--accentColor);
-                border-radius: 50px;
-                width: 100%;
-                color: black;
-                text-decoration: underline;
-                border-bottom: none;
-                outline: none;
-        
-                &::placeholder{
-                    color: black;
-                }
-        
-                & ~ svg{
-                    z-index: 2;
-                    & path{
-                        fill: black;
-                    }
-                }
+        }
 
-                & ~ .search-results{
-                    display: flex
+        &:focus-within .search-input, .search-input:focus{
+            padding: 0 3em 0 2.5em;
+            background: var(--accentColor);
+            border-radius: 50px;
+            width: 100%;
+            color: black;
+            text-decoration: underline;
+            border-bottom: none;
+            outline: none;
+    
+            &::placeholder{
+                color: black;
+            }
+    
+            & ~ svg{
+                z-index: 2;
+                & path{
+                    fill: black;
                 }
             }
+        }
+
+        &:focus-within .search-results{
+            display: flex
         }
         
         & svg{
@@ -72,6 +70,7 @@
     }
 }
 
+
 .search-results{
     position: absolute;
     top: 50px;
@@ -81,7 +80,6 @@
     max-height: 600px;
     overflow-y: scroll;
     flex-direction: column;
-    /* background: red; */
     padding-block: 2px;
     gap: 2px;
 

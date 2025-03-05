@@ -2,23 +2,25 @@ import Navigation from "./Navigation";
 import Search from "./Search";
 import "./Header.css";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 const Header = ({ myShows, addRemoveShow }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
 
-  useEffect(() => {
-    const handleScroll = () => {
+  const handleScroll = useCallback(() => {
+    requestAnimationFrame(() => {
       const position = window.scrollY;
-      setScrollPosition(position);
-    };
+      setScrollPosition((prev) => (prev !== position ? position : prev));
+    });
+  }, []);
 
+  useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [handleScroll]);
 
   return (
     <ul className={`header-container ${scrollPosition > 500 ? "active" : ""}`}>

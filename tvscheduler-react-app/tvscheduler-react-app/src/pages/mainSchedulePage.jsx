@@ -96,10 +96,9 @@ const MainSchedulePage = () => {
   };
 
   //add shows to state pass -- pass function to component as prop (ShowCard)
-  const addRemoveShow = useCallback((showEventId) => {
+  const addRemoveShow = useCallback(async (showEventId) => {
     setMyShows((prevMyShows) => {
       if (!prevMyShows.includes(showEventId)) {
-        console.log("Perv: " + prevMyShows);
         addShowCall(showEventId);
         return [...prevMyShows, showEventId];
       } else {

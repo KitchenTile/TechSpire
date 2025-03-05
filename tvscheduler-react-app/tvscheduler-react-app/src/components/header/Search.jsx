@@ -3,9 +3,12 @@ import "./Search.css";
 import ChannelsContext from "../../contexts/channelsContext";
 import useShowLookup from "../../hooks/useShowLookup";
 import ShowCard from "../showScheduler/ShowCard";
+import useDebounce from "../../hooks/useDebounce";
 
 const Search = ({ myShows, addRemoveShow }) => {
   const [searchTerm, setSearchTerm] = useState("");
+
+  const debounceSearachTerm = useDebounce(searchTerm, 1500);
 
   const channels = useContext(ChannelsContext);
 
@@ -25,16 +28,16 @@ const Search = ({ myShows, addRemoveShow }) => {
       })
       .flat();
 
-    const filtered = mergeShows.filter((event) =>
+    const filteredByTitle = mergeShows.filter((event) =>
       event.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    return filtered.splice(0, 5);
-  }, [channels, searchTerm]);
+    const filteredByTag = mergeShows.filter((event) =>
+      event.tagName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
-  useEffect(() => {
-    console.log(mergeAndSort);
-  }, [mergeAndSort]);
+    return [...filteredByTag, ...filteredByTitle].slice(0, 5);
+  }, [channels, debounceSearachTerm]);
 
   return (
     <li className="search-container">
@@ -67,15 +70,20 @@ const Search = ({ myShows, addRemoveShow }) => {
           />
         </svg>
         <div className="search-results">
-          {searchTerm &&
-            mergeAndSort.map((show) => (
-              <ShowCard
-                key={"search" + show.showEventId}
-                show={show}
-                addRemoveShow={addRemoveShow}
-                isAdded={myShows.includes(show.showEventId)}
-              />
-            ))}
+          {searchTerm !== "" ? (
+            mergeAndSort.length > 0 ? (
+              mergeAndSort.map((show) => (
+                <ShowCard
+                  key={"search" + show.showEventId}
+                  show={show}
+                  addRemoveShow={addRemoveShow}
+                  isAdded={myShows.includes(show.showEventId)}
+                />
+              ))
+            ) : (
+              <p>No results for {searchTerm}</p>
+            )
+          ) : null}
         </div>
       </div>
     </li>
