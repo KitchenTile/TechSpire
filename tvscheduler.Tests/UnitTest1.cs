@@ -1,4 +1,3 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
@@ -6,12 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using tvscheduler.Controllers;
 using tvscheduler.Models;
-using System.Security.Claims;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Net.Http;
-using System;
 
 namespace tvscheduler.Tests
 {
