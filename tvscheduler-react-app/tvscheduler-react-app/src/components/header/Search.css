@@ -81,9 +81,9 @@
     overflow-y: scroll;
     flex-direction: column;
     padding-block: 2px;
-    gap: 2px;
+    gap: 5px;
 
-     display: none; 
+     display: flex; 
 
 
     /* SCROLLBAR */

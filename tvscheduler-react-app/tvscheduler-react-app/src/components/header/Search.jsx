@@ -4,6 +4,7 @@ import ChannelsContext from "../../contexts/channelsContext";
 import useShowLookup from "../../hooks/useShowLookup";
 import ShowCard from "../showScheduler/ShowCard";
 import useDebounce from "../../hooks/useDebounce";
+import SearchCard from "./SearchCard";
 
 const Search = ({ myShows, addRemoveShow }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,22 +22,46 @@ const Search = ({ myShows, addRemoveShow }) => {
         // Check if the channel has events
         if (!channel.showEvents || !channel.showEvents) return [];
         // Map each event to merge its details from the lookup
-        return channel.showEvents.map((event) => {
+        return channel.showEvents.map((event) =>
           // Merge event with show details
-          return { ...event, ...showLookup[event.showId] };
-        });
+          ({ ...event, ...showLookup[event.showId] })
+        );
       })
       .flat();
 
-    const filteredByTitle = mergeShows.filter((event) =>
-      event.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredBySearch = mergeShows.filter(
+      (event) =>
+        event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.tagName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const filteredByTag = mergeShows.filter((event) =>
-      event.tagName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const showsAndShows = [Array.from(new Set(filteredBySearch))];
 
-    return [...filteredByTag, ...filteredByTitle].slice(0, 5);
+    // console.log(showsAndShows[0]);
+
+    //go through all shows and sigle out each unique ones
+    const uniqueShows = [];
+    const seenShowIds = new Set();
+
+    filteredBySearch.map((show) => {
+      if (!seenShowIds.has(show.showId)) {
+        uniqueShows.push(show);
+        seenShowIds.add(show.showId);
+      }
+    });
+
+    console.log(filteredBySearch);
+
+    const showObjectAndEvents = {
+      uniqueShows: uniqueShows,
+      shows: filteredBySearch,
+    };
+
+    showObjectAndEvents.uniqueShows.map((show) => {
+      console.log(show);
+    });
+
+    return showObjectAndEvents;
   }, [channels, debounceSearachTerm]);
 
   return (
@@ -71,11 +96,22 @@ const Search = ({ myShows, addRemoveShow }) => {
         </svg>
         <div className="search-results">
           {searchTerm !== "" ? (
-            mergeAndSort.length > 0 ? (
-              mergeAndSort.map((show) => (
-                <ShowCard
-                  key={"search" + show.showEventId}
+            mergeAndSort.uniqueShows.length > 0 ? (
+              // mergeAndSort.map((show) => (
+              //   <SearchCard
+              //     key={"search" + show.showEventId}
+              //     show={show}
+              //     addRemoveShow={addRemoveShow}
+              //     isAdded={myShows.includes(show.showEventId)}
+              //   />
+              // ))
+              mergeAndSort.uniqueShows.map((show) => (
+                <SearchCard
+                  key={"search" + show.showId}
                   show={show}
+                  showEvents={mergeAndSort.shows.filter(
+                    (showEvent) => showEvent.showId === show.showId
+                  )}
                   addRemoveShow={addRemoveShow}
                   isAdded={myShows.includes(show.showEventId)}
                 />

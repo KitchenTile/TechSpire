@@ -29,7 +29,7 @@ const ShowRowComponent = ({ channel, myShows, addRemoveShow }) => {
       if (container) {
         // get information that we need like the scroll amount from the left, the width of the container etc.
         const { scrollLeft, clientWidth, scrollWidth } = container;
-        setScrollPosition(scrollLeft);
+        setScrollPosition((prev) => (prev !== scrollLeft ? scrollLeft : prev));
         setShowLeftArrow(scrollLeft > 5);
         setShowRightArrow(scrollLeft + clientWidth < scrollWidth - 5);
       }
@@ -57,6 +57,15 @@ const ShowRowComponent = ({ channel, myShows, addRemoveShow }) => {
     [scrollPosition]
   );
 
+  // const handleClick = useCallback((skipAmount) => {
+  //   setScrollPosition((prev) => {
+  //     const newScroll = prev + skipAmount;
+  //     return newScroll;
+  //   });
+  //   showContainerRef.current.scrollLeft = scrollPosition;
+  //   console.log(scrollPosition);
+  // }, []);
+
   const showsLookup = useShowLookup(channels);
 
   // Merge each event with its corresponding show details
@@ -67,9 +76,10 @@ const ShowRowComponent = ({ channel, myShows, addRemoveShow }) => {
       //Add show instance's details
       return { ...event, ...showDetails };
     });
-  }, [events]);
+  }, [events, showsLookup]);
 
   // useThrottle(showContainerRef, handleScroll);
+  // console.log("rerender");
 
   return (
     <>

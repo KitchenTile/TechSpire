@@ -7,7 +7,7 @@ import LowResImgHandler from "../loadingComponents/LowResImgHandler";
 const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
   const [expanded, setExpanded] = useState(false);
 
-  console.log(`card ${show.name} redering`);
+  // console.log(`card ${show.name} redering` + new Date().toISOString());
 
   //options for intersection observer custom hook
   const options = {
@@ -52,83 +52,82 @@ const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
   };
 
   return (
-    <div className="card-container" ref={cardRef}>
-      {isVisible ? (
-        <>
-          <span className="img-container">
-            <img
-              src={`https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`}
-              alt={show.name}
-              loading="lazy"
-              decoding="async"
-            />
-            {/* <LowResImgHandler
-              highResSrc={`https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`}
-              alt={show.name}
-              // style={{ width: "100%", height: "auto" }}
-            /> */}
-          </span>
-          <div className="info-container">
-            <h2 className="show-title">{show.name}</h2>
-            <div className="time-stamps">
-              <span className="from">
-                {" "}
-                {unixToHuman.toLocaleTimeString("en-GB", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </span>{" "}
-              -{" "}
-              <span className="to">
-                {unixToHumanEnd.toLocaleTimeString("en-GB", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </span>
-            </div>
-            <div className={`show-description ${expanded ? "expanded" : ""}`}>
-              {/* needs work */}
-              {expanded
-                ? show.description.split("[", 1)
-                : show.description.slice(0, 70).split("[", 1) + " "}
-              <span className="read-more" onClick={readMore}>
-                {expanded ? "" : "Read More..."}
-              </span>
-              <span className="cross" onClick={readMore}></span>
-              <div className="tags">
-                {checkActiveTags.map(({ tag, active }) => (
-                  <span
-                    className={`littleTag small ${active ? "" : "disabled"}`}
-                    id={tag}
-                    key={tag}
-                  >
-                    {tag}
-                  </span>
-                ))}
+    console.log(`Rendering card: ${show.name}`) || (
+      <div className="card-container" ref={cardRef}>
+        {isVisible ? (
+          <>
+            <span className="img-container">
+              <img
+                src={`https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`}
+                alt={show.name}
+                loading="lazy"
+                decoding="async"
+              />
+              {/* <LowResImgHandler
+                highResSrc={`https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`}
+                alt={show.name}
+                // style={{ width: "100%", height: "auto" }}
+              /> */}
+            </span>
+            <div className="info-container">
+              <h2 className="show-title">{show.name}</h2>
+              <div className="time-stamps">
+                <span className="from">
+                  {" "}
+                  {unixToHuman.toLocaleTimeString("en-GB", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>{" "}
+                -{" "}
+                <span className="to">
+                  {unixToHumanEnd.toLocaleTimeString("en-GB", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              </div>
+              <div className={`show-description ${expanded ? "expanded" : ""}`}>
+                {expanded
+                  ? show.description.split("[", 1)
+                  : show.description.slice(0, 70).split("[", 1) + " "}
+                <span className="read-more" onClick={readMore}>
+                  {expanded ? "" : "Read More..."}
+                </span>
+                <span className="cross" onClick={readMore}></span>
+                <div className="tags">
+                  {checkActiveTags.map(({ tag, active }) => (
+                    <span
+                      className={`littleTag small ${active ? "" : "disabled"}`}
+                      id={tag}
+                      key={tag}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-          <button
-            className="add-button small"
-            tooltip-text={isAdded ? "Remove show" : "Add to schedule"}
-            onClick={handleAddShow}
-          >
-            {isAdded ? "-" : "+"}
-          </button>
-        </>
-      ) : (
-        <DummyCardLoading />
-      )}
-    </div>
+            <button
+              className="add-button small"
+              tooltip-text={isAdded ? "Remove show" : "Add to schedule"}
+              onClick={handleAddShow}
+            >
+              {isAdded ? "-" : "+"}
+            </button>
+          </>
+        ) : (
+          <DummyCardLoading />
+        )}
+      </div>
+    )
   );
 };
 
 const areEqual = (prevProps, nextProps) => {
   return (
-    prevProps.show === nextProps.show &&
-    prevProps.isAdded === nextProps.isAdded &&
-    prevProps.rowRef === nextProps.rowRef &&
-    prevProps.addRemoveShow === nextProps.addRemoveShow
+    prevProps.show.showEventId === nextProps.show.showEventId &&
+    prevProps.isAdded === nextProps.isAdded
   );
 };
 
