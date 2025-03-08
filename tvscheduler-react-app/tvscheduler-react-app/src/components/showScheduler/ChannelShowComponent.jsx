@@ -1,5 +1,5 @@
 import useIntersectionObserver from "../../hooks/useIntersectionObserver";
-import LoadingComponent from "../loadingComponent";
+import LoadingComponent from "../loadingComponents/loadingComponent";
 import ShowRowComponent from "./ShowRowComponenet";
 import "./ChannelShowComponent.css";
 

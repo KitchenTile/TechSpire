@@ -1,0 +1,107 @@
+.search-container{
+
+    display: flex;
+    width: 360px;
+    height: 100%;
+    position: relative;
+    align-items: center;
+    background-color: transparent;
+    
+
+    & .search-body{
+        width: 100%;
+        position: relative;
+
+
+        & .search-input{
+            border: none;
+            background-color: transparent;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 400;
+            height: 2.5em;
+            width: 10%;
+            font-family: inherit;
+            float: right;
+            color: transparent;
+            transition: all 0.3s ease-in-out;
+        
+            &::placeholder{
+                color: transparent;
+            }
+        }
+
+        &:focus-within .search-input, .search-input:focus{
+            padding: 0 3em 0 2.5em;
+            background: var(--accentColor);
+            border-radius: 50px;
+            width: 100%;
+            color: black;
+            text-decoration: underline;
+            border-bottom: none;
+            outline: none;
+    
+            &::placeholder{
+                color: black;
+            }
+    
+            & ~ svg{
+                z-index: 2;
+                & path{
+                    fill: black;
+                }
+            }
+        }
+
+        &:focus-within .search-results{
+            display: flex
+        }
+        
+        & svg{
+            position: absolute;
+            font-size: 1.6em;
+            right: 0.4em;
+            top: 0em;
+            transform: translateY(6px);
+            z-index: -1;
+
+        }
+    }
+}
+
+    .search-results{
+    position: absolute;
+    /* background-color: red; */
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 365px;
+    max-height: 600px;
+    overflow-y: auto;
+    flex-direction: column;
+    padding-block: 2px;
+    gap: 5px;
+
+        display: none; 
+
+    & span{
+        transform: none;
+    }
+
+    &::-webkit-scrollbar-track
+    {
+        background-color: transparent;
+    }
+    
+    &::-webkit-scrollbar
+    {
+        scrollbar-gutter: stable both-edges;
+        width: 5px;
+        background-color: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb
+    {
+        background-color: #00000071;
+    }
+}
