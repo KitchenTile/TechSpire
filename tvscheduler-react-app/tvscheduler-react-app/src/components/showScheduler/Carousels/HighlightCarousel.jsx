@@ -1,10 +1,12 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useContext, memo } from "react";
 import "./HighlightCarousel.css";
 import useIntersectionObserver from "../../../hooks/useIntersectionObserver";
 import CarouselCard from "./CarouselCard";
+import MyShowsContext from "../../../contexts/myShowsContext";
 
-const HighlightCarousel = ({ carouselRef, section, addRemoveShow }) => {
+const HighlightCarousel = ({ carouselRef, section }) => {
   const [activeShow, setActiveShow] = useState(0);
+  const { myShows } = useContext(MyShowsContext);
 
   useEffect(() => {
     setTimeout(() => {
@@ -29,8 +31,8 @@ const HighlightCarousel = ({ carouselRef, section, addRemoveShow }) => {
               key={show.timeStart + show.showEventId}
               show={show}
               activeShow={activeShow}
+              isAdded={myShows.includes(show.showEventId)}
               id={id}
-              addRemoveShow={addRemoveShow}
             />
           ))}
         </>

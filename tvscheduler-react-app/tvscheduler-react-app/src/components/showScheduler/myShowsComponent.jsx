@@ -4,9 +4,11 @@ import { useContext, useMemo } from "react";
 import "./MyShowsComponent.css";
 import useShowLookup from "../../hooks/useShowLookup";
 import ChannelsContext from "../../contexts/channelsContext";
+import MyShowsContext from "../../contexts/myShowsContext";
 
-const MyShowsComponent = ({ myShows, addRemoveShow }) => {
+const MyShowsComponent = () => {
   const channels = useContext(ChannelsContext);
+  const { myShows } = useContext(MyShowsContext);
   // sorting function for the sort my schedule sort method
   const compareStartTime = (a, b) => {
     return a.timeStart - b.timeStart;
@@ -46,7 +48,6 @@ const MyShowsComponent = ({ myShows, addRemoveShow }) => {
               <ShowCard
                 key={show.showEventId}
                 show={show}
-                addRemoveShow={addRemoveShow}
                 isAdded={myShows.includes(show.showEventId)}
               />
             ))}

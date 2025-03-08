@@ -4,7 +4,7 @@ import "./Header.css";
 import { Link } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 
-const Header = ({ myShows, addRemoveShow }) => {
+const Header = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
 
   const handleScroll = useCallback(() => {
@@ -52,7 +52,7 @@ const Header = ({ myShows, addRemoveShow }) => {
       </Link>
 
       <Navigation />
-      <Search myShows={myShows} addRemoveShow={addRemoveShow} />
+      <Search />
     </ul>
   );
 };

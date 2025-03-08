@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "./SearchCard.css";
+import MyShowsContext from "../../contexts/myShowsContext";
+import AddRemoveShowsContext from "../../contexts/AddRemoveShowsContext";
 
-const SearchCard = ({ show, showEvents, addRemoveShow, myShows }) => {
+const SearchCard = ({ show, showEvents }) => {
   const [expanded, setExpanded] = useState(false);
+  const { addRemoveShow } = useContext(AddRemoveShowsContext);
+  const { myShows } = useContext(MyShowsContext);
 
   //   console.log(showEvents);
 
@@ -23,8 +27,8 @@ const SearchCard = ({ show, showEvents, addRemoveShow, myShows }) => {
       <div className="info-container">
         <h2 className="show-title">{show.name}</h2>
         <div className="show-event-container">
-          {showEvents.slice(0, 4).map((showEvent) => (
-            <div className="show-event-slot">
+          {showEvents.slice(0, 4).map((showEvent, idx) => (
+            <div className="show-event-slot" key={idx}>
               {new Date(showEvent.timeStart * 1000).toLocaleTimeString(
                 "en-GB",
                 {

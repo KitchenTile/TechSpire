@@ -5,6 +5,7 @@ import {
   useMemo,
   useCallback,
   useContext,
+  memo,
 } from "react";
 import "./SectionCarouselComponent.css";
 import HighlightCarousel from "./HighlightCarousel";
@@ -12,7 +13,7 @@ import useShowLookup from "../../../hooks/useShowLookup";
 import useThrottle from "../../../hooks/useThrottle";
 import ChannelsContext from "../../../contexts/channelsContext";
 
-const SectionCarouselComponent = ({ addRemoveShow }) => {
+const SectionCarouselComponent = () => {
   const [activeSection, setActiveSection] = useState(0);
   const carouselSectionRef = useRef(null);
   const channels = useContext(ChannelsContext);
@@ -124,11 +125,7 @@ const SectionCarouselComponent = ({ addRemoveShow }) => {
       </span>
       <div className="carousel-container" ref={carouselSectionRef}>
         {Object.entries(mergeShowsPerSection).map((section, idx) => (
-          <HighlightCarousel
-            key={idx}
-            section={section[1]}
-            addRemoveShow={addRemoveShow}
-          />
+          <HighlightCarousel key={idx} section={section[1]} />
         ))}
       </div>
       <div className="section-indicators">
@@ -165,4 +162,4 @@ const SectionCarouselComponent = ({ addRemoveShow }) => {
   );
 };
 
-export default SectionCarouselComponent;
+export default memo(SectionCarouselComponent);

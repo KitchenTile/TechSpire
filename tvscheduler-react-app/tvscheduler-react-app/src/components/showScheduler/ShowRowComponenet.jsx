@@ -11,13 +11,15 @@ import ShowCard from "./ShowCard";
 import "./ShowRowComponent.css";
 import useShowLookup from "../../hooks/useShowLookup";
 import ChannelsContext from "../../contexts/channelsContext";
+import MyShowsContext from "../../contexts/myShowsContext";
 
-const ShowRowComponent = ({ channel, myShows, addRemoveShow }) => {
+const ShowRowComponent = ({ channel }) => {
   const showContainerRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(true);
   const [showRightArrow, setShowRightArrow] = useState(true);
   const [scrollPosition, setScrollPosition] = useState(0);
 
+  const { myShows } = useContext(MyShowsContext);
   const channels = useContext(ChannelsContext);
 
   //effect hook to determine the component's scroll position so we can show and hide side arrows
@@ -114,7 +116,6 @@ const ShowRowComponent = ({ channel, myShows, addRemoveShow }) => {
                 <ShowCard
                   key={show.showEventId}
                   show={show}
-                  addRemoveShow={addRemoveShow}
                   isAdded={myShows.includes(show.showEventId)}
                   rowRef={showContainerRef}
                 />

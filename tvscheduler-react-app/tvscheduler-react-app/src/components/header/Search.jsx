@@ -4,8 +4,9 @@ import ChannelsContext from "../../contexts/channelsContext";
 import useShowLookup from "../../hooks/useShowLookup";
 import useDebounce from "../../hooks/useDebounce";
 import SearchCard from "./SearchCard";
+import MyShowsContext from "../../contexts/myShowsContext";
 
-const Search = ({ myShows, addRemoveShow }) => {
+const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const debounceSearachTerm = useDebounce(searchTerm, 500);
   const channels = useContext(ChannelsContext);
@@ -108,8 +109,6 @@ const Search = ({ myShows, addRemoveShow }) => {
                     showEvents={mergeAndSort.shows.filter(
                       (showEvent) => showEvent.showId === show.showId
                     )}
-                    myShows={myShows}
-                    addRemoveShow={addRemoveShow}
                   />
                 ))
             ) : (

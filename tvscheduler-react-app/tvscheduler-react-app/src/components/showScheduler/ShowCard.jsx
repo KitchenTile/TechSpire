@@ -1,13 +1,17 @@
-import { memo, useState } from "react";
+import { memo, useContext, useState } from "react";
 import "./ShowCard.css";
 import useIntersectionObserver from "../../hooks/useIntersectionObserver";
 import DummyCardLoading from "../loadingComponents/DummyCardLoading";
 import LowResImgHandler from "../loadingComponents/LowResImgHandler";
+import MyShowsContext from "../../contexts/myShowsContext";
+import AddRemoveShowsContext from "../../contexts/AddRemoveShowsContext";
 
-const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
+const ShowCard = ({ show, isAdded, rowRef }) => {
   const [expanded, setExpanded] = useState(false);
+  const { addRemoveShow } = useContext(AddRemoveShowsContext);
+  // const addRemoveShow = useContext(MyShowsContext).addRemoveShow;
 
-  // console.log(`card ${show.name} redering` + new Date().toISOString());
+  console.log(`card ${show.name} redering` + new Date().toISOString());
 
   //options for intersection observer custom hook
   const options = {
