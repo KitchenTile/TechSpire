@@ -1,19 +1,16 @@
-import { useState, useContext, useEffect, useMemo } from "react";
+import { useState, useContext, useRef, useMemo } from "react";
 import "./Search.css";
 import ChannelsContext from "../../contexts/channelsContext";
 import useShowLookup from "../../hooks/useShowLookup";
-import ShowCard from "../showScheduler/ShowCard";
 import useDebounce from "../../hooks/useDebounce";
 import SearchCard from "./SearchCard";
 
 const Search = ({ myShows, addRemoveShow }) => {
   const [searchTerm, setSearchTerm] = useState("");
-
-  const debounceSearachTerm = useDebounce(searchTerm, 1500);
-
+  const debounceSearachTerm = useDebounce(searchTerm, 500);
   const channels = useContext(ChannelsContext);
-
   const showLookup = useShowLookup(channels);
+  const containerRef = useRef(null);
 
   //this function replaces previous
   const mergeAndSort = useMemo(() => {
@@ -29,17 +26,14 @@ const Search = ({ myShows, addRemoveShow }) => {
       })
       .flat();
 
+    // filter the search input
     const filteredBySearch = mergeShows.filter(
       (event) =>
         event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         event.tagName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const showsAndShows = [Array.from(new Set(filteredBySearch))];
-
-    // console.log(showsAndShows[0]);
-
-    //go through all shows and sigle out each unique ones
+    //go through all shows found and sigle out each unique ones
     const uniqueShows = [];
     const seenShowIds = new Set();
 
@@ -50,22 +44,30 @@ const Search = ({ myShows, addRemoveShow }) => {
       }
     });
 
-    console.log(filteredBySearch);
-
+    // create an object to retrun each unique show and its instance
     const showObjectAndEvents = {
       uniqueShows: uniqueShows,
       shows: filteredBySearch,
     };
-
-    showObjectAndEvents.uniqueShows.map((show) => {
-      console.log(show);
-    });
+    console.log(showObjectAndEvents.shows);
 
     return showObjectAndEvents;
   }, [channels, debounceSearachTerm]);
 
+  const handleBlur = (e) => {
+    // Delay to allow focus to move between children
+    setTimeout(() => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(document.activeElement)
+      ) {
+        setSearchTerm("");
+      }
+    }, 200);
+  };
+
   return (
-    <li className="search-container">
+    <li className="search-container" ref={containerRef} onBlur={handleBlur}>
       <div className="search-body">
         <input
           type="text"
@@ -97,25 +99,19 @@ const Search = ({ myShows, addRemoveShow }) => {
         <div className="search-results">
           {searchTerm !== "" ? (
             mergeAndSort.uniqueShows.length > 0 ? (
-              // mergeAndSort.map((show) => (
-              //   <SearchCard
-              //     key={"search" + show.showEventId}
-              //     show={show}
-              //     addRemoveShow={addRemoveShow}
-              //     isAdded={myShows.includes(show.showEventId)}
-              //   />
-              // ))
-              mergeAndSort.uniqueShows.map((show) => (
-                <SearchCard
-                  key={"search" + show.showId}
-                  show={show}
-                  showEvents={mergeAndSort.shows.filter(
-                    (showEvent) => showEvent.showId === show.showId
-                  )}
-                  addRemoveShow={addRemoveShow}
-                  isAdded={myShows.includes(show.showEventId)}
-                />
-              ))
+              mergeAndSort.uniqueShows
+                .slice(0, 5)
+                .map((show) => (
+                  <SearchCard
+                    key={"search" + show.showId}
+                    show={show}
+                    showEvents={mergeAndSort.shows.filter(
+                      (showEvent) => showEvent.showId === show.showId
+                    )}
+                    myShows={myShows}
+                    addRemoveShow={addRemoveShow}
+                  />
+                ))
             ) : (
               <p>No results for {searchTerm}</p>
             )

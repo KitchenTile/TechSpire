@@ -52,75 +52,68 @@ const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
   };
 
   return (
-    console.log(`Rendering card: ${show.name}`) || (
-      <div className="card-container" ref={cardRef}>
-        {isVisible ? (
-          <>
-            <span className="img-container">
-              <img
-                src={`https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`}
-                alt={show.name}
-                loading="lazy"
-                decoding="async"
-              />
-              {/* <LowResImgHandler
-                highResSrc={`https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`}
-                alt={show.name}
-                // style={{ width: "100%", height: "auto" }}
-              /> */}
-            </span>
-            <div className="info-container">
-              <h2 className="show-title">{show.name}</h2>
-              <div className="time-stamps">
-                <span className="from">
-                  {" "}
-                  {unixToHuman.toLocaleTimeString("en-GB", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>{" "}
-                -{" "}
-                <span className="to">
-                  {unixToHumanEnd.toLocaleTimeString("en-GB", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>
-              </div>
-              <div className={`show-description ${expanded ? "expanded" : ""}`}>
-                {expanded
-                  ? show.description.split("[", 1)
-                  : show.description.slice(0, 70).split("[", 1) + " "}
-                <span className="read-more" onClick={readMore}>
-                  {expanded ? "" : "Read More..."}
-                </span>
-                <span className="cross" onClick={readMore}></span>
-                <div className="tags">
-                  {checkActiveTags.map(({ tag, active }) => (
-                    <span
-                      className={`littleTag small ${active ? "" : "disabled"}`}
-                      id={tag}
-                      key={tag}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+    <div className="card-container" ref={cardRef}>
+      {isVisible ? (
+        <>
+          <span className="img-container">
+            <img
+              src={`https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`}
+              alt={show.name}
+              loading="lazy"
+              decoding="async"
+            />
+          </span>
+          <div className="info-container">
+            <h2 className="show-title">{show.name}</h2>
+            <div className="time-stamps">
+              <span className="from">
+                {" "}
+                {unixToHuman.toLocaleTimeString("en-GB", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>{" "}
+              -{" "}
+              <span className="to">
+                {unixToHumanEnd.toLocaleTimeString("en-GB", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            </div>
+            <div className={`show-description ${expanded ? "expanded" : ""}`}>
+              {expanded
+                ? show.description.split("[", 1)
+                : show.description.slice(0, 70).split("[", 1) + " "}
+              <span className="read-more" onClick={readMore}>
+                {expanded ? "" : "Read More..."}
+              </span>
+              <span className="cross" onClick={readMore}></span>
+              <div className="tags">
+                {checkActiveTags.map(({ tag, active }) => (
+                  <span
+                    className={`littleTag small ${active ? "" : "disabled"}`}
+                    id={tag}
+                    key={tag}
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
             </div>
-            <button
-              className="add-button small"
-              tooltip-text={isAdded ? "Remove show" : "Add to schedule"}
-              onClick={handleAddShow}
-            >
-              {isAdded ? "-" : "+"}
-            </button>
-          </>
-        ) : (
-          <DummyCardLoading />
-        )}
-      </div>
-    )
+          </div>
+          <button
+            className="add-button small"
+            tooltip-text={isAdded ? "Remove show" : "Add to schedule"}
+            onClick={handleAddShow}
+          >
+            {isAdded ? "-" : "+"}
+          </button>
+        </>
+      ) : (
+        <DummyCardLoading />
+      )}
+    </div>
   );
 };
 
