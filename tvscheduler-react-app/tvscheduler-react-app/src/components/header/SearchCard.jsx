@@ -1,7 +1,8 @@
 import { useContext, useState } from "react";
 import "./SearchCard.css";
-import MyShowsContext from "../../contexts/myShowsContext";
+// import MyShowsContext from "../../contexts/myShowsContext";
 import AddRemoveShowsContext from "../../contexts/AddRemoveShowsContext";
+import MyShowsContext from "../../contexts/myShowsContext";
 
 const SearchCard = ({ show, showEvents }) => {
   const [expanded, setExpanded] = useState(false);

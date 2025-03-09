@@ -3,7 +3,7 @@ import ChannelsContext from "./channelsContext";
 
 //this function decouples the api calls with any specific page and sets it as a context provider :)
 const FetchedInfoProvider = ({ children }) => {
-  const [channels, setChannels] = useState(null);
+  const [channels, setChannels] = useState({ channels: [] });
 
   //fetch Data on page load
   useEffect(() => {

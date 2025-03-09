@@ -5,6 +5,7 @@ import "./MyShowsComponent.css";
 import useShowLookup from "../../hooks/useShowLookup";
 import ChannelsContext from "../../contexts/channelsContext";
 import MyShowsContext from "../../contexts/myShowsContext";
+// import MyShowsContext from "../../contexts/myShowsContext";
 
 const MyShowsComponent = () => {
   const channels = useContext(ChannelsContext);
