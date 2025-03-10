@@ -2,8 +2,6 @@ import { memo, useContext, useState } from "react";
 import "./ShowCard.css";
 import useIntersectionObserver from "../../hooks/useIntersectionObserver";
 import DummyCardLoading from "../loadingComponents/DummyCardLoading";
-import LowResImgHandler from "../loadingComponents/LowResImgHandler";
-import MyShowsContext from "../../contexts/myShowsContext";
 import AddRemoveShowsContext from "../../contexts/AddRemoveShowsContext";
 
 const ShowCard = ({ show, isAdded, rowRef }) => {

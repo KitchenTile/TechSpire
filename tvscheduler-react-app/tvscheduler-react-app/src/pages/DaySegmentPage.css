@@ -1,0 +1,8 @@
+.content-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(clamp(227px, 15%, 252px), 1fr));
+    gap: 7px;
+    width: 100%;
+    padding: 0 2%;
+    min-height: 100vh;
+}

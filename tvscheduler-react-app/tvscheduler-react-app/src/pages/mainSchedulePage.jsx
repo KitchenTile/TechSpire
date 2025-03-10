@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState, useMemo } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./mainSchedulePage.css";
 import ChannelShowComponent from "../components/showScheduler/ChannelShowComponent";
 import LogoLoadingComponent from "../components/loadingComponents/LogoLoadingComponent";
@@ -6,16 +6,30 @@ import MyShowsComponent from "../components/showScheduler/myShowsComponent";
 import SectionCarouselComponent from "../components/showScheduler/Carousels/SectionCarouselComponent";
 import ChannelsContext from "../contexts/channelsContext";
 import Header from "../components/header/Header";
-import MyShowsContext from "../contexts/myShowsContext";
-import AddRemoveShowsContext from "../contexts/AddRemoveShowsContext";
-import FetchedInfoProvider from "../contexts/FetchedInfoProvider";
 import AddRemoveShowsContextProvider from "../contexts/AddRemoveShowsContextProvider";
 import MyShowsContextProvider from "../contexts/MyShowsContextProvider";
+import useThrottle from "../hooks/useThrottle";
 
 const MainSchedulePage = () => {
   const channels = useContext(ChannelsContext);
+  const [isVisible, setIsVisible] = useState(false);
 
-  // const myShowsValue = useMemo(() => ({ myShows, addRemoveShow }), [myShows]);
+  //we want to throttle the scrolling so we use our hook
+  const throttleWindowScrroll = useThrottle(window, () => {
+    const scrollPosition = window.scrollY;
+
+    //if the scroll position of the window is > 500 then set isVisible to true
+    setIsVisible((prev) =>
+      prev !== scrollPosition > 500 ? scrollPosition > 500 : prev
+    );
+  });
+
+  //header visibility logic
+  useEffect(() => {
+    window.addEventListener("scroll", throttleWindowScrroll);
+
+    return () => window.removeEventListener("scroll", throttleWindowScrroll);
+  });
 
   return (
     <div className="page-container">
@@ -23,7 +37,7 @@ const MainSchedulePage = () => {
         <MyShowsContextProvider channels={channels}>
           <AddRemoveShowsContextProvider>
             <>
-              <Header />
+              <Header isVisible={isVisible} />
 
               {/* day section carrousel */}
               <SectionCarouselComponent />
@@ -43,7 +57,6 @@ const MainSchedulePage = () => {
           </AddRemoveShowsContextProvider>
         </MyShowsContextProvider>
       ) : (
-        // <></>
         <LogoLoadingComponent />
       )}
     </div>

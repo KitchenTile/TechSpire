@@ -1,11 +1,11 @@
 import {
-  useEffect,
   useState,
   useRef,
   useMemo,
   useCallback,
   useContext,
   memo,
+  useEffect,
 } from "react";
 import "./SectionCarouselComponent.css";
 import HighlightCarousel from "./HighlightCarousel";
@@ -32,7 +32,6 @@ const SectionCarouselComponent = () => {
       } else {
         setActiveSection(2);
       }
-      console.log(clientWidth);
     }
   }, []);
 
@@ -76,21 +75,21 @@ const SectionCarouselComponent = () => {
         const time = new Date(event.timeStart * 1000);
         return 1 < time.getHours() && time.getHours() < 10;
       })
-      .map((show) => ({ ...show, section: "morning" }));
+      .map((show) => ({ ...show, section: "Morning" }));
 
     const afternoonShows = mergeShows
       .filter((event) => {
         const time = new Date(event.timeStart * 1000);
         return 10 < time.getHours() && time.getHours() < 17;
       })
-      .map((show) => ({ ...show, section: "afternoon" }));
+      .map((show) => ({ ...show, section: "Afternoon" }));
 
     const eveningShows = mergeShows
       .filter((event) => {
         const time = new Date(event.timeStart * 1000);
         return 17 < time.getHours() && time.getHours() < 23;
       })
-      .map((show) => ({ ...show, section: "evening" }));
+      .map((show) => ({ ...show, section: "Evening" }));
 
     // return this object with all the information ready to display
     const sectionsObject = {
