@@ -80,7 +80,9 @@ public class TvController : ControllerBase
                 Name = c.Name,
                 Description = c.Description,
                 LogoUrl = c.LogoUrl,
-                ShowEvents = c.ShowEvents.Select(se => new ShowEventDto
+                ShowEvents = c.ShowEvents
+                    .OrderBy(se => se.TimeStart)
+                    .Select(se => new ShowEventDto
                 {
                     ShowEventId = se.Id,
                     Description = se.Description,
