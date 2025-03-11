@@ -4,7 +4,7 @@ import useIntersectionObserver from "../../hooks/useIntersectionObserver";
 import DummyCardLoading from "../loadingComponents/DummyCardLoading";
 import AddRemoveShowsContext from "../../contexts/AddRemoveShowsContext";
 
-const ShowCard = ({ show, isAdded, rowRef }) => {
+const ShowCard = ({ show, isAdded, rowRef, style = null }) => {
   const [expanded, setExpanded] = useState(false);
   const { addRemoveShow } = useContext(AddRemoveShowsContext);
   // const addRemoveShow = useContext(MyShowsContext).addRemoveShow;
@@ -54,7 +54,7 @@ const ShowCard = ({ show, isAdded, rowRef }) => {
   };
 
   return (
-    <div className="card-container" ref={cardRef}>
+    <div className="card-container" style={style} ref={cardRef}>
       {isVisible ? (
         <>
           <span className="img-container">
