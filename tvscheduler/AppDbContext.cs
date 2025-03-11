@@ -13,6 +13,8 @@ public class AppDbContext : IdentityDbContext<User>
     
     public DbSet<ChannelTag> ChannelTags { get; set; }
     public DbSet<UserScheduleEvent> ScheduleEvents { get; set; }
+    public DbSet<FavouriteTag> FavouriteTags { get; set; }
+    public DbSet<FavouriteShow> FavouriteShows { get; set; }
     
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 }
