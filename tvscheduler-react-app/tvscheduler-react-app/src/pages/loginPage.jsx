@@ -3,6 +3,9 @@ import "./loginPage.css";
 import InputComponent from "../components/login/InputComponent";
 import { useNavigate } from "react-router-dom";
 
+// set to false to disable input validation
+const validateFormInputsGlobal = false;
+
 const LoginRegisterPage = () => {
   const navigate = useNavigate();
   const [registered, setRegistered] = useState(true);
@@ -50,13 +53,15 @@ const LoginRegisterPage = () => {
     const loginData = Object.fromEntries(formData.entries());
     console.log(loginData);
 
-    const validationErrors = validateInput(loginData);
-    if (Object.keys(validationErrors).length > 0) {
-      setErrorMessages(validationErrors);
-      console.log(validationErrors);
-      return;
+    if (validateFormInputsGlobal){
+      const validationErrors = validateInput(loginData);
+      if (Object.keys(validationErrors).length > 0) {
+        setErrorMessages(validationErrors);
+        console.log(validationErrors);
+        return;
+      }
     }
-
+    
     try {
       const response = await fetch(
         registered
