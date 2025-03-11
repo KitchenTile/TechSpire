@@ -38,6 +38,8 @@ next-env.d.ts
 # temp obj and bin folder ignores
 tvscheduler/obj
 tvscheduler/bin
+tvscheduler.tests/obj
+tvscheduler.tests/bin
 
 # vs
 .vs
