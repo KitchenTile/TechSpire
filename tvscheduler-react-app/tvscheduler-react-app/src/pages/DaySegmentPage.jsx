@@ -1,5 +1,5 @@
 import { useContext, useMemo, useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import ChannelsContext from "../contexts/channelsContext";
 import LogoLoadingComponent from "../components/loadingComponents/LogoLoadingComponent";
 import useShowLookup from "../hooks/useShowLookup";
@@ -9,13 +9,27 @@ import AddRemoveShowsContextProvider from "../contexts/AddRemoveShowsContextProv
 import "./DaySegmentPage.css";
 import Header from "../components/header/Header";
 import MyShowsComponent from "../components/showScheduler/myShowsComponent";
+import MyShowsContext from "../contexts/myShowsContext";
 
 const DaySegmentPage = () => {
   const section = useParams();
 
   const channels = useContext(ChannelsContext);
+  const { myShows } = useContext(MyShowsContext);
+  const navigate = useNavigate();
 
-  console.log(channels);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!channels) {
+        console.log("going back to login");
+        navigate("/");
+      } else {
+        console.log(channels);
+      }
+    }, 2500);
+
+    return () => clearTimeout(timeout);
+  }, [channels]);
 
   const showLookup = useShowLookup(channels);
 
@@ -66,20 +80,25 @@ const DaySegmentPage = () => {
   return (
     <div className="page-container" id="section-page">
       {channels ? (
-        <MyShowsContextProvider channels={channels}>
-          <AddRemoveShowsContextProvider>
-            <Header />
-            <MyShowsComponent />
-            <h1 className="title">{section.section} Shows</h1>
-            <div className="content-container">
-              {mergeShowsPerSection[section.section].map((show) => (
-                <ShowCard show={show} style={{ minWidth: "auto" }} />
-              ))}
-            </div>
-          </AddRemoveShowsContextProvider>
-        </MyShowsContextProvider>
+        <AddRemoveShowsContextProvider>
+          <Header />
+          <MyShowsComponent />
+          <h1 className="title">{section.section} Shows</h1>
+          <div className="content-container">
+            {mergeShowsPerSection[section.section].map((show) => (
+              <ShowCard
+                show={show}
+                rowRef={window}
+                isAdded={myShows.includes(show.showEventId)}
+                style={{ minWidth: "auto" }}
+              />
+            ))}
+          </div>
+        </AddRemoveShowsContextProvider>
       ) : (
-        <LogoLoadingComponent />
+        <>
+          <LogoLoadingComponent />
+        </>
       )}
     </div>
   );

@@ -5,6 +5,7 @@ import LoginRegisterPage from "./pages/loginPage.jsx";
 import DaySegmentPage from "./pages/DaySegmentPage.jsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import FetchedInfoProvider from "./contexts/FetchedInfoProvider.jsx";
+import MyShowsContextProvider from "./contexts/MyShowsContextProvider.jsx";
 
 function App() {
   return (
@@ -14,7 +15,9 @@ function App() {
           path="/main"
           element={
             <FetchedInfoProvider>
-              <MainPage />
+              <MyShowsContextProvider>
+                <MainPage />
+              </MyShowsContextProvider>
             </FetchedInfoProvider>
           }
         />
@@ -22,7 +25,9 @@ function App() {
           path="/time-segments/:section"
           element={
             <FetchedInfoProvider>
-              <DaySegmentPage />
+              <MyShowsContextProvider>
+                <DaySegmentPage />
+              </MyShowsContextProvider>
             </FetchedInfoProvider>
           }
         />

@@ -7,12 +7,26 @@ import SectionCarouselComponent from "../components/showScheduler/Carousels/Sect
 import ChannelsContext from "../contexts/channelsContext";
 import Header from "../components/header/Header";
 import AddRemoveShowsContextProvider from "../contexts/AddRemoveShowsContextProvider";
-import MyShowsContextProvider from "../contexts/MyShowsContextProvider";
 import useThrottle from "../hooks/useThrottle";
+import { useNavigate } from "react-router-dom";
 
 const MainSchedulePage = () => {
   const channels = useContext(ChannelsContext);
   const [isVisible, setIsVisible] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const timeOut = setTimeout(() => {
+      if (!channels) {
+        console.log("Going back to login");
+        navigate("/");
+      } else {
+        console.log(channels);
+      }
+    }, 2500);
+
+    return () => clearTimeout(timeOut);
+  }, [channels]);
 
   //we want to throttle the scrolling so we use our hook
   const throttleWindowScrroll = useThrottle(window, () => {
@@ -34,28 +48,26 @@ const MainSchedulePage = () => {
   return (
     <div className="page-container">
       {channels ? (
-        <MyShowsContextProvider channels={channels}>
-          <AddRemoveShowsContextProvider>
-            <>
-              <Header isVisible={isVisible} />
+        <AddRemoveShowsContextProvider>
+          <>
+            <Header isVisible={isVisible} />
 
-              {/* day section carrousel */}
-              <SectionCarouselComponent />
-              {/* my shows display */}
-              <MyShowsComponent />
-              <h1 className="title h1">All Shows</h1>
-              <div className="grid-container">
-                {/* get the first x elements of the guide data array -- 129 is too long man */}
-                {channels.channels.map((channel) => (
-                  <ChannelShowComponent
-                    key={channel.channelId}
-                    channel={channel}
-                  />
-                ))}
-              </div>
-            </>
-          </AddRemoveShowsContextProvider>
-        </MyShowsContextProvider>
+            {/* day section carrousel */}
+            <SectionCarouselComponent />
+            {/* my shows display */}
+            <MyShowsComponent />
+            <h1 className="title h1">All Shows</h1>
+            <div className="grid-container">
+              {/* get the first x elements of the guide data array -- 129 is too long man */}
+              {channels.channels.map((channel) => (
+                <ChannelShowComponent
+                  key={channel.channelId}
+                  channel={channel}
+                />
+              ))}
+            </div>
+          </>
+        </AddRemoveShowsContextProvider>
       ) : (
         <LogoLoadingComponent />
       )}

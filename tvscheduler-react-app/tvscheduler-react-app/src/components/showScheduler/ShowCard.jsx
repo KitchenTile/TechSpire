@@ -1,4 +1,4 @@
-import { memo, useContext, useState } from "react";
+import { memo, useContext, useEffect, useState } from "react";
 import "./ShowCard.css";
 import useIntersectionObserver from "../../hooks/useIntersectionObserver";
 import DummyCardLoading from "../loadingComponents/DummyCardLoading";
@@ -7,7 +7,6 @@ import AddRemoveShowsContext from "../../contexts/AddRemoveShowsContext";
 const ShowCard = ({ show, isAdded, rowRef, style = null }) => {
   const [expanded, setExpanded] = useState(false);
   const { addRemoveShow } = useContext(AddRemoveShowsContext);
-  // const addRemoveShow = useContext(MyShowsContext).addRemoveShow;
 
   console.log(`card ${show.name} redering` + new Date().toISOString());
 
