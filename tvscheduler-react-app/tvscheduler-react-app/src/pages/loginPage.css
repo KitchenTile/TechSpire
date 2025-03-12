@@ -33,6 +33,10 @@
 }
 }
 
+.form-title{
+    margin-block-start: 0.5em;
+}
+
 .text-button{
     margin-bottom: 2em;
 }

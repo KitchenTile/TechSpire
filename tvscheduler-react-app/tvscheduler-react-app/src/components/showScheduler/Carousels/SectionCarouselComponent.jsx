@@ -132,6 +132,14 @@ const SectionCarouselComponent = () => {
           <span
             key={idx}
             className={`indicator ${activeSection === idx ? "active" : ""}`}
+            onClick={() => {
+              activeSection !== idx
+                ? handleClick(
+                    carouselSectionRef.current.clientWidth *
+                      (idx - activeSection)
+                  )
+                : console.log("current section");
+            }}
           >
             {section}
           </span>
