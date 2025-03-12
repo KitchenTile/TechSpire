@@ -1,27 +1,27 @@
 import { useState } from "react";
 import "./Navigation.css";
+import { Link } from "react-router-dom";
 
 const Navigation = () => {
   const [expanded, setExpanded] = useState(false);
 
   const links = ["Channels", "Morning", "Afternoon", "Evening", "All"];
 
-  const handleClick = () => {
-    setExpanded(!expanded);
-  };
+  const mouseEnter = () => setExpanded(true);
+  const mouseLeave = () => setExpanded(false);
 
   return (
     <li
       className={`navigation-container ${expanded ? "expanded" : ""}`}
-      onMouseEnter={handleClick}
-      onMouseLeave={handleClick}
+      onMouseEnter={mouseEnter}
+      onMouseLeave={mouseLeave}
     >
       <span>Explore</span>
       <div className="navigation-links">
         {links.map((link, index) => (
-          <span className="link" key={index}>
+          <Link to={`/explore/${link}`} className="link" key={index}>
             {link}
-          </span>
+          </Link>
         ))}
       </div>
       <svg
