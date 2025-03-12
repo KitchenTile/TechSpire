@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import "./mainSchedulePage.css";
 import ChannelShowComponent from "../components/showScheduler/ChannelShowComponent";
-import LogoLoadingComponent from "../components/LogoLoadingComponent";
+import LogoLoadingComponent from "../components/loadingComponents/LogoLoadingComponent";
 import MyShowsComponent from "../components/showScheduler/myShowsComponent";
 import SectionCarouselComponent from "../components/showScheduler/Carousels/SectionCarouselComponent";
 import ChannelsContext from "../contexts/channelsContext";
+import Header from "../components/header/Header";
 
 const MainSchedulePage = () => {
   const [channels, setChannels] = useState(null);
@@ -49,12 +50,6 @@ const MainSchedulePage = () => {
       setMyShows(scheduledShowIds);
     }
   }, [channels]);
-
-  // channels
-  //   ? channels.schedule.map((show) => {
-  //       setMyShows((myShows) => [...myShows, show.showEvent.showEventId]);
-  //     })
-  //   : null;
 
   const addShowCall = async (showEventId) => {
     const token = localStorage.getItem("JWToken");
@@ -101,10 +96,9 @@ const MainSchedulePage = () => {
   };
 
   //add shows to state pass -- pass function to component as prop (ShowCard)
-  const addRemoveShow = useCallback((showEventId) => {
+  const addRemoveShow = useCallback(async (showEventId) => {
     setMyShows((prevMyShows) => {
       if (!prevMyShows.includes(showEventId)) {
-        console.log("Perv: " + prevMyShows);
         addShowCall(showEventId);
         return [...prevMyShows, showEventId];
       } else {
@@ -119,6 +113,7 @@ const MainSchedulePage = () => {
       {channels ? (
         <ChannelsContext.Provider value={channels}>
           <>
+            <Header myShows={myShows} addRemoveShow={addRemoveShow} />
             {/* day section carrousel */}
             <SectionCarouselComponent addRemoveShow={addRemoveShow} />
             {/* my shows display */}

@@ -9,7 +9,6 @@ import {
 } from "react";
 import ShowCard from "./ShowCard";
 import "./ShowRowComponent.css";
-import useThrottle from "../../hooks/useThrottle";
 import useShowLookup from "../../hooks/useShowLookup";
 import ChannelsContext from "../../contexts/channelsContext";
 
@@ -30,7 +29,7 @@ const ShowRowComponent = ({ channel, myShows, addRemoveShow }) => {
       if (container) {
         // get information that we need like the scroll amount from the left, the width of the container etc.
         const { scrollLeft, clientWidth, scrollWidth } = container;
-        setScrollPosition(scrollLeft);
+        setScrollPosition((prev) => (prev !== scrollLeft ? scrollLeft : prev));
         setShowLeftArrow(scrollLeft > 5);
         setShowRightArrow(scrollLeft + clientWidth < scrollWidth - 5);
       }
@@ -48,11 +47,24 @@ const ShowRowComponent = ({ channel, myShows, addRemoveShow }) => {
   }, []);
 
   // function to skip forwards and backwards between the show cards
-  const handleClick = useCallback((skipAmount) => {
-    setScrollPosition(scrollPosition + skipAmount);
+  const handleClick = useCallback(
+    (skipAmount) => {
+      setScrollPosition(scrollPosition + skipAmount);
 
-    showContainerRef.current.scrollLeft = scrollPosition + skipAmount;
-  }, []);
+      showContainerRef.current.scrollLeft = scrollPosition + skipAmount;
+      console.log(scrollPosition);
+    },
+    [scrollPosition]
+  );
+
+  // const handleClick = useCallback((skipAmount) => {
+  //   setScrollPosition((prev) => {
+  //     const newScroll = prev + skipAmount;
+  //     return newScroll;
+  //   });
+  //   showContainerRef.current.scrollLeft = scrollPosition;
+  //   console.log(scrollPosition);
+  // }, []);
 
   const showsLookup = useShowLookup(channels);
 
@@ -64,9 +76,10 @@ const ShowRowComponent = ({ channel, myShows, addRemoveShow }) => {
       //Add show instance's details
       return { ...event, ...showDetails };
     });
-  }, [events]);
+  }, [events, showsLookup]);
 
   // useThrottle(showContainerRef, handleScroll);
+  // console.log("rerender");
 
   return (
     <>
@@ -96,7 +109,7 @@ const ShowRowComponent = ({ channel, myShows, addRemoveShow }) => {
           {/* if the channel has shows, get the first x shows for each channel -- consider writing a variable for more readable code */}
           {mergedShows.length > 0 ? (
             mergedShows
-              .slice(0, 5)
+              .slice(0, 10)
               .map((show) => (
                 <ShowCard
                   key={show.showEventId}

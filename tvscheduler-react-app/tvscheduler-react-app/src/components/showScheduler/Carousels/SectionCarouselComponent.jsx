@@ -124,13 +124,11 @@ const SectionCarouselComponent = ({ addRemoveShow }) => {
       </span>
       <div className="carousel-container" ref={carouselSectionRef}>
         {Object.entries(mergeShowsPerSection).map((section, idx) => (
-          <>
-            <HighlightCarousel
-              key={idx}
-              section={section[1]}
-              addRemoveShow={addRemoveShow}
-            />
-          </>
+          <HighlightCarousel
+            key={idx}
+            section={section[1]}
+            addRemoveShow={addRemoveShow}
+          />
         ))}
       </div>
       <div className="section-indicators">

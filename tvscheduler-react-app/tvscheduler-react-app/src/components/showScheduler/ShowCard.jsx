@@ -1,12 +1,13 @@
 import { memo, useState } from "react";
 import "./ShowCard.css";
 import useIntersectionObserver from "../../hooks/useIntersectionObserver";
-import DummyCardLoading from "./DummyCardLoading";
+import DummyCardLoading from "../loadingComponents/DummyCardLoading";
+import LowResImgHandler from "../loadingComponents/LowResImgHandler";
 
 const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
   const [expanded, setExpanded] = useState(false);
 
-  console.log(`card ${show.name} redering`);
+  // console.log(`card ${show.name} redering` + new Date().toISOString());
 
   //options for intersection observer custom hook
   const options = {
@@ -58,6 +59,8 @@ const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
             <img
               src={`https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`}
               alt={show.name}
+              loading="lazy"
+              decoding="async"
             />
           </span>
           <div className="info-container">
@@ -79,7 +82,6 @@ const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
               </span>
             </div>
             <div className={`show-description ${expanded ? "expanded" : ""}`}>
-              {/* needs work */}
               {expanded
                 ? show.description.split("[", 1)
                 : show.description.slice(0, 70).split("[", 1) + " "}
@@ -117,10 +119,8 @@ const ShowCard = ({ show, addRemoveShow, isAdded, rowRef }) => {
 
 const areEqual = (prevProps, nextProps) => {
   return (
-    prevProps.show === nextProps.show &&
-    prevProps.isAdded === nextProps.isAdded &&
-    prevProps.rowRef === nextProps.rowRef &&
-    prevProps.addRemoveShow === nextProps.addRemoveShow
+    prevProps.show.showEventId === nextProps.show.showEventId &&
+    prevProps.isAdded === nextProps.isAdded
   );
 };
 

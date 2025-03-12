@@ -3,6 +3,9 @@ import "./loginPage.css";
 import InputComponent from "../components/login/InputComponent";
 import { useNavigate } from "react-router-dom";
 
+// set to false to disable input validation
+const validateFormInputsGlobal = false;
+
 const LoginRegisterPage = () => {
   const navigate = useNavigate();
   const [registered, setRegistered] = useState(true);
@@ -13,14 +16,14 @@ const LoginRegisterPage = () => {
     // if (!loginData.email || !loginData.email.includes("@")) {
     //   errors.email = "*Please enter a valid email";
     // }
-    if (
-      !registered &&
-      (!loginData.username ||
-        loginData.username.length < 3 ||
-        loginData.username.length > 10)
-    ) {
-      errors.username = "*Username should be 3-10 characters long";
-    }
+    // if (
+    //   !registered &&
+    //   (!loginData.username ||
+    //     loginData.username.length < 3 ||
+    //     loginData.username.length > 10)
+    // ) {
+    //   errors.username = "*Username should be 3-10 characters long";
+    // }
     if (registered) {
       if (
         loginData.password.length < 8 ||
@@ -50,12 +53,15 @@ const LoginRegisterPage = () => {
     const loginData = Object.fromEntries(formData.entries());
     console.log(loginData);
 
-    const validationErrors = validateInput(loginData);
-    if (Object.keys(validationErrors).length > 0) {
-      setErrorMessages(validationErrors);
-      return;
+    if (validateFormInputsGlobal){
+      const validationErrors = validateInput(loginData);
+      if (Object.keys(validationErrors).length > 0) {
+        setErrorMessages(validationErrors);
+        console.log(validationErrors);
+        return;
+      }
     }
-
+    
     try {
       const response = await fetch(
         registered
@@ -68,20 +74,27 @@ const LoginRegisterPage = () => {
         }
       );
 
+      console.log(response);
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to post data");
       }
 
       const data = await response.json();
-      const JWToken = data.token;
-      if (JWToken) {
-        localStorage.setItem("JWToken", JWToken);
-        console.log(JWToken);
-        navigate("/main");
+      if (registered) {
+        const JWToken = data.token;
+        if (JWToken) {
+          localStorage.setItem("JWToken", JWToken);
+          console.log(JWToken);
+          navigate("/main");
+        } else {
+          console.error("No JWT");
+        }
       } else {
-        console.error("No JWT");
+        toggleRegistered();
       }
+
       setErrorMessages({}); // Clear error messages on successful login/register
     } catch (error) {
       console.error("Login/Register error: ", error);
@@ -97,15 +110,15 @@ const LoginRegisterPage = () => {
   const inputs = [
     [
       {
-        name: "email",
+        name: "name",
         label: "Email",
         errorMessage: errorMessages.email,
       },
-      {
-        name: "username",
-        label: "Username",
-        errorMessage: errorMessages.username,
-      },
+      // {
+      //   name: "username",
+      //   label: "Username",
+      //   errorMessage: errorMessages.username,
+      // },
       {
         name: "password",
         label: "Password",

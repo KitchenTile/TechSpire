@@ -36,7 +36,6 @@
   content: "";
   position: absolute;
   inset: 0;
-  /* background: linear-gradient(to top, rgba(36, 36, 36, 1) 0%, rgba(36, 36, 36, 0.8) 50%, rgba(36, 36, 36, 0) 100%); */
   background: linear-gradient(to top, rgb(0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0) 100%);
 
   z-index: 1;
