@@ -1,10 +1,9 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useMemo, useContext } from "react";
 import useShowLookup from "./useShowLookup";
 import ChannelsContext from "../contexts/channelsContext";
 
 const useMergeAndFilter = (param) => {
   const channels = useContext(ChannelsContext);
-
   const showLookup = useShowLookup(channels);
 
   // sorting function for the sort my schedule sort method
@@ -12,53 +11,82 @@ const useMergeAndFilter = (param) => {
     return a.timeStart - b.timeStart;
   };
 
-  // get all the shows flattened with the lookup table
-  const mergedShows = channels
-    ? channels?.channels
-        .map((channel) => {
-          if (!channel.showEvents || !channel.showEvents) return [];
-          return channel.showEvents.map((event) => {
-            return { ...event, ...showLookup[event.showId] };
-          });
-        })
-        .flat()
-    : null;
+  const getRandomElements = (array, n) => {
+    const copy = [...array];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const random = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[random]] = [copy[random], copy[i]];
+    }
+    return copy.slice(0, n);
+  };
 
-  switch (param) {
-    case "Morning":
-      const morningShows = mergedShows
-        ?.filter((event) => {
-          const time = new Date(event.timeStart * 1000);
-          return 1 < time.getHours() && time.getHours() < 10;
-        })
-        .map((show) => ({ ...show, section: "Morning" }));
-      return morningShows;
+  // Memoize the merged show data
+  const mergedShows = useMemo(() => {
+    if (!channels) return [];
 
-    case "Afternoon":
-      const afternoonShows = mergedShows
-        ?.filter((event) => {
-          const time = new Date(event.timeStart * 1000);
-          return 10 < time.getHours() && time.getHours() < 17;
-        })
-        .map((show) => ({ ...show, section: "Afternoon" }));
-      return afternoonShows;
+    return channels.channels.flatMap(
+      (channel) =>
+        channel.showEvents?.map((event) => ({
+          ...event,
+          ...showLookup[event.showId],
+        })) || []
+    );
+  }, [channels, showLookup]);
 
-    case "Evening":
-      const eveningShows = mergedShows
-        ?.filter((event) => {
-          const time = new Date(event.timeStart * 1000);
-          return 17 < time.getHours() && time.getHours() < 23;
-        })
-        .map((show) => ({ ...show, section: "Evening" }));
-      return eveningShows;
+  // Memoize the filtered sorted results
+  return useMemo(() => {
+    switch (param) {
+      case "Morning":
+        return mergedShows.filter((event) => {
+          const time = new Date(event.timeStart * 1000).getHours();
+          return time > 1 && time < 10;
+        });
 
-    case "All":
-      const sortedAllShows = mergedShows?.sort(compareStartTime);
-      return sortedAllShows;
+      case "Afternoon":
+        return mergedShows.filter((event) => {
+          const time = new Date(event.timeStart * 1000).getHours();
+          return time > 10 && time < 17;
+        });
 
-    case "Channels":
-      return [];
-  }
+      case "Evening":
+        return mergedShows.filter((event) => {
+          const time = new Date(event.timeStart * 1000).getHours();
+          return time > 17 && time < 23;
+        });
+
+      case "All":
+        return [...mergedShows].sort(compareStartTime);
+
+      case "carousel":
+        const morningShows = mergedShows.filter((event) => {
+          const time = new Date(event.timeStart * 1000).getHours();
+          return time > 1 && time < 10;
+        });
+
+        const afternoonShows = mergedShows.filter((event) => {
+          const time = new Date(event.timeStart * 1000).getHours();
+          return time > 10 && time < 17;
+        });
+
+        const eveningShows = mergedShows.filter((event) => {
+          const time = new Date(event.timeStart * 1000).getHours();
+          return time > 17 && time < 23;
+        });
+
+        const sectionsObject = {
+          Morning: getRandomElements(morningShows, 5),
+          Afternoon: getRandomElements(afternoonShows, 5),
+          Evening: getRandomElements(eveningShows, 5),
+        };
+        return sectionsObject;
+
+      case "Channels":
+        return []; // Placeholder for now
+
+      default:
+        return [];
+    }
+  }, [param, mergedShows]);
 };
 
 export default useMergeAndFilter;

@@ -2,39 +2,22 @@ import ShowCard from "./ShowCard";
 import rightArrow from "../../assets/rightArrow.svg";
 import { useContext, useMemo } from "react";
 import "./MyShowsComponent.css";
-import useShowLookup from "../../hooks/useShowLookup";
+import useMergeAndFilter from "../../hooks/useMergeAndFilter";
 import ChannelsContext from "../../contexts/channelsContext";
 import MyShowsContext from "../../contexts/myShowsContext";
 
 const MyShowsComponent = () => {
   const channels = useContext(ChannelsContext);
   const { myShows } = useContext(MyShowsContext);
-  // sorting function for the sort my schedule sort method
-  const compareStartTime = (a, b) => {
-    return a.timeStart - b.timeStart;
-  };
-
-  const showLookup = useShowLookup(channels);
+  const mergeShows = useMergeAndFilter("All");
 
   //this function replaces previous
   const mergeAndSort = useMemo(() => {
-    const mergeShows = channels.channels
-      .map((channel) => {
-        // Check if the channel has events
-        if (!channel.showEvents || !channel.showEvents) return [];
-        // Map each event to merge its details from the lookup
-        return channel.showEvents.map((event) => {
-          // Merge event with show details
-          return { ...event, ...showLookup[event.showId] };
-        });
-      })
-      .flat();
-
-    const filtered = mergeShows.filter((event) =>
+    const filtered = mergeShows?.filter((event) =>
       myShows.includes(event.showEventId)
     );
 
-    return filtered.sort(compareStartTime);
+    return filtered;
   }, [channels, myShows]);
 
   return (

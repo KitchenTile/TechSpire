@@ -2,7 +2,6 @@ import { useContext, useMemo, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ChannelsContext from "../contexts/channelsContext";
 import LogoLoadingComponent from "../components/loadingComponents/LogoLoadingComponent";
-import useShowLookup from "../hooks/useShowLookup";
 import ShowCard from "../components/showScheduler/ShowCard";
 import MyShowsContextProvider from "../contexts/MyShowsContextProvider";
 import AddRemoveShowsContextProvider from "../contexts/AddRemoveShowsContextProvider";
@@ -47,7 +46,7 @@ const ExplorePage = () => {
             <>
               <h1 className="title">{section.section} Shows</h1>
               <div className="content-container">
-                {mergedAndFilteredShows.map((show) => (
+                {mergedAndFilteredShows?.map((show) => (
                   <ShowCard
                     show={show}
                     rowRef={window}

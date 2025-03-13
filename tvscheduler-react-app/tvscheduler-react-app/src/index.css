@@ -98,7 +98,7 @@ button:focus-visible {
   line-height: 1.1;
   font-weight: 800;
   word-spacing: 0.15rem;
-  margin-block-start: 0;
+  margin-block-start: 0.5em;
   /* padding-left: 1em; */
 }
 

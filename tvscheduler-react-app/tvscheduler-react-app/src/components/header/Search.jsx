@@ -4,31 +4,20 @@ import ChannelsContext from "../../contexts/channelsContext";
 import useShowLookup from "../../hooks/useShowLookup";
 import useDebounce from "../../hooks/useDebounce";
 import SearchCard from "./SearchCard";
-import MyShowsContext from "../../contexts/myShowsContext";
+import useMergeAndFilter from "../../hooks/useMergeAndFilter";
 
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const debounceSearachTerm = useDebounce(searchTerm, 500);
   const channels = useContext(ChannelsContext);
-  const showLookup = useShowLookup(channels);
   const containerRef = useRef(null);
+
+  const mergeShows = useMergeAndFilter("All");
 
   //this function replaces previous
   const mergeAndSort = useMemo(() => {
-    const mergeShows = channels.channels
-      .map((channel) => {
-        // Check if the channel has events
-        if (!channel.showEvents || !channel.showEvents) return [];
-        // Map each event to merge its details from the lookup
-        return channel.showEvents.map((event) =>
-          // Merge event with show details
-          ({ ...event, ...showLookup[event.showId] })
-        );
-      })
-      .flat();
-
     // filter the search input
-    const filteredBySearch = mergeShows.filter(
+    const filteredBySearch = mergeShows?.filter(
       (event) =>
         event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         event.tagName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -38,7 +27,7 @@ const Search = () => {
     const uniqueShows = [];
     const seenShowIds = new Set();
 
-    filteredBySearch.map((show) => {
+    filteredBySearch?.map((show) => {
       if (!seenShowIds.has(show.showId)) {
         uniqueShows.push(show);
         seenShowIds.add(show.showId);
