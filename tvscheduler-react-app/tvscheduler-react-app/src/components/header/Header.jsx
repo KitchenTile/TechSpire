@@ -4,7 +4,7 @@ import "./Header.css";
 import { Link } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 
-const Header = ({ myShows, addRemoveShow }) => {
+const Header = ({ isVisible = true }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
 
   const handleScroll = useCallback(() => {
@@ -23,7 +23,7 @@ const Header = ({ myShows, addRemoveShow }) => {
   }, [handleScroll]);
 
   return (
-    <ul className={`header-container ${scrollPosition > 500 ? "active" : ""}`}>
+    <ul className={`header-container ${isVisible ? "active" : ""}`}>
       <Link to={"/main"} className="header-img-container">
         <li className="header-img-container">
           <svg
@@ -52,7 +52,7 @@ const Header = ({ myShows, addRemoveShow }) => {
       </Link>
 
       <Navigation />
-      <Search myShows={myShows} addRemoveShow={addRemoveShow} />
+      <Search />
     </ul>
   );
 };

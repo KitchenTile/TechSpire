@@ -1,21 +1,20 @@
 import {
-  useEffect,
   useState,
   useRef,
   useMemo,
   useCallback,
   useContext,
+  memo,
 } from "react";
 import "./SectionCarouselComponent.css";
 import HighlightCarousel from "./HighlightCarousel";
-import useShowLookup from "../../../hooks/useShowLookup";
 import useThrottle from "../../../hooks/useThrottle";
-import ChannelsContext from "../../../contexts/channelsContext";
+import useMergeAndFilter from "../../../hooks/useMergeAndFilter";
 
-const SectionCarouselComponent = ({ addRemoveShow }) => {
+const SectionCarouselComponent = () => {
   const [activeSection, setActiveSection] = useState(0);
   const carouselSectionRef = useRef(null);
-  const channels = useContext(ChannelsContext);
+  const mergeShowsPerSection = useMergeAndFilter("carousel");
 
   const handleScroll = useCallback(() => {
     //the container is the row we are referencing to
@@ -31,7 +30,6 @@ const SectionCarouselComponent = ({ addRemoveShow }) => {
       } else {
         setActiveSection(2);
       }
-      console.log(clientWidth);
     }
   }, []);
 
@@ -45,60 +43,6 @@ const SectionCarouselComponent = ({ addRemoveShow }) => {
     },
     [carouselSectionRef]
   );
-
-  //Fisher-Yates shuffle to get random elements
-  const getRandomElements = (array, n) => {
-    const copy = [...array];
-    for (let i = copy.length - 1; i > 0; i--) {
-      const random = Math.floor(Math.random() * (i + 1));
-      [copy[i], copy[random]] = [copy[random], copy[i]];
-    }
-    return copy.slice(0, n);
-  };
-
-  const showLookup = useShowLookup(channels);
-
-  const mergeShowsPerSection = useMemo(() => {
-    // get all the shows flattened with the lookup table
-    const mergeShows = channels.channels
-      .map((channel) => {
-        if (!channel.showEvents || !channel.showEvents) return [];
-        return channel.showEvents.map((event) => {
-          return { ...event, ...showLookup[event.showId] };
-        });
-      })
-      .flat();
-
-    // separate the shows into different time sections
-    const morningShows = mergeShows
-      .filter((event) => {
-        const time = new Date(event.timeStart * 1000);
-        return 1 < time.getHours() && time.getHours() < 10;
-      })
-      .map((show) => ({ ...show, section: "morning" }));
-
-    const afternoonShows = mergeShows
-      .filter((event) => {
-        const time = new Date(event.timeStart * 1000);
-        return 10 < time.getHours() && time.getHours() < 17;
-      })
-      .map((show) => ({ ...show, section: "afternoon" }));
-
-    const eveningShows = mergeShows
-      .filter((event) => {
-        const time = new Date(event.timeStart * 1000);
-        return 17 < time.getHours() && time.getHours() < 23;
-      })
-      .map((show) => ({ ...show, section: "evening" }));
-
-    // return this object with all the information ready to display
-    const sectionsObject = {
-      Morning: getRandomElements(morningShows, 5),
-      Afternoon: getRandomElements(afternoonShows, 5),
-      Evening: getRandomElements(eveningShows, 5),
-    };
-    return sectionsObject;
-  }, [channels]);
 
   return (
     <div className="carousel-section">
@@ -124,11 +68,7 @@ const SectionCarouselComponent = ({ addRemoveShow }) => {
       </span>
       <div className="carousel-container" ref={carouselSectionRef}>
         {Object.entries(mergeShowsPerSection).map((section, idx) => (
-          <HighlightCarousel
-            key={idx}
-            section={section[1]}
-            addRemoveShow={addRemoveShow}
-          />
+          <HighlightCarousel key={idx} section={section[1]} />
         ))}
       </div>
       <div className="section-indicators">
@@ -136,6 +76,14 @@ const SectionCarouselComponent = ({ addRemoveShow }) => {
           <span
             key={idx}
             className={`indicator ${activeSection === idx ? "active" : ""}`}
+            onClick={() => {
+              activeSection !== idx
+                ? handleClick(
+                    carouselSectionRef.current.clientWidth *
+                      (idx - activeSection)
+                  )
+                : console.log("current section");
+            }}
           >
             {section}
           </span>
@@ -165,4 +113,4 @@ const SectionCarouselComponent = ({ addRemoveShow }) => {
   );
 };
 
-export default SectionCarouselComponent;
+export default memo(SectionCarouselComponent);

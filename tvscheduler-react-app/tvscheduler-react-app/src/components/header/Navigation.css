@@ -1,0 +1,64 @@
+.navigation-container{
+    position: relative;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 3em;
+    gap: 5px;
+    color: var(--accentColor);
+    border-radius: 15px;
+    padding-left: 15px;
+    transform: translateY(2.5px);
+
+    /* cursor: pointer; */
+    
+    transition: 0.3s ease-in-out;
+
+    &:hover{
+        background: var(--accentColor);
+        color: white;
+
+        & span{
+            cursor: default
+        }
+
+    }
+    
+    & .expand-arrow{
+        transform: translateY(2px);
+        transition: all 0.3s ease-in-out;
+
+        & path{
+            fill: var(--accentColor);
+        }
+      }
+
+    &.expanded .navigation-links{
+        width: auto;
+        visibility: visible;
+        padding-right: 20px;
+    }   
+
+    &.expanded .expand-arrow{
+        display: none;
+    }
+
+}
+
+.navigation-links{
+    width: 0px;
+    overflow: hidden;
+    visibility: hidden;
+    cursor: pointer;
+    interpolate-size: allow-keywords;
+    transition: 0.3s ease-in-out;
+
+    & .link{
+        color: white;
+        cursor: pointer;
+        white-space: nowrap;
+        margin-inline: 15px;
+        font-weight: 500 !important;
+    }
+}

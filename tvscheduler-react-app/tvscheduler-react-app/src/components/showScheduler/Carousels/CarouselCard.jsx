@@ -1,6 +1,10 @@
+import { Link } from "react-router-dom";
 import "./CarouselCard.css";
+import { memo, useContext } from "react";
+import AddRemoveShowsContext from "../../../contexts/AddRemoveShowsContext";
 
-const CarouselCard = ({ show, activeShow, id, addRemoveShow }) => {
+const CarouselCard = ({ show, activeShow, id, isAdded }) => {
+  const { addRemoveShow } = useContext(AddRemoveShowsContext);
   const unixToHuman = new Date(show.timeStart * 1000);
 
   return (
@@ -31,29 +35,31 @@ const CarouselCard = ({ show, activeShow, id, addRemoveShow }) => {
             addRemoveShow(show.showEventId);
           }}
         >
-          ADD TO SCHEDULE
+          {isAdded ? "REMOVE FROM SCHEDULE " : "ADD TO SCHEDULE"}
         </button>
-        <button className="see-more">
-          SEE MORE <span>{show.section}</span> SHOWS
-          <span>
-            <svg
-              width="10"
-              height="10"
-              viewBox="0 0 22 37"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="arrow"
-            >
-              <path
-                d="M0 31.7143L13.75 18.5L0 5.28571L2.75 0L22 18.5L2.75 37L0 31.7143Z"
-                fill="white"
-              />
-            </svg>
-          </span>
-        </button>
+        <Link to={`/time-segments/${show.section}`}>
+          <button className="see-more">
+            SEE MORE <span>{show.section}</span> SHOWS
+            <span>
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 22 37"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="arrow"
+              >
+                <path
+                  d="M0 31.7143L13.75 18.5L0 5.28571L2.75 0L22 18.5L2.75 37L0 31.7143Z"
+                  fill="white"
+                />
+              </svg>
+            </span>
+          </button>
+        </Link>
       </div>
     </div>
   );
 };
 
-export default CarouselCard;
+export default memo(CarouselCard);

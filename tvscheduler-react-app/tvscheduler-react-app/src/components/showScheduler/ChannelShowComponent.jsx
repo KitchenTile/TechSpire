@@ -2,13 +2,12 @@ import useIntersectionObserver from "../../hooks/useIntersectionObserver";
 import LoadingComponent from "../loadingComponents/loadingComponent";
 import ShowRowComponent from "./ShowRowComponenet";
 import "./ChannelShowComponent.css";
+import { memo } from "react";
 
 const ChannelShowComponent = ({
   // we will hopefully remove the two channel props
   // channels,
   channel,
-  addRemoveShow,
-  myShows,
 }) => {
   //options for intersection observer custom hook
   const options = {
@@ -36,8 +35,6 @@ const ChannelShowComponent = ({
           <ShowRowComponent
             // channels={channels}
             channel={channel}
-            addRemoveShow={addRemoveShow}
-            myShows={myShows}
           />
         </>
       ) : (
@@ -47,4 +44,4 @@ const ChannelShowComponent = ({
   );
 };
 
-export default ChannelShowComponent;
+export default memo(ChannelShowComponent);

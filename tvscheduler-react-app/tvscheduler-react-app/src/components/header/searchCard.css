@@ -1,6 +1,6 @@
 .search-card-container{
 	box-sizing: border-box;
-  overflow:hidden;
+  	overflow:hidden;
 	position: relative;
 	width: 360px;
 	min-height: 80px;
@@ -37,6 +37,7 @@
     height: 50%;
     top: 50%;
 	margin-top: 0;
+	padding-top: 0;
     transform: translateY(-50%);
 
 	transition: all 0.3s ease-in-out;
