@@ -1,9 +1,8 @@
-import { useContext, useMemo, useState, useEffect } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ChannelsContext from "../contexts/channelsContext";
 import LogoLoadingComponent from "../components/loadingComponents/LogoLoadingComponent";
 import ShowCard from "../components/showScheduler/ShowCard";
-import MyShowsContextProvider from "../contexts/MyShowsContextProvider";
 import AddRemoveShowsContextProvider from "../contexts/AddRemoveShowsContextProvider";
 import "./ExplorePage.css";
 import Header from "../components/header/Header";
@@ -11,12 +10,14 @@ import MyShowsComponent from "../components/showScheduler/myShowsComponent";
 import MyShowsContext from "../contexts/myShowsContext";
 import useMergeAndFilter from "../hooks/useMergeAndFilter";
 import ChannelShowComponent from "../components/showScheduler/ChannelShowComponent";
+import GenreFilterComponent from "../components/explore/GenreFilterComponent";
 
 const ExplorePage = () => {
   const section = useParams();
-
+  const [filter, setFilter] = useState("All");
   const channels = useContext(ChannelsContext);
   const { myShows } = useContext(MyShowsContext);
+  const mergedAndFilteredShows = useMergeAndFilter(section.section);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,9 +33,22 @@ const ExplorePage = () => {
     return () => clearTimeout(timeout);
   }, [channels]);
 
-  const mergedAndFilteredShows = useMergeAndFilter(section.section);
+  const handleFilter = (value) => {
+    setFilter(value);
+  };
+
+  useEffect(() => {
+    console.log(filter);
+  }, [filter]);
 
   console.log(mergedAndFilteredShows);
+
+  const filteredByGenre =
+    filter === "All"
+      ? mergedAndFilteredShows
+      : mergedAndFilteredShows.filter((show) => {
+          return show.tagName === filter;
+        });
 
   return (
     <div className="page-container" id="section-page">
@@ -44,9 +58,12 @@ const ExplorePage = () => {
           <MyShowsComponent />
           {section.section !== "Channels" ? (
             <>
-              <h1 className="title">{section.section} Shows</h1>
+              <div className="title-genres">
+                <h1 className="title">{section.section} Shows</h1>
+                <GenreFilterComponent handleFilter={handleFilter} />
+              </div>
               <div className="content-container">
-                {mergedAndFilteredShows?.map((show) => (
+                {filteredByGenre?.map((show) => (
                   <ShowCard
                     show={show}
                     rowRef={window}
