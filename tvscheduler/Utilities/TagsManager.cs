@@ -26,8 +26,16 @@ public class TagsManager
         {
             
             var openAiHandler = new OpenAiHandler(_httpClient, tagList, show.Name);
-            var gptresponse =  await openAiHandler.RequestTag();
-            //                                             !! verify gpt answer!!!
+            string gptresponse;
+
+            //           !! verify gpt answer!!! is the response in the provided tag list ?
+            do
+            {
+                gptresponse = await openAiHandler.RequestTag();
+
+            } while ( !tagList.Contains(gptresponse) );
+            
+        
             
             Console.WriteLine("TAG GENERATED FOR " + show.Name, " === ", gptresponse);
             
