@@ -49,29 +49,3 @@
         color: var(--accentColor);
     }
 }
-
-
-.header {
-    align-items: center;
-    background-color: var(--LV-primary-yellow);
-    display: flex;
-    flex-direction: row;
-    height: var(--header-height);
-    justify-content: space-between;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 999;
-    padding: 1em 2em;
-    list-style: none;
-    gap: 1.5em;
-    visibility: hidden;
-    opacity: 0;
-    transition: all 0.5s ease-in-out;
-
-    &.active{
-        visibility: visible;
-        opacity: 1;
-    }   
-}

@@ -63,14 +63,18 @@ const ExplorePage = () => {
                 <GenreFilterComponent handleFilter={handleFilter} />
               </div>
               <div className="content-container">
-                {filteredByGenre?.map((show) => (
-                  <ShowCard
-                    show={show}
-                    rowRef={window}
-                    isAdded={myShows.includes(show.showEventId)}
-                    style={{ minWidth: "auto" }}
-                  />
-                ))}
+                {filteredByGenre.length > 0 ? (
+                  filteredByGenre.map((show) => (
+                    <ShowCard
+                      show={show}
+                      rowRef={window}
+                      isAdded={myShows.includes(show.showEventId)}
+                      style={{ minWidth: "auto" }}
+                    />
+                  ))
+                ) : (
+                  <p>No {filter} shows found</p>
+                )}
               </div>
             </>
           ) : (

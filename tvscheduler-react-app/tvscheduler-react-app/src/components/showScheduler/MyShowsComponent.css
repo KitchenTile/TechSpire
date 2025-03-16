@@ -10,3 +10,72 @@
     display: none;
   }
 }
+
+.vertical-container{
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 0px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: black;
+  interpolate-size: allow-keywords;
+  transition: width 0.2s ease-in-out;
+
+  .myshow-container.vertical, .title{
+    display: none;
+  }
+
+  & .my-shows-icon{
+    position: absolute;
+    right: 2em;
+    top: 16.5px;
+  }
+
+  &.expanded{
+    width: 400px;
+    height: 100vh;
+    padding-block: 3em;
+
+    & .myshow-container.vertical, .title{
+      display: flex;
+      flex-direction: column;
+      transform: translateX(-20px);
+    }
+    & .my-shows-icon{
+      display: none;
+    }
+
+    & .close-bttn{
+      position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 20px;
+    left: 20px;
+    rotate: 45deg;
+      cursor: pointer;
+
+      &:before{
+        content: "";
+        position: absolute;
+        height: 15px;
+        width: 3px;
+        border-radius: 2px;
+        background:white;
+        transform: translate(10px, 4px);
+      }
+      
+      &:after{
+        content: "";
+        position: absolute;
+        width: 15px;
+        height: 3px;
+        border-radius: 2px;
+        background:white;
+        transform: translate(4px, 10px);
+
+      }
+    }
+  }
+}
