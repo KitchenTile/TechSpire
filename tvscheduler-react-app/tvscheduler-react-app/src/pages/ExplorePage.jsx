@@ -55,7 +55,7 @@ const ExplorePage = () => {
       {channels ? (
         <AddRemoveShowsContextProvider>
           <Header />
-          <MyShowsComponent />
+          {/* <MyShowsComponent /> */}
           {section.section !== "Channels" ? (
             <>
               <div className="title-genres">

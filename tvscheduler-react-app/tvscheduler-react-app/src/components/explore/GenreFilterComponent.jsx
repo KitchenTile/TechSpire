@@ -2,19 +2,17 @@ import "./GenreFilterComponent.css";
 
 const GenreFilterComponent = ({ handleFilter }) => {
   const genres = [
-    "All",
-    "Animation",
+    "Action",
     "Comedy",
-    "Cooking",
-    "Documentary",
     "Drama",
-    "Game Show",
-    "Horror",
-    "Mystery",
     "News",
-    "Reality TV",
+    "Horror",
     "Sci-Fi",
     "Thriller",
+    "Romance",
+    "Documentary",
+    "Animation",
+    "Fantasy",
   ];
 
   return (
