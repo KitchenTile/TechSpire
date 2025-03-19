@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using tvscheduler.Models;
+using tvscheduler.Utilities;
 
 namespace tvscheduler.Controllers;
 
@@ -20,14 +21,15 @@ public class TvController : ControllerBase
     private readonly AppDbContext _DbContext;
     private readonly HttpClient _httpClient;
     private readonly UserManager<User> _userManager;
+    private readonly TagsManager _tagsManager;
 
-    public TvController(HttpClient httpClient, AppDbContext dbContext, UserManager<User> userManager)
+    public TvController(HttpClient httpClient, AppDbContext dbContext, UserManager<User> userManager, TagsManager tagsManager)
     {
         _httpClient = httpClient;
         _DbContext = dbContext;
         _userManager = userManager;
+        _tagsManager = tagsManager;
     }
-    
     
     
     // ENTRY ENDPOINT
@@ -152,24 +154,14 @@ public class TvController : ControllerBase
         return Ok(showEvent.Entity);
     }
     
-    
-    // 
-    
-    [HttpGet("old-endpoint")]
-    public async Task<IActionResult> Get()
+
+    [HttpGet("testTagGetter")]
+    public async Task<IActionResult> TestTagGetter([FromQuery] string showName)
     {
-        var channelIds = new List<int> { 10005, 1540, 1547 };
-        var guideData = await TvApi.FetchGuideData(_httpClient);
-
-        if (guideData == null)
-        {
-            return StatusCode(502, new { error = "Failed to fetch TV guide data" });
-        }
-
-        var programData = await TvApi.FetchMultipleProgramData(_httpClient, channelIds);
-        return Ok(new { guideData, programData });
+        var openAiHandler = new OpenAiHandler(_httpClient, new List<string> { "comedy", "drama", "news" }, showName);
+        var result = await openAiHandler.RequestTag();
+        
+        return Ok(result);
     }
-
-
 
 }
