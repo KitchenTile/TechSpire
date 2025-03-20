@@ -4,7 +4,8 @@
   position: relative;
   background: #1c1c1c;
   border: 2px solid #121212;
-  width: 360px;
+  width: 100%;
+  max-width: 360px;
   height: 200px;
   border-radius: 5px;
   color: white;
