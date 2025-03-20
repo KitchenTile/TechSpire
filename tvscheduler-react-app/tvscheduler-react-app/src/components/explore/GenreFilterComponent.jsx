@@ -2,6 +2,7 @@ import "./GenreFilterComponent.css";
 
 const GenreFilterComponent = ({ handleFilter }) => {
   const genres = [
+    "All",
     "Action",
     "Comedy",
     "Drama",

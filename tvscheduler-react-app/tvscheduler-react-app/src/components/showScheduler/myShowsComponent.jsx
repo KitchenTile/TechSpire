@@ -37,7 +37,7 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
         expanded ? (
           <div className="close-bttn" onClick={() => setExpanded(false)}></div>
         ) : (
-          <div className="icon-container">
+          <div className="icon-container" onClick={() => setExpanded(true)}>
             <svg
               width="32"
               height="32"
@@ -45,7 +45,6 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
               className="my-shows-icon"
-              onClick={() => setExpanded(true)}
             >
               <path
                 fill-rule="evenodd"
