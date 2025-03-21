@@ -104,6 +104,10 @@
     }
     & .my-shows-icon{
       display: none;
+
+      &::before, &::after{
+        display: none;
+      }
     }
 
     & .close-bttn{

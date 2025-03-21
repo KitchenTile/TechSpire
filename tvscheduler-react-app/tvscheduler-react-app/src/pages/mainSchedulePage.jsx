@@ -8,13 +8,16 @@ import ChannelsContext from "../contexts/channelsContext";
 import Header from "../components/header/Header";
 import AddRemoveShowsContextProvider from "../contexts/AddRemoveShowsContextProvider";
 import useThrottle from "../hooks/useThrottle";
+import Modal from "../components/misc/Modal";
 import { useNavigate } from "react-router-dom";
 
 const MainSchedulePage = () => {
   const channels = useContext(ChannelsContext);
   const [isVisible, setIsVisible] = useState(false);
+  const [openModal, setOpenModal] = useState(true);
   const navigate = useNavigate();
 
+  //effect to go back to the login page if the JWT expires
   useEffect(() => {
     const timeOut = setTimeout(() => {
       if (!channels) {
@@ -45,11 +48,27 @@ const MainSchedulePage = () => {
     return () => window.removeEventListener("scroll", throttleWindowScrroll);
   });
 
+  const handleModalClose = () => {
+    setOpenModal(false);
+  };
+
   return (
     <div className="page-container">
       {channels ? (
         <AddRemoveShowsContextProvider>
           <>
+            <Modal open={openModal} handleModalClose={handleModalClose}>
+              {/* <h1 className="title">Welcome to ViewQue!</h1>
+              <p>
+                Please let us know your favourite tv genres so we can tailor
+                recommendations for you!
+              </p>
+              <div className="buttons-container">
+                {genres.map((genre) => (
+                  <button className="genre-button">{genre}</button>
+                ))}
+              </div> */}
+            </Modal>
             <Header isVisible={isVisible} />
 
             {/* day section carrousel */}

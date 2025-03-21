@@ -1,0 +1,99 @@
+.background-modal{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    background: rgba(0,0,0,0.8);
+    height: 100%;
+    width: 100vw;
+    z-index: 1000;
+}
+
+.modal-container{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 400px;
+    min-height: 400px;
+    background-color: var(--accentColor);
+    border-radius: 20px;
+    padding: 2em;
+    z-index: 1001;
+
+    & .close-bttn{
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 10px;
+        right: 20px;
+        rotate: 45deg;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+  
+            &:before{
+            content: "";
+            position: absolute;
+            height: 15px;
+            width: 3px;
+            border-radius: 2px;
+            background:white;
+            transform: translate(10px, 4px);
+            }
+            
+            &:after{
+            content: "";
+            position: absolute;
+            width: 15px;
+            height: 3px;
+            border-radius: 2px;
+            background:white;
+            transform: translate(4px, 10px);
+    
+            }
+      }
+
+      & .buttons-container{
+        margin-block: 3em 1em;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+
+
+        & .genre-button{
+            display: block;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            padding: 0.6em 1.2em;
+            font-size: 1em;
+            font-weight: 500;
+            font-family: inherit;
+            background-color: #1a1a1a;
+            cursor: pointer;
+            transition: border-color 0.25s;
+            background-color: var(--accentColor);
+            border-color: white;
+            transition: all 0.1s ease-in-out;
+
+            &:hover{
+                background: white;
+                color: var(--accentColor);
+            }
+        }
+      }
+
+      & input:checked + .genre-button{
+        background: white;
+        color: var(--accentColor);
+    }
+
+    & input{
+        display: none;
+    }
+
+    /* & input{
+        display: none;
+    } */
+}
