@@ -148,4 +148,35 @@ public async Task<IActionResult> Login(LoginDTO request)
 
         return Ok("Show event removed from schedule.");
     }
+
+    //[Authorize]
+    [HttpPost("/favourite-tag")]
+    public async Task<IActionResult> AddTagToFavourites([FromBody] AddRemoveFavTagRequest request)
+    {
+        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var favTag = await _DbContext.FavouriteTags.FirstOrDefaultAsync(ft => ft.TagId == request.tagId && ft.UserId == userId);
+        
+        if (favTag != null) return BadRequest(new { message = "Tag already favourite." });
+        
+        favTag = new FavouriteTag { TagId = request.tagId, UserId = userId };
+        _DbContext.FavouriteTags.Add(favTag);
+        await _DbContext.SaveChangesAsync();
+        
+        return Ok();
+    }
+
+    [HttpPost("/un-favourite-tag")]
+    public async Task<IActionResult> RemoveTagFromFavourites([FromBody] AddRemoveFavTagRequest request)
+    {
+        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var favTag = await _DbContext.FavouriteTags.FirstOrDefaultAsync(ft => ft.TagId == request.tagId && ft.UserId == userId);
+        
+        if (favTag == null) return NotFound("Favourite tag not found.");
+        
+        _DbContext.FavouriteTags.Remove(favTag);
+        await _DbContext.SaveChangesAsync();
+        
+        return Ok();
+    }
+    
 }
