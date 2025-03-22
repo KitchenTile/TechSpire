@@ -55,6 +55,17 @@ public class TvController : ControllerBase
                 .Where(s => s.UserId == user.Id)
                 .ToListAsync();
             
+            var favouriteTags = await _DbContext.FavouriteTags
+                .Where(ft => ft.UserId == user.Id)
+                .Select(ft => new FavouriteTagDTO
+                {
+                    Id = ft.Id,
+                    TagId = ft.TagId,
+                    TagName = ft.Tag.Name
+                    
+                })
+                .ToListAsync();
+            
             var channelsData = await _DbContext.Channels
                 .Include(c => c.ShowEvents)
                 .ToListAsync();
@@ -109,7 +120,7 @@ public class TvController : ControllerBase
                 ImageUrl = s.ImageUrl,
             });
             
-            return Ok(new { schedule = response, channels = channelsResponse, shows = showsResponse });
+            return Ok(new { schedule = response, favTags = favouriteTags, channels = channelsResponse, shows = showsResponse });
         }
 
         // IF USER NOT AUTHENTICATED
