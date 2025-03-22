@@ -39,6 +39,20 @@
     right: 2em;
     top: 16.5px;
 
+    & .my-shows-length{
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: var(--accentColor);
+      color: white;
+      font-size: 0.7em;
+      text-align: center;
+      position: absolute;
+      top: 20px;
+      right: 0; 
+      transition: all 0.3s ease-in-out;
+    }
+
     &::before{
       content: "My Shows";
       color: var(--accentColor);
@@ -88,6 +102,10 @@
     
         &::after{
           transform: translate(0%, -5%);
+        }
+
+        & .my-shows-length{
+          opacity: 0;
         }
       } 
   }

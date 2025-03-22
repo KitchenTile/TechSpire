@@ -75,6 +75,7 @@
             transition: border-color 0.25s;
             background-color: var(--accentColor);
             border-color: white;
+            text-align: center;
             transition: all 0.1s ease-in-out;
 
             &:hover{

@@ -12,6 +12,7 @@ import useMergeAndFilter from "../hooks/useMergeAndFilter";
 import ChannelShowComponent from "../components/showScheduler/ChannelShowComponent";
 import GenreFilterComponent from "../components/explore/GenreFilterComponent";
 
+// this compoenent is made to be reused and display different components baed on URL path -- BLUE
 const ExplorePage = () => {
   const section = useParams();
   const [filter, setFilter] = useState("All");

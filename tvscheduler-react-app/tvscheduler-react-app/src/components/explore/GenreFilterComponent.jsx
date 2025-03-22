@@ -1,5 +1,6 @@
 import "./GenreFilterComponent.css";
 
+// component to filter explore page by genre -- Rudraa
 const GenreFilterComponent = ({ handleFilter }) => {
   const genres = [
     "All",
@@ -16,6 +17,7 @@ const GenreFilterComponent = ({ handleFilter }) => {
     "Fantasy",
   ];
 
+  // display a tooltip of the differnet genres from the GPT call
   return (
     <div className="genres-container">
       <span>Genres</span>

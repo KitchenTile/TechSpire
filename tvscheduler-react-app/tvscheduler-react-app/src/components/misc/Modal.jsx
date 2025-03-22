@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReactDom from "react-dom";
 import "./Modal.css";
 
-//here we create a modal using react portals
+//here we create a modal using react portals -- Rudraa
 const Modal = ({ open, handleModalClose }) => {
   const [selected, setSelected] = useState([]);
 
@@ -20,6 +20,7 @@ const Modal = ({ open, handleModalClose }) => {
     "Fantasy",
   ];
 
+  // adds genre to selected genre list
   const onButtonClick = (e) => {
     const genre = e.target.value;
     setSelected((prev) =>
@@ -31,8 +32,11 @@ const Modal = ({ open, handleModalClose }) => {
     console.log(selected);
   }, [selected]);
 
+  const handleSubmit = () => {};
+
   if (!open) return null;
 
+  // create portal to display modal
   return ReactDom.createPortal(
     <>
       <div className="background-modal" />
@@ -64,7 +68,9 @@ const Modal = ({ open, handleModalClose }) => {
             </>
           ))}
 
-          <button className="submit-button">Done</button>
+          <button className="submit-button" onSubmit={handleSubmit}>
+            Done
+          </button>
         </div>
       </div>
     </>,

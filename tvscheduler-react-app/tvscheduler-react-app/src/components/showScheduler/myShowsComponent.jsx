@@ -59,6 +59,7 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
                 fill="white"
               />
             </svg>
+            <div className="my-shows-length">{myShows.length}</div>
           </div>
         )
       ) : null}
