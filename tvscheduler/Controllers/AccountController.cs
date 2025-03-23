@@ -19,9 +19,8 @@ public class AccountController : ControllerBase
     private readonly string _message = "u alright mate";
     private readonly UserManager<User> _userManager;
     private readonly IConfiguration _configuration;
-    
-    
 
+    
     public AccountController(AppDbContext dbContext, UserManager<User> userManager, IConfiguration configuration)
     {
         _DbContext = dbContext;
@@ -159,6 +158,7 @@ public async Task<IActionResult> Login(LoginDTO request)
         if (favTag != null) return BadRequest(new { message = "Tag already favourite." });
         
         favTag = new FavouriteTag { TagId = request.tagId, UserId = userId };
+        
         _DbContext.FavouriteTags.Add(favTag);
         await _DbContext.SaveChangesAsync();
         
@@ -178,5 +178,48 @@ public async Task<IActionResult> Login(LoginDTO request)
         
         return Ok();
     }
-    
+
+    [Authorize]
+    [HttpPost("/set-favourite-tags")]
+    public async Task<IActionResult> SetFavouriteTags([FromBody] SetFavTagsRequest request)
+    {
+        if (request.tagIds == null || request.tagIds.Count < 1)
+            return BadRequest("Choose at least one tag.");
+
+        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        var validTagIds = await _DbContext.Tags
+            .Where(t => request.tagIds.Contains(t.Id))
+            .Select(t => t.Id)
+            .ToListAsync();
+        
+        var invalidTagIds = request.tagIds.Except(validTagIds).ToList();
+        if (invalidTagIds.Any())
+        {
+            return BadRequest($"The following tag IDs are invalid: {string.Join(", ", invalidTagIds)}");
+        }
+        
+        var existingFavTags = await _DbContext.FavouriteTags
+            .Where(ft => ft.UserId == userId)
+            .ToListAsync();
+
+        if (existingFavTags.Any())
+        {
+            _DbContext.FavouriteTags.RemoveRange(existingFavTags);
+        }
+        
+        var newFavTags = validTagIds
+            .Select(tagId => new FavouriteTag
+            {
+                UserId = userId,
+                TagId = tagId
+            })
+            .ToList();
+
+        await _DbContext.FavouriteTags.AddRangeAsync(newFavTags);
+        
+        await _DbContext.SaveChangesAsync();
+
+        return Ok();
+    }
 }
