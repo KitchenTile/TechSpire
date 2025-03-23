@@ -138,10 +138,14 @@ builder.Services.AddHangfire(opts =>
 builder.Services.AddHangfireServer();
 
 
-
+// custom services DI
 builder.Services.AddScoped<UpdateChannelSchedule>();
 builder.Services.AddScoped<TagsManager>();
 builder.Services.AddSingleton<HangfireJobs>();
+builder.Services.AddSingleton<TodaysShowsCache>();
+builder.Services.AddScoped<RecommendationsGlobal>();
+builder.Services.AddScoped<RecommendationGeneratorIndividual>();
+    
 
 
 
