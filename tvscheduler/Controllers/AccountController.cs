@@ -159,6 +159,7 @@ public async Task<IActionResult> Login(LoginDTO request)
         if (favTag != null) return BadRequest(new { message = "Tag already favourite." });
         
         favTag = new FavouriteTag { TagId = request.tagId, UserId = userId };
+        
         _DbContext.FavouriteTags.Add(favTag);
         await _DbContext.SaveChangesAsync();
         

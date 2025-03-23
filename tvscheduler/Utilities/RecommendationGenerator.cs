@@ -12,7 +12,9 @@ public abstract class RecommendationGeneratorBase
         _DbContext = dbContext;
     }
 
-    protected async Task<List<Show>> GetAllShowsAsync() // change to only pick the shows based on todays showEvents
+    // change to only pick the shows based on todays showEvents
+    // take list of past recommendations as an argument and exclude from the shows pool to avoid repetition
+    protected async Task<List<Show>> GetAllShowsAsync() 
     {
         return await _DbContext!.Shows.ToListAsync();
     }
