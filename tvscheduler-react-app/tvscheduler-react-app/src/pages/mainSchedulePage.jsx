@@ -57,18 +57,9 @@ const MainSchedulePage = () => {
       {channels ? (
         <AddRemoveShowsContextProvider>
           <>
-            <Modal open={openModal} handleModalClose={handleModalClose}>
-              {/* <h1 className="title">Welcome to ViewQue!</h1>
-              <p>
-                Please let us know your favourite tv genres so we can tailor
-                recommendations for you!
-              </p>
-              <div className="buttons-container">
-                {genres.map((genre) => (
-                  <button className="genre-button">{genre}</button>
-                ))}
-              </div> */}
-            </Modal>
+            {channels.favTags.length !== 0 ? null : (
+              <Modal open={openModal} handleModalClose={handleModalClose} />
+            )}
             <Header isVisible={isVisible} />
 
             {/* day section carrousel */}

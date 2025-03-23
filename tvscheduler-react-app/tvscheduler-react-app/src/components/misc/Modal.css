@@ -88,6 +88,8 @@
       & input:checked + .genre-button{
         background: white;
         color: var(--accentColor);
+        border-color: var(--accentColor);
+        scale: 1.05 1.1;
     }
 
     & input{
