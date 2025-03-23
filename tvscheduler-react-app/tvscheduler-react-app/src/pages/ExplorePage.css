@@ -4,9 +4,16 @@
     gap: 7px;
     width: 100%;
     padding-inline: 2em;
-    min-height: 100vh;
+    /* min-height: 100vh; */
 }
 
 #section-page{
-    padding-top: 4em
+    padding-top: 4em;
+    height: 100vh;
+}
+
+.title-genres{
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }

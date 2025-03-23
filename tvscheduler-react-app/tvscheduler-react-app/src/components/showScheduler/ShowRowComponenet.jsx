@@ -59,15 +59,6 @@ const ShowRowComponent = ({ channel }) => {
     [scrollPosition]
   );
 
-  // const handleClick = useCallback((skipAmount) => {
-  //   setScrollPosition((prev) => {
-  //     const newScroll = prev + skipAmount;
-  //     return newScroll;
-  //   });
-  //   showContainerRef.current.scrollLeft = scrollPosition;
-  //   console.log(scrollPosition);
-  // }, []);
-
   const showsLookup = useShowLookup(channels);
 
   // Merge each event with its corresponding show details

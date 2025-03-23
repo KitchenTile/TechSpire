@@ -37,7 +37,7 @@ const CarouselCard = ({ show, activeShow, id, isAdded }) => {
         >
           {isAdded ? "REMOVE FROM SCHEDULE " : "ADD TO SCHEDULE"}
         </button>
-        <Link to={`/time-segments/${show.section}`}>
+        <Link to={`/Explore/${show.section}`}>
           <button className="see-more">
             SEE MORE <span>{show.section}</span> SHOWS
             <span>

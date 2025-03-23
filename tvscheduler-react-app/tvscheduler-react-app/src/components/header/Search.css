@@ -2,7 +2,7 @@
 
     display: flex;
     width: 360px;
-    right: 2em;
+    right: 6em;
     height: 100%;
     position: absolute;
     align-items: center;
@@ -37,19 +37,19 @@
             background: var(--accentColor);
             border-radius: 50px;
             width: 100%;
-            color: black;
+            color: white;
             text-decoration: underline;
             border-bottom: none;
             outline: none;
     
             &::placeholder{
-                color: black;
+                color: white;
             }
     
             & ~ svg{
                 z-index: 2;
                 & path{
-                    fill: black;
+                    fill: white;
                 }
             }
         }

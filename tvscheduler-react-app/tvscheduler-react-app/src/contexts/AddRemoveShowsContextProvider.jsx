@@ -1,6 +1,7 @@
 import { useCallback, useContext, useMemo } from "react";
 import MyShowsContext from "./myShowsContext";
 import AddRemoveShowsContext from "./AddRemoveShowsContext";
+import ChannelsContext from "./channelsContext";
 
 const AddRemoveShowsContextProvider = ({ children }) => {
   const { setMyShows, myShows } = useContext(MyShowsContext);
