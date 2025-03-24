@@ -175,4 +175,11 @@ public class TvController : ControllerBase
         return Ok(result);
     }
 
+
+    [HttpGet("checkShowsCache")]
+    public async Task<IActionResult> CheckShowsCache()
+    {
+        return BadRequest("not implemented");
+    }
+
 }
