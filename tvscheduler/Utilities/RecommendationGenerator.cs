@@ -6,19 +6,14 @@ namespace tvscheduler.Utilities;
 public abstract class RecommendationGeneratorBase
 {
     protected readonly AppDbContext? _DbContext;
+    protected readonly TodaysShowsCache _todaysShowsCache;
 
-    protected RecommendationGeneratorBase(AppDbContext? dbContext)
+    protected RecommendationGeneratorBase(AppDbContext dbContext, TodaysShowsCache todaysShowsCache)
     {
         _DbContext = dbContext;
+        _todaysShowsCache = todaysShowsCache;
     }
-
-    // change to only pick the shows based on todays showEvents
-    // take list of past recommendations as an argument and exclude from the shows pool to avoid repetition
-    protected async Task<List<Show>> GetAllShowsAsync() 
-    {
-        return await _DbContext!.Shows.ToListAsync();
-    }
-
+    
     protected async Task<Show> PickRandomShow(List<Show> shows)
     {
         var random = new Random();
@@ -28,23 +23,20 @@ public abstract class RecommendationGeneratorBase
 
 public class RecomendationGeneratorGlobal : RecommendationGeneratorBase
 {
-    public RecomendationGeneratorGlobal(AppDbContext dbContext) : base(dbContext)
+    public RecomendationGeneratorGlobal(AppDbContext dbContext, TodaysShowsCache todaysShowsCache) : base(dbContext, todaysShowsCache) //dependency injection requires to explicitly pass the services through the constructors (cant just access with 'base')
     {
     }
-
     public async Task<Show> GetGlobalRecommendationAsync()
     {
-        var shows = await GetAllShowsAsync();
-        return await PickRandomShow(shows);
+        return await PickRandomShow(_todaysShowsCache.GetCachedShows());
     }
 }
 
 public class RecommendationGeneratorIndividual : RecommendationGeneratorBase
 {
-    public RecommendationGeneratorIndividual(AppDbContext dbContext) : base(dbContext)
+    public RecommendationGeneratorIndividual(AppDbContext dbContext, TodaysShowsCache todaysShowsCache) : base(dbContext, todaysShowsCache)
     {
     }
-
     public async Task<Show> GetIndividualRecommendationAsync(string userId)
     {
         throw new NotImplementedException("This method is not yet implemented.");
