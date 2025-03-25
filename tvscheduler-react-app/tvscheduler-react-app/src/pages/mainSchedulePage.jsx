@@ -14,7 +14,7 @@ import useMergeAndFilter from "../hooks/useMergeAndFilter";
 import ShowCard from "../components/showScheduler/ShowCard";
 
 const MainSchedulePage = () => {
-  const channels = useContext(ChannelsContext);
+  const { channels } = useContext(ChannelsContext);
   const [isVisible, setIsVisible] = useState(false);
   const [openModal, setOpenModal] = useState(true);
   const navigate = useNavigate();
@@ -69,6 +69,8 @@ const MainSchedulePage = () => {
 
   const recommnededShows = recommendations();
 
+  console.log(recommnededShows);
+
   return (
     <div className="page-container">
       {channels ? (
@@ -83,18 +85,25 @@ const MainSchedulePage = () => {
             <SectionCarouselComponent />
             {/* my shows display */}
             <MyShowsComponent />
-            <h1 className="title h1">Our Picks For You</h1>
-            <div className="grid-container">
-              {/* get the first x elements of the guide data array -- 129 is too long man */}
-              {/* {channels.channels.map((channel) => (
-                <ChannelShowComponent
-                  key={channel.channelId}
-                  channel={channel}
-                />
-              ))} */}
-              {recommnededShows.map((show) => (
-                <ShowCard show={show} />
-              ))}
+            <h1 className="title h1">
+              {channels.favTags.length === 0
+                ? "All Channels"
+                : "Our Picks For You"}
+            </h1>
+            <div
+              className="grid-container"
+              style={
+                channels.favTags.length === 0 ? { flexDirection: "column" } : {}
+              }
+            >
+              {channels.favTags.length === 0
+                ? channels.channels.map((channel) => (
+                    <ChannelShowComponent
+                      key={channel.channelId}
+                      channel={channel}
+                    />
+                  ))
+                : recommnededShows.map((show) => <ShowCard show={show} />)}
             </div>
           </>
         </AddRemoveShowsContextProvider>

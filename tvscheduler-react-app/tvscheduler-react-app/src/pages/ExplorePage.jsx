@@ -16,7 +16,7 @@ import GenreFilterComponent from "../components/explore/GenreFilterComponent";
 const ExplorePage = () => {
   const section = useParams();
   const [filter, setFilter] = useState("All");
-  const channels = useContext(ChannelsContext);
+  const { channels } = useContext(ChannelsContext);
   const { myShows } = useContext(MyShowsContext);
   const mergedAndFilteredShows = useMergeAndFilter(section.section);
   const navigate = useNavigate();
@@ -63,7 +63,12 @@ const ExplorePage = () => {
                 <h1 className="title">{section.section} Shows</h1>
                 <GenreFilterComponent handleFilter={handleFilter} />
               </div>
-              <div className="content-container">
+              <div
+                className="content-container"
+                style={
+                  filteredByGenre.length === 1 ? { width: "fit-content" } : {}
+                }
+              >
                 {filteredByGenre.length > 0 ? (
                   filteredByGenre.map((show) => (
                     <ShowCard
@@ -81,7 +86,10 @@ const ExplorePage = () => {
           ) : (
             <>
               <h1 className="title">All Channels</h1>
-              <div className="grid-container">
+              <div
+                className="grid-container"
+                style={{ flexDirection: "column" }}
+              >
                 {channels.channels.map((channel) => (
                   <ChannelShowComponent
                     key={channel.channelId}
