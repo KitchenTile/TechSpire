@@ -4,7 +4,7 @@ import InputComponent from "../components/login/InputComponent";
 import { useNavigate } from "react-router-dom";
 
 // set to false to disable input validation
-const validateFormInputsGlobal = false;
+const validateFormInputsGlobal = true;
 
 const LoginRegisterPage = () => {
   const navigate = useNavigate();
