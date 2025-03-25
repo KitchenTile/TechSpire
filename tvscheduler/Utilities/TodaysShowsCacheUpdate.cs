@@ -17,6 +17,7 @@ public class TodaysShowsCacheUpdate
     {
         var showEvents = await _DbContext.ShowEvents
             .Include(se => se.Show)
+            .ThenInclude(s => s.Tag)
             .ToListAsync();
         
         // check if there are any events !!

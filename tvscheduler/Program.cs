@@ -145,6 +145,7 @@ builder.Services.AddSingleton<HangfireJobs>();
 builder.Services.AddSingleton<TodaysShowsCache>();
 builder.Services.AddScoped<RecommendationsGlobal>();
 builder.Services.AddScoped<RecommendationGeneratorIndividual>();
+builder.Services.AddScoped<TodaysShowsCacheUpdate>();
     
 
 
@@ -197,6 +198,9 @@ using (var scope = app.Services.CreateScope())
         () => hangfireJobs.DeleteAllTags(),
         Cron.Never());
     
+    recurringJobs.AddOrUpdate("Update Todays Shows Cache",
+        () => hangfireJobs.UpdateTodaysShowsCache(),
+        Cron.Daily());
 }
 
 // Configure the HTTP request pipeline.
