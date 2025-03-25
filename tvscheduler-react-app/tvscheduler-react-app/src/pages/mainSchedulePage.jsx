@@ -8,13 +8,16 @@ import ChannelsContext from "../contexts/channelsContext";
 import Header from "../components/header/Header";
 import AddRemoveShowsContextProvider from "../contexts/AddRemoveShowsContextProvider";
 import useThrottle from "../hooks/useThrottle";
+import Modal from "../components/misc/Modal";
 import { useNavigate } from "react-router-dom";
 
 const MainSchedulePage = () => {
   const channels = useContext(ChannelsContext);
   const [isVisible, setIsVisible] = useState(false);
+  const [openModal, setOpenModal] = useState(true);
   const navigate = useNavigate();
 
+  //effect to go back to the login page if the JWT expires
   useEffect(() => {
     const timeOut = setTimeout(() => {
       if (!channels) {
@@ -45,11 +48,18 @@ const MainSchedulePage = () => {
     return () => window.removeEventListener("scroll", throttleWindowScrroll);
   });
 
+  const handleModalClose = () => {
+    setOpenModal(false);
+  };
+
   return (
     <div className="page-container">
       {channels ? (
         <AddRemoveShowsContextProvider>
           <>
+            {channels.favTags.length !== 0 ? null : (
+              <Modal open={openModal} handleModalClose={handleModalClose} />
+            )}
             <Header isVisible={isVisible} />
 
             {/* day section carrousel */}

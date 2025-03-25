@@ -58,20 +58,26 @@ const useMergeAndFilter = (param) => {
         return [...mergedShows].sort(compareStartTime);
 
       case "carousel":
-        const morningShows = mergedShows.filter((event) => {
-          const time = new Date(event.timeStart * 1000).getHours();
-          return time > 1 && time < 10;
-        });
+        const morningShows = mergedShows
+          .filter((event) => {
+            const time = new Date(event.timeStart * 1000).getHours();
+            return time > 1 && time < 10;
+          })
+          .map((show) => ({ ...show, section: "Morning" }));
 
-        const afternoonShows = mergedShows.filter((event) => {
-          const time = new Date(event.timeStart * 1000).getHours();
-          return time > 10 && time < 17;
-        });
+        const afternoonShows = mergedShows
+          .filter((event) => {
+            const time = new Date(event.timeStart * 1000).getHours();
+            return time > 10 && time < 17;
+          })
+          .map((show) => ({ ...show, section: "Afternoon" }));
 
-        const eveningShows = mergedShows.filter((event) => {
-          const time = new Date(event.timeStart * 1000).getHours();
-          return time > 17 && time < 23;
-        });
+        const eveningShows = mergedShows
+          .filter((event) => {
+            const time = new Date(event.timeStart * 1000).getHours();
+            return time > 17 && time < 23;
+          })
+          .map((show) => ({ ...show, section: "Evening" }));
 
         const sectionsObject = {
           Morning: getRandomElements(morningShows, 5),

@@ -16,5 +16,9 @@ public class AppDbContext : IdentityDbContext<User>
     public DbSet<FavouriteTag> FavouriteTags { get; set; }
     public DbSet<FavouriteShow> FavouriteShows { get; set; }
     
+    public DbSet<RecommendationsGlobal> GlobalRecommendations { get; set; }
+    public DbSet<RecommendationForUser> IndividualRecommendations { get; set; }
+    
+    
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 }
