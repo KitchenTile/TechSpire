@@ -1,4 +1,11 @@
-import { useState, useContext, useRef, useMemo } from "react";
+import {
+  useState,
+  useContext,
+  useRef,
+  useMemo,
+  memo,
+  useCallback,
+} from "react";
 import "./Search.css";
 import ChannelsContext from "../../contexts/channelsContext";
 import useShowLookup from "../../hooks/useShowLookup";
@@ -44,7 +51,7 @@ const Search = () => {
     return showObjectAndEvents;
   }, [channels, debounceSearachTerm]);
 
-  const handleBlur = (e) => {
+  const handleBlur = useCallback((e) => {
     // Delay to allow focus to move between children
     setTimeout(() => {
       if (
@@ -54,7 +61,7 @@ const Search = () => {
         setSearchTerm("");
       }
     }, 200);
-  };
+  }, []);
 
   return (
     <li className="search-container" ref={containerRef} onBlur={handleBlur}>
@@ -101,7 +108,9 @@ const Search = () => {
                   />
                 ))
             ) : (
-              <p>No results for {searchTerm}</p>
+              <div className="not-found-container">
+                No results for {searchTerm}
+              </div>
             )
           ) : null}
         </div>
@@ -110,4 +119,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default memo(Search);

@@ -6,7 +6,6 @@ import ShowCard from "../components/showScheduler/ShowCard";
 import AddRemoveShowsContextProvider from "../contexts/AddRemoveShowsContextProvider";
 import "./ExplorePage.css";
 import Header from "../components/header/Header";
-import MyShowsComponent from "../components/showScheduler/myShowsComponent";
 import MyShowsContext from "../contexts/myShowsContext";
 import useMergeAndFilter from "../hooks/useMergeAndFilter";
 import ChannelShowComponent from "../components/showScheduler/ChannelShowComponent";
@@ -34,29 +33,23 @@ const ExplorePage = () => {
     return () => clearTimeout(timeout);
   }, [channels]);
 
-  const handleFilter = (value) => {
+  const handleFilter = useCallback((value) => {
     setFilter(value);
-  };
+  }, []);
 
-  useEffect(() => {
-    console.log(filter);
-  }, [filter]);
-
-  console.log(mergedAndFilteredShows);
-
-  const filteredByGenre =
-    filter === "All"
-      ? mergedAndFilteredShows
-      : mergedAndFilteredShows.filter((show) => {
-          return show.tagName === filter;
-        });
+  const filteredByGenre = useMemo(
+    () =>
+      filter === "All"
+        ? mergedAndFilteredShows
+        : mergedAndFilteredShows.filter((show) => show.tagName === filter),
+    [filter, mergedAndFilteredShows]
+  );
 
   return (
     <div className="page-container" id="section-page">
       {channels ? (
         <AddRemoveShowsContextProvider>
           <Header />
-          {/* <MyShowsComponent /> */}
           {section.section !== "Channels" ? (
             <>
               <div className="title-genres">

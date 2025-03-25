@@ -1,6 +1,6 @@
 import ShowCard from "./ShowCard";
 import rightArrow from "../../assets/rightArrow.svg";
-import { useContext, useMemo, useState } from "react";
+import { memo, useCallback, useContext, useMemo, useState } from "react";
 import useMergeAndFilter from "../../hooks/useMergeAndFilter";
 import ChannelsContext from "../../contexts/channelsContext";
 import MyShowsContext from "../../contexts/myShowsContext";
@@ -21,9 +21,9 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
     return filtered;
   }, [channels, myShows]);
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     setExpanded(true);
-  };
+  }, []);
 
   return (
     <div
@@ -93,4 +93,4 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
   );
 };
 
-export default MyShowsComponent;
+export default memo(MyShowsComponent);

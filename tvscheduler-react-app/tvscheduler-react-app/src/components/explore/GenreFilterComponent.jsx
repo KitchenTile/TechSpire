@@ -1,21 +1,25 @@
+import { memo, useMemo } from "react";
 import "./GenreFilterComponent.css";
 
 // component to filter explore page by genre -- Rudraa
 const GenreFilterComponent = ({ handleFilter }) => {
-  const genres = [
-    "All",
-    "Action",
-    "Comedy",
-    "Drama",
-    "News",
-    "Horror",
-    "Sci-Fi",
-    "Thriller",
-    "Romance",
-    "Documentary",
-    "Animation",
-    "Fantasy",
-  ];
+  const genres = useMemo(
+    () => [
+      "All",
+      "Action",
+      "Comedy",
+      "Drama",
+      "News",
+      "Horror",
+      "Sci-Fi",
+      "Thriller",
+      "Romance",
+      "Documentary",
+      "Animation",
+      "Fantasy",
+    ],
+    []
+  );
 
   // display a tooltip of the differnet genres from the GPT call
   return (
@@ -30,7 +34,7 @@ const GenreFilterComponent = ({ handleFilter }) => {
               name="genre"
               value={genre}
               className="input"
-              onClick={() => handleFilter(event.target.value)}
+              onClick={(event) => handleFilter(event.target.value)}
             />
             <svg>
               <polyline points="1,5 6,9 14,1"></polyline>
@@ -43,4 +47,4 @@ const GenreFilterComponent = ({ handleFilter }) => {
   );
 };
 
-export default GenreFilterComponent;
+export default memo(GenreFilterComponent);
