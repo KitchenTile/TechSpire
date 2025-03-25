@@ -47,7 +47,15 @@ public class HangfireJobs
         public async Task UpdateTodaysShowsCache()
         {
             using var scope = _scopeFactory.CreateScope();
-            var cacheUpdate = scope.ServiceProvider.GetRequiredService<TodaysShowsCacheUpdate>();
-            await cacheUpdate.UpdateCachedShows();
+            var cacheUpdater = scope.ServiceProvider.GetRequiredService<TodaysShowsCacheUpdate>();
+            await cacheUpdater.UpdateCachedShows();
+        }
+
+        public async Task UpdateGlobalRecommendation()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var globalRecommendationUpdater = scope.ServiceProvider.GetRequiredService<RecommendationGeneratorGlobal>();
+
+           
         }
     }

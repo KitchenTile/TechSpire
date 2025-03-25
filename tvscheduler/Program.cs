@@ -143,12 +143,9 @@ builder.Services.AddScoped<UpdateChannelSchedule>();
 builder.Services.AddScoped<TagsManager>();
 builder.Services.AddSingleton<HangfireJobs>();
 builder.Services.AddSingleton<TodaysShowsCache>();
-builder.Services.AddScoped<RecommendationsGlobal>();
+builder.Services.AddScoped<RecommendationGeneratorGlobal>();
 builder.Services.AddScoped<RecommendationGeneratorIndividual>();
 builder.Services.AddScoped<TodaysShowsCacheUpdate>();
-    
-
-
 
 var app = builder.Build();
 
@@ -157,25 +154,26 @@ var app = builder.Build();
 using (var serviceScope = app.Services.CreateScope())
 {
     var dbContext = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var showsCache = serviceScope.ServiceProvider.GetRequiredService<TodaysShowsCache>();
+    var showsCacheUpdate = serviceScope.ServiceProvider.GetRequiredService<TodaysShowsCacheUpdate>();
     if (dbContext.Channels.IsNullOrEmpty())
     {
         var databaseInit = new DatabaseChannelsInit(dbContext);
         databaseInit.SeedDatabase(); // adding hard coded channels to the database if no channels exist
     }
 
-    //var channelUpdater = serviceScope.ServiceProvider.GetRequiredService<UpdateChannelSchedule>();
-    //await channelUpdater.UpdateDailySchedule();
-    
-    //var tagManager = serviceScope.ServiceProvider.GetRequiredService<TagsManager>();
-    //await tagManager.CheckDatabaseForUntagged();
+    if (!dbContext.ShowEvents.IsNullOrEmpty() && showsCache.GetCachedShows().IsNullOrEmpty())
+    {
+        await showsCacheUpdate.UpdateCachedShows();
+    }
 }
 
-//HANGFIRE
-//add the job to hangfire
+
+//HANGFIRE jobs
 using (var scope = app.Services.CreateScope())
 {
-    var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
-    var hangfireJobs = scope.ServiceProvider.GetRequiredService<HangfireJobs>();
+    var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>(); // hangfire service to handle jobs
+    var hangfireJobs = scope.ServiceProvider.GetRequiredService<HangfireJobs>(); // class defining the jobs
     
 
     recurringJobs.AddOrUpdate("Update the channel schedule for two days",
