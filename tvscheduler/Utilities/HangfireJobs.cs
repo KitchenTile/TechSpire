@@ -55,7 +55,8 @@ public class HangfireJobs
         {
             using var scope = _scopeFactory.CreateScope();
             var globalRecommendationUpdater = scope.ServiceProvider.GetRequiredService<RecommendationGeneratorGlobal>();
+            await globalRecommendationUpdater.SetGlobalRecommendation();
 
-           
+
         }
     }

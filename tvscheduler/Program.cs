@@ -199,6 +199,10 @@ using (var scope = app.Services.CreateScope())
     recurringJobs.AddOrUpdate("Update Todays Shows Cache",
         () => hangfireJobs.UpdateTodaysShowsCache(),
         Cron.Daily());
+    
+    recurringJobs.AddOrUpdate("Update Global Recommendation",
+        () => hangfireJobs.UpdateGlobalRecommendation(),
+        Cron.Daily());
 }
 
 // Configure the HTTP request pipeline.
