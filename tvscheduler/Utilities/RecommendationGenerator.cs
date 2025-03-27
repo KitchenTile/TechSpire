@@ -74,7 +74,10 @@ public class RecommendationGeneratorIndividual : RecommendationGeneratorBase
         //check if there already is a recommendation for today
         DateTime today = DateTime.Today;
         var exsistingRecommendation = await _DbContext.IndividualRecommendations
-            .Where(x => x.UserId == userId && x.CreatedDate >= today)
+            .Where(x => x.UserId == userId 
+                        && x.CreatedDate >= today
+                        )
+            .Include(x => x.Show)
             .FirstOrDefaultAsync();
 
         if (exsistingRecommendation != null) 
