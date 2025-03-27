@@ -89,6 +89,19 @@
         transform: none;
     }
 
+    & .not-found-container{
+        box-sizing: border-box;
+        position: relative;
+        width: 360px;
+        min-height: 40px;
+        padding: 0 4% 4% 4%;
+        border-radius: 10px;
+        color: white;
+        background: black;
+        text-align: center;
+        line-height: 40px;
+    }
+
     &::-webkit-scrollbar-track
     {
         background-color: transparent;

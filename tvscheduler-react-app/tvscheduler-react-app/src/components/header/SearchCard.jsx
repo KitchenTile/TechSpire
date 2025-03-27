@@ -26,7 +26,9 @@ const SearchCard = ({ show, showEvents }) => {
         />
       </span>
       <div className="info-container">
-        <h2 className="show-title">{show.name}</h2>
+        <h2 className="show-title">
+          {show.name.length > 20 ? show.name.slice(0, 20) + "..." : show.name}
+        </h2>
         <div className="show-event-container">
           {showEvents.slice(0, 4).map((showEvent, idx) => (
             <div className="show-event-slot" key={idx}>

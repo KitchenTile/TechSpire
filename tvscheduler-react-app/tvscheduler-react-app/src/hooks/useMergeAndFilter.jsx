@@ -3,7 +3,7 @@ import useShowLookup from "./useShowLookup";
 import ChannelsContext from "../contexts/channelsContext";
 
 const useMergeAndFilter = (param) => {
-  const channels = useContext(ChannelsContext);
+  const { channels } = useContext(ChannelsContext);
   const showLookup = useShowLookup(channels);
 
   // sorting function for the sort my schedule sort method

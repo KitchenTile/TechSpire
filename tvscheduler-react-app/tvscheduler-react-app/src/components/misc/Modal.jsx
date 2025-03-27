@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ReactDom from "react-dom";
 import "./Modal.css";
+import ChannelsContext from "../../contexts/channelsContext";
 
 //here we create a modal using react portals -- Rudraa
 const Modal = ({ open, handleModalClose }) => {
   const [selected, setSelected] = useState([]);
+  const { refreshChannels } = useContext(ChannelsContext);
 
   const genres = {
     Documentary: 1,
@@ -52,6 +54,7 @@ const Modal = ({ open, handleModalClose }) => {
       } catch (err) {
         console.error(err);
       }
+      refreshChannels();
       handleModalClose();
     } else {
       handleModalClose();

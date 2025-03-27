@@ -4,7 +4,7 @@ import ChannelsContext from "./channelsContext";
 
 export const MyShowsContextProvider = ({ children }) => {
   const [myShows, setMyShows] = useState([]);
-  const channels = useContext(ChannelsContext);
+  const { channels } = useContext(ChannelsContext);
 
   useEffect(() => {
     console.log(myShows);

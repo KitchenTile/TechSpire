@@ -20,7 +20,7 @@ const ShowRowComponent = ({ channel }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
 
   const { myShows } = useContext(MyShowsContext);
-  const channels = useContext(ChannelsContext);
+  const { channels } = useContext(ChannelsContext);
 
   //effect hook to determine the component's scroll position so we can show and hide side arrows
   useEffect(() => {
