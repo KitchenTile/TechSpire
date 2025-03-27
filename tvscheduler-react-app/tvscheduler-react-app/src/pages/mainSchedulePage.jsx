@@ -12,6 +12,7 @@ import Modal from "../components/misc/Modal";
 import { useNavigate } from "react-router-dom";
 import useMergeAndFilter from "../hooks/useMergeAndFilter";
 import ShowCard from "../components/showScheduler/ShowCard";
+import MyShowsContext from "../contexts/myShowsContext";
 
 const MainSchedulePage = () => {
   const { channels } = useContext(ChannelsContext);
@@ -19,6 +20,7 @@ const MainSchedulePage = () => {
   const [openModal, setOpenModal] = useState(true);
   const navigate = useNavigate();
   const mergedAndFilteredShows = useMergeAndFilter("All");
+  const { myShows } = useContext(MyShowsContext);
 
   //effect to go back to the login page if the JWT expires
   useEffect(() => {
@@ -69,8 +71,6 @@ const MainSchedulePage = () => {
 
   const recommnededShows = recommendations();
 
-  console.log(recommnededShows);
-
   return (
     <div className="page-container">
       {channels ? (
@@ -103,7 +103,12 @@ const MainSchedulePage = () => {
                       channel={channel}
                     />
                   ))
-                : recommnededShows.map((show) => <ShowCard show={show} />)}
+                : recommnededShows.map((show) => (
+                    <ShowCard
+                      show={show}
+                      isAdded={myShows.includes(show.showEventId)}
+                    />
+                  ))}
             </div>
           </>
         </AddRemoveShowsContextProvider>

@@ -8,8 +8,6 @@ const ShowCard = ({ show, isAdded, rowRef, style = null }) => {
   const [expanded, setExpanded] = useState(false);
   const { addRemoveShow } = useContext(AddRemoveShowsContext);
 
-  console.log(`card ${show.name} redering` + new Date().toISOString());
-
   //options for intersection observer custom hook
   const options = {
     // imporntat: we use the parent ref as the ref in our options so that the lazy loading
