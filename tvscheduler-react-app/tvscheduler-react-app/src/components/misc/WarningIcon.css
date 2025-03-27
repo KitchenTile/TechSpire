@@ -7,11 +7,12 @@
     height: 59px;
     /* width: 100%; */
     top: 0;
-    left: 300px;
+    left: 330px;
     border-radius: 50px;
 
     & .title{
         cursor: pointer;
+        padding-left: 16px;
         margin: 0;
     }
 
