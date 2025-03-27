@@ -8,7 +8,7 @@ public class TodaysShowsCache
     private List<Show>? _cachedShows;
     
 
-    public List<Show> GetCachedShows()
+    public List<Show?> GetCachedShows()
     {
         return _cachedShows;
     }

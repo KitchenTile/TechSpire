@@ -19,7 +19,7 @@ public class TagsManager
     }
     
     // assign tag() to separate checking if the show exsists from getTagForShow()
-    public async Task AssignTag(Show show)
+    public async Task AssignTag(Show? show)
     {
 
         if (show != null)

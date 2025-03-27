@@ -6,7 +6,7 @@ namespace tvscheduler;
 
 public class AppDbContext : IdentityDbContext<User>
 {
-    public  DbSet<Show> Shows { get; set; }
+    public  DbSet<Show?> Shows { get; set; }
     public DbSet<Channel> Channels { get; set; }
     public DbSet<ShowEvent> ShowEvents { get; set; }
     public DbSet<Tag> Tags { get; set; }

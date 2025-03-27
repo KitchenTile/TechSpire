@@ -138,7 +138,7 @@ builder.Services.AddHangfire(opts =>
 builder.Services.AddHangfireServer();
 
 
-// custom services DI
+// custom services added to DI pipeline
 builder.Services.AddScoped<UpdateChannelSchedule>();
 builder.Services.AddScoped<TagsManager>();
 builder.Services.AddSingleton<HangfireJobs>();
