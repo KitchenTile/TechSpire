@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using tvscheduler.Models;
+using tvscheduler.Utilities;
 
 namespace tvscheduler.Controllers;
 
@@ -16,16 +17,17 @@ namespace tvscheduler.Controllers;
 public class AccountController : ControllerBase
 {
     private readonly AppDbContext _DbContext;
-    private readonly string _message = "u alright mate";
     private readonly UserManager<User> _userManager;
     private readonly IConfiguration _configuration;
+    private readonly RecommendationGeneratorIndividual _recommendationGeneratorIndividual;
 
     
-    public AccountController(AppDbContext dbContext, UserManager<User> userManager, IConfiguration configuration)
+    public AccountController(AppDbContext dbContext, UserManager<User> userManager, IConfiguration configuration, RecommendationGeneratorIndividual recommendationGeneratorIndividual)
     {
         _DbContext = dbContext;
         _userManager = userManager;
         _configuration = configuration;
+        _recommendationGeneratorIndividual = recommendationGeneratorIndividual;
         
     }
     
@@ -80,6 +82,15 @@ public async Task<IActionResult> Login(LoginDTO request)
     {
         return Unauthorized(new { message = "Invalid password" });
     }
+    
+    // generate daily recommendation for the user
+    
+    //TODO 
+    // if first login today > send recommendation
+    // else mark already logged today
+    
+    var recommendation = await _recommendationGeneratorIndividual.SetIndividualRecommendation(userId: user.Id);
+    
 
     var claims = new[]
     {
@@ -96,7 +107,7 @@ public async Task<IActionResult> Login(LoginDTO request)
         expires: DateTime.UtcNow.AddMinutes(30),
         signingCredentials: signIn);
 
-    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), recommendation });
 }
     
     

@@ -22,13 +22,15 @@ public class TvController : ControllerBase
     private readonly HttpClient _httpClient;
     private readonly UserManager<User> _userManager;
     private readonly TagsManager _tagsManager;
+    private readonly TodaysShowsCache _todaysShowsCache;
 
-    public TvController(HttpClient httpClient, AppDbContext dbContext, UserManager<User> userManager, TagsManager tagsManager)
+    public TvController(HttpClient httpClient, AppDbContext dbContext, UserManager<User> userManager, TagsManager tagsManager, TodaysShowsCache todaysShowsCache)
     {
         _httpClient = httpClient;
         _DbContext = dbContext;
         _userManager = userManager;
         _tagsManager = tagsManager;
+        _todaysShowsCache = todaysShowsCache;
     }
     
     
@@ -173,6 +175,19 @@ public class TvController : ControllerBase
         var result = await openAiHandler.RequestTag();
         
         return Ok(result);
+    }
+
+
+    [HttpGet("checkShowsCache")]
+    public IActionResult CheckShowsCache()
+    {
+        var shows = _todaysShowsCache.GetCachedShows();
+
+        if (shows == null)
+        {
+            return Ok("No cached shows");
+        }
+        return Ok(shows);
     }
 
 }

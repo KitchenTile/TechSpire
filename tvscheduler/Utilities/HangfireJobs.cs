@@ -43,4 +43,20 @@ public class HangfireJobs
             var tagsManager = scope.ServiceProvider.GetRequiredService<TagsManager>();
             await tagsManager.DeleteAllTags();
         }
+
+        public async Task UpdateTodaysShowsCache()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var cacheUpdater = scope.ServiceProvider.GetRequiredService<TodaysShowsCacheUpdate>();
+            await cacheUpdater.UpdateCachedShows();
+        }
+
+        public async Task UpdateGlobalRecommendation()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var globalRecommendationUpdater = scope.ServiceProvider.GetRequiredService<RecommendationGeneratorGlobal>();
+            await globalRecommendationUpdater.SetGlobalRecommendation();
+
+
+        }
     }
