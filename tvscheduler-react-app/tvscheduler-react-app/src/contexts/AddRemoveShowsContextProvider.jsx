@@ -1,8 +1,8 @@
 import { useCallback, useContext, useMemo } from "react";
 import MyShowsContext from "./myShowsContext";
 import AddRemoveShowsContext from "./AddRemoveShowsContext";
-import ChannelsContext from "./channelsContext";
 
+// This is a context provider for the function to add and remove shows, we aim to separate logic from exec because of SOC. --BLUE
 const AddRemoveShowsContextProvider = ({ children }) => {
   const { setMyShows, myShows } = useContext(MyShowsContext);
 

@@ -4,11 +4,8 @@ import ShowRowComponent from "./ShowRowComponenet";
 import "./ChannelShowComponent.css";
 import { memo } from "react";
 
-const ChannelShowComponent = ({
-  // we will hopefully remove the two channel props
-  // channels,
-  channel,
-}) => {
+// For dispalying channels and shows -- Rudraa
+const ChannelShowComponent = ({ channel }) => {
   //options for intersection observer custom hook
   const options = {
     root: null,
@@ -32,10 +29,7 @@ const ChannelShowComponent = ({
       </div>
       {isVisible ? (
         <>
-          <ShowRowComponent
-            // channels={channels}
-            channel={channel}
-          />
+          <ShowRowComponent channel={channel} />
         </>
       ) : (
         <LoadingComponent />

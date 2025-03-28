@@ -5,13 +5,12 @@
     background: #7b17179e;
     line-height: 59px;
     height: 59px;
-    /* width: 100%; */
     top: 0;
     left: 330px;
     border-radius: 50px;
 
     & .title{
-        cursor: pointer;
+        cursor: default;
         padding-left: 16px;
         margin: 0;
     }
@@ -38,6 +37,35 @@
             padding-right: 20px;
         }
     }
+
+    
+  &.vertical{
+    line-height: 59px;
+    height: 24px;
+    top: 88px;
+    left: 23px;
+
+    /*p*/& p{
+    height: 26px;
+    line-height: 24px;
+    font-size: 0.7em;
+    }
+
+
+    & .title{
+    font-size: 1em;
+    transform: translate(-3px, -16px);
+    }
+
+    
+    &:hover{
+        & p{
+            width: auto;
+            visibility: visible;
+            padding-right: 20px;
+        }
+    }
+  }
 }
 
 

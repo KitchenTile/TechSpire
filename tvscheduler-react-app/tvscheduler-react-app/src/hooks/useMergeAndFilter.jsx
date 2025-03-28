@@ -2,6 +2,8 @@ import { useMemo, useContext } from "react";
 import useShowLookup from "./useShowLookup";
 import ChannelsContext from "../contexts/channelsContext";
 
+// kinda messy hook, its used to... merge and filter data. I found that we were basically just doing these same operations
+// and repeating the same logic over and over, so I figured I'd just make this. -- BLUE
 const useMergeAndFilter = (param) => {
   const { channels } = useContext(ChannelsContext);
   const showLookup = useShowLookup(channels);

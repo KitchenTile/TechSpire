@@ -13,6 +13,7 @@ import useShowLookup from "../../hooks/useShowLookup";
 import ChannelsContext from "../../contexts/channelsContext";
 import MyShowsContext from "../../contexts/myShowsContext";
 
+// component to display rows of shows based on a channel, needs to be refacotred -- Rudraa
 const ShowRowComponent = ({ channel }) => {
   const showContainerRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(true);

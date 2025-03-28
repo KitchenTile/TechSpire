@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
+// Intersection observer observes an element and only displays its children who are being shown in the screen (within the confines of the options passed, ofc) -- BLUE
 const useIntersectionObserver = (options) => {
   //checks if the component is being observed
   const [isIntersecting, setIsIntersecting] = useState(false);

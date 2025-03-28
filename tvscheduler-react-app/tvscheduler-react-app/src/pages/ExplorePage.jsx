@@ -65,6 +65,7 @@ const ExplorePage = () => {
                 {filteredByGenre.length > 0 ? (
                   filteredByGenre.map((show) => (
                     <ShowCard
+                      key={show.showEventId}
                       show={show}
                       rowRef={window}
                       isAdded={myShows.includes(show.showEventId)}

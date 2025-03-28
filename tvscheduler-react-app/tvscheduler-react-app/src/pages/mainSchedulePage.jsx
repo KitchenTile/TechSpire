@@ -105,6 +105,7 @@ const MainSchedulePage = () => {
                   ))
                 : recommnededShows.map((show) => (
                     <ShowCard
+                      key={show.showEventId}
                       show={show}
                       isAdded={myShows.includes(show.showEventId)}
                     />

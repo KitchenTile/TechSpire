@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 
+// We do a bunch of scrilling literally everywhere and to improve performance this is a must. Throttles the amount of times scrolling func gets triggered -- BLUE
 const useThrottle = (ref, func) => {
   const ticking = useRef(false);
   const handleScroll = () => {
