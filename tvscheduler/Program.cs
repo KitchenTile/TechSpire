@@ -54,6 +54,7 @@ builder.Services.AddSwaggerGen(x =>
             new string[] {}
         }
     };
+    
     x.AddSecurityRequirement(securityRequirement);
 });
 
@@ -170,6 +171,9 @@ using (var serviceScope = app.Services.CreateScope())
 
 
 //HANGFIRE jobs
+recurringJobs.AddOrUpdate("Update Global Recommendation",
+    () => hangfireJobs.UpdateGlobalRecommendation(),
+    Cron.Daily());
 using (var scope = app.Services.CreateScope())
 {
     var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>(); // hangfire service to handle jobs
@@ -199,10 +203,11 @@ using (var scope = app.Services.CreateScope())
     recurringJobs.AddOrUpdate("Update Todays Shows Cache",
         () => hangfireJobs.UpdateTodaysShowsCache(),
         Cron.Daily());
-    
-    recurringJobs.AddOrUpdate("Update Global Recommendation",
-        () => hangfireJobs.UpdateGlobalRecommendation(),
-        Cron.Daily());
+
+
+    recurringJobs.AddOrUpdate("Clear Global Recommendations History",
+        () => hangfireJobs.ClearGlobalRecommendationsHistory(),
+        Cron.Never());
 }
 
 // Configure the HTTP request pipeline.
