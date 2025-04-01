@@ -11,21 +11,47 @@ using Xunit;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using tvscheduler.Utilities;
 
 namespace tvscheduler.tests.Controllers
 {
+    public class TestRecommendationGeneratorIndividual : RecommendationGeneratorIndividual
+    {
+        private readonly Show? _mockShow;
+
+        public TestRecommendationGeneratorIndividual(Show mockShow, AppDbContext dbContext, TodaysShowsCache todaysShowsCache) 
+            : base(dbContext, todaysShowsCache)
+        {
+            _mockShow = mockShow;
+        }
+
+        public new Task<Show?> SetIndividualRecommendation(string userId)
+        {
+            return Task.FromResult(_mockShow);
+        }
+    }
+
     public class AccountControllerTests : TestBase
     {
         private readonly AccountController _controller;
         private readonly Mock<UserManager<User>> _userManager;
         private readonly AppDbContext _dbContext;
         private readonly string _testUserId = "test-user-123";
+        private readonly TestRecommendationGeneratorIndividual _recommendationGenerator;
 
         public AccountControllerTests()
         {
             // Setup for all tests using base class methods
             _userManager = CreateMockUserManager();
             _dbContext = CreateInMemoryDbContext();
+            
+            var mockShow = new Show
+            {
+                ShowId = 1,
+                Name = "Test Show",
+                ImageUrl = "https://test.com/image.jpg"
+            };
+            _recommendationGenerator = new TestRecommendationGeneratorIndividual(mockShow, _dbContext, new TodaysShowsCache());
             
             // Seed data needed for schedule tests
             SeedTestData();
@@ -34,7 +60,8 @@ namespace tvscheduler.tests.Controllers
             _controller = new AccountController(
                 _dbContext,
                 _userManager.Object,
-                CreateMockConfiguration().Object
+                CreateMockConfiguration().Object,
+                _recommendationGenerator
             );
         }
         
@@ -45,7 +72,8 @@ namespace tvscheduler.tests.Controllers
             {
                 ShowId = 1,
                 Name = "Test Show",
-                ImageUrl = "https://test.com/image.jpg"
+                ImageUrl = "https://test.com/image.jpg",
+                Tag = new Tag { Id = 1, Name = "Comedy" }
             };
             _dbContext.Shows.Add(show);
             
@@ -165,6 +193,15 @@ namespace tvscheduler.tests.Controllers
                 
             _userManager.Setup(x => x.CheckPasswordAsync(user, loginDto.Password))
                 .ReturnsAsync(true);
+
+            var mockShow = new Show
+            {
+                ShowId = 1,
+                Name = "Test Show",
+                ImageUrl = "https://test.com/image.jpg"
+            };
+            
+            await _recommendationGenerator.SetIndividualRecommendation(_testUserId);
             
             // Act
             var result = await _controller.Login(loginDto);
