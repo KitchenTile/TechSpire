@@ -30,15 +30,16 @@
             color: var(--accentColor);
         }
     }
-  }
-
-  & input:checked + .genre-button{
-    background: white;
-    color: var(--accentColor);
-    border-color: var(--accentColor);
-    scale: 1.05 1.05;
+    
+    & input:checked + .genre-button{
+        background: white;
+        color: var(--accentColor);
+        border-color: var(--accentColor);
+        scale: 1.05 1.05;
+    }
+    
+    & input{
+        display: none;
+    }
 }
-
-& input{
-    display: none;
-}
+    
