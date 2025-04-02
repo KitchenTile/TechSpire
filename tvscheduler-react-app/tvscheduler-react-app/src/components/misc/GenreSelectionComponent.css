@@ -1,0 +1,44 @@
+.buttons-container{
+    margin-block: 1.5em;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+
+    & .submit-button{
+        font-size: 0.8em;
+    }
+
+
+    & .genre-button{
+        display: block;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        padding: 0.6em 1.2em;
+        font-size: 1em;
+        font-weight: 500;
+        font-family: inherit;
+        background-color: #1a1a1a;
+        cursor: pointer;
+        transition: border-color 0.25s;
+        background-color: var(--accentColor);
+        border-color: white;
+        text-align: center;
+        transition: all 0.1s ease-in-out;
+
+        &:hover{
+            background: white;
+            color: var(--accentColor);
+        }
+    }
+  }
+
+  & input:checked + .genre-button{
+    background: white;
+    color: var(--accentColor);
+    border-color: var(--accentColor);
+    scale: 1.05 1.05;
+}
+
+& input{
+    display: none;
+}

@@ -1,0 +1,163 @@
+.profile-container{
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 0px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+    interpolate-size: allow-keywords;
+    border-left: solid 1px #ffffff14;
+    box-shadow: -2px 1px 20px 0px rgb(26 26 26);
+    transition: width 0.2s ease-in-out;
+  
+    & .icon-container{
+      width: 32px;
+      height: 32px;
+      position: absolute;
+      cursor: pointer;
+      right: 3em;
+      top: 18.5px;
+  
+      &::before{
+        content: "Settings";
+        color: var(--accentColor);
+        text-align: center;
+        height: 14px;
+        line-height: 14px;
+        font-size: 0.7em;
+        font-weight: 600;
+        position: absolute;
+        transform: translate(0%, -110%);
+        background: white;
+        border-radius: 5px;
+        color: black;
+        padding: 7px;
+        letter-spacing: 0px;
+        top: 60px;
+        left: -12px;
+        transition: all 0.2s ease-in-out; 		
+        visibility: hidden;
+        opacity: 0;
+        
+        transition: all 0.2s ease-in-out;
+        }
+    
+        &::after{
+          content: "";
+          position: absolute;
+          transform: translate(0%, -70%);
+          border: 8px solid;
+          border-color: transparent transparent white transparent;
+          visibility: hidden;
+          opacity: 0;
+          top: 24px;
+          left: 8px;
+          transition: all 0.2s ease-in-out;
+        }
+  
+  
+        &:hover{
+          color: var(--accentColor);
+      
+          &::before, &::after{
+            visibility: visible;
+            opacity: 1;
+            transform: translate(0%, -80%);
+          }
+      
+          &::after{
+            transform: translate(0%, -5%);
+          }
+
+        } 
+
+    }
+
+    .title-logout{
+        height: 32px;
+        line-height: 32px;
+        display: flex;
+        justify-content: space-between;
+        margin: 1em 0;
+
+        & h2{
+            margin: 0;
+        }
+    }
+
+    & .icon-container#logOut{
+        position: unset;
+        right: 3em;
+        top: 60px;
+    
+        &::before{
+            content: "Log Out";
+            height: 16px;
+            width: 50px;
+            line-height: 16px;
+            top: 11.7em;
+            left: 46.7em;
+            position: absolute;       
+          }  
+        &::after{
+            top: 95px;
+            left: 34.1em;
+        }
+      }
+  
+    &.expanded{
+      width: 600px;
+      height: 100vh;
+      padding: 3em 2em;
+  
+      & .myshow-container.vertical, .title{
+        display: flex;
+        flex-direction: column;
+        transform: translateX(-20px);
+      }
+      & .my-shows-icon{
+        display: none;
+  
+        &::before, &::after{
+          display: none;
+        }
+      }
+  
+      & .close-bttn{
+        position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 20px;
+      left: 20px;
+      rotate: 45deg;
+        cursor: pointer;
+  
+        &:before{
+          content: "";
+          position: absolute;
+          height: 15px;
+          width: 3px;
+          border-radius: 2px;
+          background:white;
+          transform: translate(10px, 4px);
+        }
+        
+        &:after{
+          content: "";
+          position: absolute;
+          width: 15px;
+          height: 3px;
+          border-radius: 2px;
+          background:white;
+          transform: translate(4px, 10px);
+  
+        }
+      }
+    }
+  }
+  
+  .title-warning-container{
+    position: relative;
+  }

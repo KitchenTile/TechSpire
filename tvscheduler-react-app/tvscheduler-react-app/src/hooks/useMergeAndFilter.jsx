@@ -13,6 +13,7 @@ const useMergeAndFilter = (param) => {
     return a.timeStart - b.timeStart;
   };
 
+  //Fisher-Yates shuffle to get random elements of an array
   const getRandomElements = (array, n) => {
     const copy = [...array];
     for (let i = copy.length - 1; i > 0; i--) {

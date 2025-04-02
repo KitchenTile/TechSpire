@@ -56,10 +56,14 @@
       }
 
       & .buttons-container{
-        margin-block: 3em 1em;
+        margin-block: 3em;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 10px;
+
+        & .submit-button{
+            font-size: 0.8em;
+        }
 
 
         & .genre-button{
@@ -89,7 +93,7 @@
         background: white;
         color: var(--accentColor);
         border-color: var(--accentColor);
-        scale: 1.05 1.1;
+        scale: 1.05 1.05;
     }
 
     & input{

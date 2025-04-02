@@ -4,6 +4,7 @@ import "./Header.css";
 import { Link } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import MyShowsComponent from "../showScheduler/myShowsComponent";
+import ProfilePannel from "../misc/ProfilePannel";
 
 const Header = ({ isVisible = true }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -55,6 +56,7 @@ const Header = ({ isVisible = true }) => {
       <Navigation />
       <Search />
       <MyShowsComponent position={"vertical"} />
+      <ProfilePannel />
     </ul>
   );
 };

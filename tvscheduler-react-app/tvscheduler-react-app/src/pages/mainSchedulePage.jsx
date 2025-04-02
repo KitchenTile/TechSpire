@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import useMergeAndFilter from "../hooks/useMergeAndFilter";
 import ShowCard from "../components/showScheduler/ShowCard";
 import MyShowsContext from "../contexts/myShowsContext";
+import GenreSelectionCompoenet from "../components/misc/GenreSelectionCompoenet";
 
 const MainSchedulePage = () => {
   const { channels } = useContext(ChannelsContext);
@@ -77,7 +78,9 @@ const MainSchedulePage = () => {
         <AddRemoveShowsContextProvider>
           <>
             {channels.favTags.length !== 0 ? null : (
-              <Modal open={openModal} handleModalClose={handleModalClose} />
+              <Modal open={openModal} handleModalClose={handleModalClose}>
+                <GenreSelectionCompoenet />
+              </Modal>
             )}
             <Header isVisible={isVisible} />
 
