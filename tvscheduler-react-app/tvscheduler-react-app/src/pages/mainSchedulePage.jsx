@@ -78,9 +78,7 @@ const MainSchedulePage = () => {
         <AddRemoveShowsContextProvider>
           <>
             {channels.favTags.length !== 0 ? null : (
-              <Modal open={openModal} handleModalClose={handleModalClose}>
-                <GenreSelectionCompoenet />
-              </Modal>
+              <Modal open={openModal} handleModalClose={handleModalClose} />
             )}
             <Header isVisible={isVisible} />
 

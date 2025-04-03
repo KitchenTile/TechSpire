@@ -3,9 +3,19 @@ import "./GenreSelectionComponent.css";
 import ChannelsContext from "../../contexts/channelsContext";
 6.5;
 //here we create a modal using react portals -- Rudraa
-const GenreSelectionCompoenet = () => {
+const GenreSelectionCompoenet = ({ handleModalClose, inModal = false }) => {
   const [selected, setSelected] = useState([]);
   const { refreshChannels, channels } = useContext(ChannelsContext);
+
+  useEffect(() => {
+    const syncTags = async () => {
+      if (channels) {
+        const selectedTags = channels.favTags.map((tag) => tag.tagId);
+        setSelected(selectedTags);
+      }
+    };
+    syncTags();
+  }, [channels]);
 
   const genres = {
     Documentary: 1,
@@ -54,15 +64,10 @@ const GenreSelectionCompoenet = () => {
         console.error(err);
       }
       refreshChannels();
-      handleModalClose();
-    } else {
-      handleModalClose();
     }
+    inModal ? handleModalClose() : null;
   };
 
-  if (!open) return null;
-
-  // create portal to display modal
   return (
     <>
       <div className="buttons-container">
@@ -81,7 +86,11 @@ const GenreSelectionCompoenet = () => {
           </div>
         ))}
 
-        <button className="submit-button" onClick={handleSubmit}>
+        <button
+          className="submit-button"
+          onClick={handleSubmit}
+          disabled={!inModal && selected.length === 0}
+        >
           {selected.length !== 0 ? "Done" : "Maybe later"}
         </button>
       </div>

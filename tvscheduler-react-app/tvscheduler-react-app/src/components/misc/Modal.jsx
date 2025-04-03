@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import ReactDom from "react-dom";
 import "./Modal.css";
 import ChannelsContext from "../../contexts/channelsContext";
+import GenreSelectionCompoenet from "./GenreSelectionCompoenet";
 
 //here we create a modal using react portals -- Rudraa
 const Modal = ({ open, handleModalClose, children }) => {
@@ -23,7 +24,10 @@ const Modal = ({ open, handleModalClose, children }) => {
           Please let us know your favourite tv genres so we can tailor
           recommendations for you!
         </p>
-        {children}
+        <GenreSelectionCompoenet
+          handleModalClose={handleModalClose}
+          inModal={true}
+        />
       </div>
     </>,
     document.getElementById("portal")

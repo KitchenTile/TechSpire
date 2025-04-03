@@ -41,5 +41,10 @@
     & input{
         display: none;
     }
+
+    & .submit-button:disabled{
+        border-color: #1a1a1a;
+        cursor: default;
+    }
 }
     
