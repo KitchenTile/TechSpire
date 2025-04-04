@@ -98,31 +98,39 @@
     .genres-container{
         background-color: transparent;
         border-radius: 0;
+        top: 9px;
 
         & .genres-list{
-        display: grid;
-        position: absolute;
-        top: 48px;
-        left: -300px;
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(6, 1fr);
-        height: 300px;
-        width: 435px;
-        padding: 10px 25px;
-        border-radius: 0;
-        text-align: -webkit-center;
-    }
-
-    & .title{
-        padding-left: 1em;
+            display: grid;
+            position: absolute;
+            top: 48px;
+            left: -290px;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            height: 300px;
+            width: 430px;
+            padding: 10px 25px 10px 35px;
+            border-radius: 0;
+            text-align: -webkit-center;
     }
 
     }
 
     & .title-genres{
-        box-shadow:  inset 0px -2px 15px 0px rgb(255 255 255 / 12%);
+        box-shadow: inset 0px -2px 15px 0px rgb(255 255 255 / 12%);
         border-bottom: 1px solid #3f3f3f;
-    }
+        position: fixed;
+        top: 3em;
+        left: 0em;
+        width: 100%;
+        z-index: 10;
+        background: black;
+
+        & .title{
+            padding-left: 1em;
+            margin-block-end: 0.3em;
+        }
+        }
 
     & .content-container{
         padding-block: 6em;

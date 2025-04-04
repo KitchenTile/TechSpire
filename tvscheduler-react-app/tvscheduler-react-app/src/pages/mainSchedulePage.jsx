@@ -82,7 +82,7 @@ const MainSchedulePage = () => {
                 <>
                   <h1 className="title">Welcome to ViewQue!</h1>
                   <p>
-                    Please let us know your favourite tv genres so we can tailor
+                    Select your favourite tv genres so we can tailor
                     recommendations for you!
                   </p>
                   <GenreSelectionCompoenet

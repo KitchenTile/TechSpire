@@ -50,3 +50,31 @@
   display: block;
   transform: translateX(0.5px);
 }
+
+@media only screen and (max-width: 430px) {
+  .channel-show-container {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: unset;
+    width: 104%;
+    border-bottom: none;
+
+    & h3{
+      padding-right: 20px;
+      width: 430px;
+      border-bottom: 1px solid;
+      border-right: 0;
+      z-index: 2;
+      position: relative;
+      text-align: right;
+      line-height: normal;
+      height: auto;
+      margin-right: 0;
+    }
+  }
+
+  .image-container{
+    display: none;
+  }
+}

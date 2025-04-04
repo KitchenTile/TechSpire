@@ -161,3 +161,13 @@
   .title-warning-container{
     position: relative;
   }
+
+  @media only screen and (max-width: 430px) {
+    
+    .profile-container{
+
+      &.expanded{
+        width: 100%;
+      }
+    }
+}
