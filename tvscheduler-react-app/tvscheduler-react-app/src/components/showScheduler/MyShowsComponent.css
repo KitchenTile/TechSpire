@@ -20,6 +20,8 @@
   flex-direction: column;
   background-color: black;
   interpolate-size: allow-keywords;
+  border-left: solid 1px #ffffff14;
+  box-shadow: -2px 1px 20px 0px rgb(26 26 26);
   transition: width 0.2s ease-in-out;
 
   .myshow-container.vertical, .title{
@@ -35,7 +37,7 @@
     height: 32px;
     position: absolute;
     cursor: pointer;
-    right: 2em;
+    right: 7em;
     top: 16.5px;
 
     & .my-shows-length{
@@ -113,6 +115,7 @@
     width: 400px;
     height: 100vh;
     padding-block: 3em;
+    z-index: 2;
 
     & .myshow-container.vertical, .title{
       display: flex;

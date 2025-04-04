@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 
+// Made this hook to have an alterative for throttling, currently being used for the search component's input -- BLUE
 const useDebounce = (value, delay = 500) => {
   const [debounceValue, setDebounceValue] = useState(value);
 
   useEffect(() => {
     const timeOut = setTimeout(() => {
-      console.log("setting timeout");
       setDebounceValue(value);
     }, delay);
 
     return () => {
-      console.log("cleaing timeout");
       clearTimeout(timeOut);
     };
   }, [value, delay]);

@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import useMergeAndFilter from "../hooks/useMergeAndFilter";
 import ShowCard from "../components/showScheduler/ShowCard";
 import MyShowsContext from "../contexts/myShowsContext";
+import GenreSelectionCompoenet from "../components/misc/GenreSelectionCompoenet";
 
 const MainSchedulePage = () => {
   const { channels } = useContext(ChannelsContext);
@@ -77,7 +78,19 @@ const MainSchedulePage = () => {
         <AddRemoveShowsContextProvider>
           <>
             {channels.favTags.length !== 0 ? null : (
-              <Modal open={openModal} handleModalClose={handleModalClose} />
+              <Modal open={openModal} handleModalClose={handleModalClose}>
+                <>
+                  <h1 className="title">Welcome to ViewQue!</h1>
+                  <p>
+                    Please let us know your favourite tv genres so we can tailor
+                    recommendations for you!
+                  </p>
+                  <GenreSelectionCompoenet
+                    handleModalClose={handleModalClose}
+                    inModal={true}
+                  />
+                </>
+              </Modal>
             )}
             <Header isVisible={isVisible} />
 
@@ -105,6 +118,7 @@ const MainSchedulePage = () => {
                   ))
                 : recommnededShows.map((show) => (
                     <ShowCard
+                      key={show.showEventId}
                       show={show}
                       isAdded={myShows.includes(show.showEventId)}
                     />

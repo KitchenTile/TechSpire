@@ -14,6 +14,7 @@ import MyShowsContext from "../../contexts/myShowsContext";
 import "./MyShowsComponent.css";
 import WarningIcon from "../misc/WarningIcon";
 
+// Component to display my shows array, refacotred to be displayed vertically -- BLUE
 const MyShowsComponent = ({ position = "horizontal" }) => {
   const { channels } = useContext(ChannelsContext);
   const { myShows } = useContext(MyShowsContext);
@@ -28,6 +29,7 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
 
     const overlap = [];
 
+    // Filip
     if (filtered.length > 1) {
       for (let i = 0; i < filtered.length - 1; i++) {
         const currentShow = filtered[i];
@@ -41,8 +43,6 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
           overlap.push({ currentShow, nextShow });
         }
       }
-
-      console.log(overlap);
     }
 
     return { filtered, overlap };
@@ -82,11 +82,11 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
           </div>
         )
       ) : null}
-      <div className="title-warning-container">
+      <div className={`title-warning-container`}>
         <h1 className="title h1">My Shows</h1>
         {mergeAndSort.overlap.length > 0 ? (
-          <WarningIcon>
-            {mergeAndSort.overlap.length * 2} shows overlapping!
+          <WarningIcon position={position}>
+            {mergeAndSort.overlap.length} show(s) overlap!
           </WarningIcon>
         ) : null}
       </div>

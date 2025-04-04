@@ -1,14 +1,14 @@
 import { useState } from "react";
 import "./InputComponent.css";
 
+// imputs for login page -- Filip
 const InputComponent = ({ name, label, errorMessage }) => {
   const [isFilled, setIsFilled] = useState(false);
-  const inputType = name === 'password' ? 'password' : 'text';
+  const inputType = name === "password" ? "password" : "text";
 
   const handleInputChange = (event) => {
     setIsFilled(event.target.value === "" ? false : true);
   };
-
 
   return (
     <div className={`input-field ${isFilled ? "filled" : ""} `}>
@@ -18,7 +18,7 @@ const InputComponent = ({ name, label, errorMessage }) => {
         name={name}
         type={inputType}
         onChange={handleInputChange}
-        className={errorMessage ? 'error' : ''} 
+        className={errorMessage ? "error" : ""}
       />
       {errorMessage && <span className="error-message">{errorMessage}</span>}
     </div>
