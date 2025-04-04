@@ -78,7 +78,19 @@ const MainSchedulePage = () => {
         <AddRemoveShowsContextProvider>
           <>
             {channels.favTags.length !== 0 ? null : (
-              <Modal open={openModal} handleModalClose={handleModalClose} />
+              <Modal open={openModal} handleModalClose={handleModalClose}>
+                <>
+                  <h1 className="title">Welcome to ViewQue!</h1>
+                  <p>
+                    Please let us know your favourite tv genres so we can tailor
+                    recommendations for you!
+                  </p>
+                  <GenreSelectionCompoenet
+                    handleModalClose={handleModalClose}
+                    inModal={true}
+                  />
+                </>
+              </Modal>
             )}
             <Header isVisible={isVisible} />
 
