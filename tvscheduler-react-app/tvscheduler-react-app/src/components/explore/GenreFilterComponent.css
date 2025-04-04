@@ -92,3 +92,39 @@
         }
     }   
 }
+
+@media only screen and (max-width: 430px) {
+    
+    .genres-container{
+        background-color: transparent;
+        border-radius: 0;
+
+        & .genres-list{
+        display: grid;
+        position: absolute;
+        top: 48px;
+        left: -300px;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+        height: 300px;
+        width: 435px;
+        padding: 10px 25px;
+        border-radius: 0;
+        text-align: -webkit-center;
+    }
+
+    & .title{
+        padding-left: 1em;
+    }
+
+    }
+
+    & .title-genres{
+        box-shadow:  inset 0px -2px 15px 0px rgb(255 255 255 / 12%);
+        border-bottom: 1px solid #3f3f3f;
+    }
+
+    & .content-container{
+        padding-block: 6em;
+    }
+}
