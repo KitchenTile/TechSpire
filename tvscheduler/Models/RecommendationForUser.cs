@@ -9,12 +9,14 @@ public class RecommendationForUser
     [Key]
     public int Id { get; set; }
     
-    [ForeignKey("User")]
+    
     public string UserId { get; set; }
+    [ForeignKey("UserId")]
     public User User { get; set; }
     
-    [ForeignKey("Show")]
+    
     public int ShowId { get; set; }
+    [ForeignKey("ShowId")]
     public Show Show { get; set; }
     
     public DateTime CreatedDate { get; set; }
