@@ -22,6 +22,7 @@ public abstract class RecommendationGeneratorBase
 }
 
 
+
 public class RecommendationGeneratorGlobal : RecommendationGeneratorBase
 {
     public RecommendationGeneratorGlobal(AppDbContext dbContext, TodaysShowsCache todaysShowsCache) : base(dbContext, todaysShowsCache) //dependency injection requires to explicitly pass the services through the constructors (cant just access with 'base')
@@ -60,6 +61,16 @@ public class RecommendationGeneratorGlobal : RecommendationGeneratorBase
         _DbContext.GlobalRecommendations.Add(newRecommendation);
         await _DbContext.SaveChangesAsync();
     }
+    
+    public async Task ClearGlobalRecommendationsHistory()
+    {
+        var allRecommendations = await _DbContext.GlobalRecommendations.ToListAsync();
+        _DbContext.GlobalRecommendations.RemoveRange(allRecommendations);
+        
+        await _DbContext.Database.ExecuteSqlRawAsync("ALTER TABLE RecommendationForUsers AUTO_INCREMENT = 1");
+        
+        await _DbContext.SaveChangesAsync();
+    }
 }
 
 
@@ -78,30 +89,27 @@ public class RecommendationGeneratorIndividual : RecommendationGeneratorBase
                         && x.CreatedDate >= today
                         )
             .Include(x => x.Show)
+            .ThenInclude(x => x.Tag)
             .FirstOrDefaultAsync();
 
-        if (exsistingRecommendation != null) 
+        if (exsistingRecommendation != null)
         {
-            return await _DbContext.Shows.FirstOrDefaultAsync(s => s.ShowId == exsistingRecommendation.Show.ShowId);
+            return exsistingRecommendation.Show;
         }
             
         // if no exsisting recommendation - get users fav tags
-        var userFavouriteTags = await _DbContext!.FavouriteTags
+        var userFavouriteTagIds = await _DbContext!.FavouriteTags
             .Where(ft => ft.UserId == userId)
             .Select(ft => ft.TagId)
             .ToListAsync();
         
-        if (userFavouriteTags.Count == 0)
+        if (userFavouriteTagIds.Count == 0)
         {
             return null; // No favorite tags to base recommendation on
         }
         
-        var todaysShows = _todaysShowsCache.GetCachedShows();
 
-        
-        var recommendedShows = todaysShows
-            .Where(show => show.Tag != null && userFavouriteTags.Contains(show.Tag.Id))
-            .ToList();
+       var recommendedShows = _todaysShowsCache.GetTodaysShowsByTags(userFavouriteTagIds);
         
         if (recommendedShows.Count == 0)
         {
@@ -118,6 +126,15 @@ public class RecommendationGeneratorIndividual : RecommendationGeneratorBase
         });
         await _DbContext.SaveChangesAsync();
         
-        return newRecommendation;
-    } 
-}           // if its first login today - show the recommendation splash before rest of the data is fetched??
+        return newRecommendation;            // if its first login today - show the recommendation splash before rest of the data is fetched??
+    }
+    
+    
+    public async Task ClearIndividualRecommendationsHistoryForAllUsers()
+    {
+        var allRecommendations = await _DbContext.IndividualRecommendations.ToListAsync();
+        _DbContext.IndividualRecommendations.RemoveRange(allRecommendations);
+        await _DbContext.SaveChangesAsync();
+    }
+    
+}
