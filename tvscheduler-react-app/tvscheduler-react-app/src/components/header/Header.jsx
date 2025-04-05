@@ -2,28 +2,11 @@ import Navigation from "./Navigation";
 import Search from "./Search";
 import "./Header.css";
 import { Link } from "react-router-dom";
-import { useEffect, useState, useCallback } from "react";
 import MyShowsComponent from "../showScheduler/myShowsComponent";
 import ProfilePannel from "../misc/ProfilePannel";
+import BurgerMenu from "./BurgerMenu";
 
 const Header = ({ isVisible = true }) => {
-  const [scrollPosition, setScrollPosition] = useState(0);
-
-  const handleScroll = useCallback(() => {
-    requestAnimationFrame(() => {
-      const position = window.scrollY;
-      setScrollPosition((prev) => (prev !== position ? position : prev));
-    });
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [handleScroll]);
-
   return (
     <ul className={`header-container ${isVisible ? "active" : ""}`}>
       <Link to={"/main"} className="header-img-container">

@@ -53,7 +53,7 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
       className={
         position === "vertical"
           ? `vertical-container ${expanded ? "expanded" : ""}`
-          : ""
+          : null
       }
     >
       {position === "vertical" ? (
@@ -82,7 +82,7 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
           </div>
         )
       ) : null}
-      <div className={`title-warning-container`}>
+      <div className="title-warning-container">
         <h1 className="title h1">My Shows</h1>
         {mergeAndSort.overlap.length > 0 ? (
           <WarningIcon position={position}>

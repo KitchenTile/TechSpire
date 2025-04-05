@@ -6,7 +6,7 @@
     padding-inline: 2em;
     display: flex;
     flex-direction: row;
-    overflow: scroll;
+    overflow: scroll hidden;
     gap: 10px;
     &::-webkit-scrollbar
     {

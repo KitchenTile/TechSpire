@@ -53,9 +53,5 @@
 
     .buttons-container{
         grid-template-columns: repeat(2, 1fr);
-
-        & .genre-button{
-            min-width: 145px;
-        }
     }
 }

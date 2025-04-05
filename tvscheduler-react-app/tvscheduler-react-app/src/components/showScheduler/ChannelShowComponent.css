@@ -22,6 +22,7 @@
   .title-image-container{
     position: relative;
   }
+
   .image-container {
     position: absolute;
     top: 46px;
@@ -57,8 +58,9 @@
     position: relative;
     flex-direction: column;
     align-items: unset;
-    width: 104%;
+    width: 110%;
     border-bottom: none;
+    left: -20px;
 
     & h3{
       padding-right: 20px;
@@ -68,13 +70,19 @@
       z-index: 2;
       position: relative;
       text-align: right;
-      line-height: normal;
+      line-height: 2em;
       height: auto;
       margin-right: 0;
+      margin-block-start: 0;
+      font-size: 1.6em;
     }
   }
 
   .image-container{
     display: none;
+  }
+
+  .title-image-container{
+    left: -7px;
   }
 }
