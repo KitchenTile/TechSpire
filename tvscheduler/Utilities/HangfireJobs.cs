@@ -56,7 +56,19 @@ public class HangfireJobs
             using var scope = _scopeFactory.CreateScope();
             var globalRecommendationUpdater = scope.ServiceProvider.GetRequiredService<RecommendationGeneratorGlobal>();
             await globalRecommendationUpdater.SetGlobalRecommendation();
+        }
+        
+        public async Task ClearGlobalRecommendationsHistory()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var globalRecommendationManager = scope.ServiceProvider.GetRequiredService<RecommendationGeneratorGlobal>();
+            await globalRecommendationManager.ClearGlobalRecommendationsHistory();
+        }
 
-
+        public async Task ClearIndividualRecommendationsHistory()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var individualRecommendationManager = scope.ServiceProvider.GetRequiredService<RecommendationGeneratorIndividual>();
+            await individualRecommendationManager.ClearIndividualRecommendationsHistoryForAllUsers();
         }
     }

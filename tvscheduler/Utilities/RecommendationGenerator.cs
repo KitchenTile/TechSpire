@@ -1,3 +1,4 @@
+using System.Security.Cryptography.Xml;
 using Microsoft.EntityFrameworkCore;
 using tvscheduler.Models;
 
@@ -14,12 +15,17 @@ public abstract class RecommendationGeneratorBase
         _todaysShowsCache = todaysShowsCache;
     }
     
-    protected async Task<Show?> PickRandomShow(List<Show?> shows)
+    protected Show? PickRandomShow(List<Show> shows, List<int>? pastRecommendations = null)
     {
+        var notRecentlyRecommended = pastRecommendations == null
+            ? shows
+            : shows.Where(x => !pastRecommendations.Contains(x.ShowId)).ToList();
+        
         var random = new Random();
-        return shows[random.Next(shows.Count)];
+        return notRecentlyRecommended[random.Next(notRecentlyRecommended.Count)];
     }
 }
+
 
 
 public class RecommendationGeneratorGlobal : RecommendationGeneratorBase
@@ -43,11 +49,7 @@ public class RecommendationGeneratorGlobal : RecommendationGeneratorBase
             _DbContext.GlobalRecommendations.Update(activeRecommendation);
         }
         
-        Show? randomShow;
-        do
-        {
-            randomShow = await PickRandomShow(_todaysShowsCache.GetCachedShows());
-        } while (pastRecommendationsIds.Contains(randomShow.ShowId));
+        var randomShow = PickRandomShow(_todaysShowsCache.GetCachedShows(), pastRecommendationsIds);
         
         // add the show as a current recommendation
         var newRecommendation = new RecommendationGlobal()
@@ -60,6 +62,16 @@ public class RecommendationGeneratorGlobal : RecommendationGeneratorBase
         _DbContext.GlobalRecommendations.Add(newRecommendation);
         await _DbContext.SaveChangesAsync();
     }
+    
+    public async Task ClearGlobalRecommendationsHistory()
+    {
+        var allRecommendations = await _DbContext.GlobalRecommendations.ToListAsync();
+        _DbContext.GlobalRecommendations.RemoveRange(allRecommendations);
+        
+        await _DbContext.Database.ExecuteSqlRawAsync("ALTER TABLE GlobalRecommendations AUTO_INCREMENT = 1");
+        
+        await _DbContext.SaveChangesAsync();
+    }
 }
 
 
@@ -69,55 +81,78 @@ public class RecommendationGeneratorIndividual : RecommendationGeneratorBase
     public RecommendationGeneratorIndividual(AppDbContext dbContext, TodaysShowsCache todaysShowsCache) : base(dbContext, todaysShowsCache)
     {
     }
-    public async Task<Show?> SetIndividualRecommendation(string userId) //should be split into separate methods for funcions to follow a single purpose principle
+    public async Task SetIndividualRecommendation(string userId) //should be split into separate methods for funcions to follow a single purpose principle
     {
         //check if there already is a recommendation for today
         DateTime today = DateTime.Today;
-        var exsistingRecommendation = await _DbContext.IndividualRecommendations
+        DateTime threeDaysAgo = DateTime.Today.AddDays(-3);
+        var exsistingRecommendations = await _DbContext.IndividualRecommendations
             .Where(x => x.UserId == userId 
-                        && x.CreatedDate >= today
+                        && x.CreatedDate <= today
+                        && x.CreatedDate >= threeDaysAgo
                         )
             .Include(x => x.Show)
-            .FirstOrDefaultAsync();
+            .ThenInclude(x => x.Tag)
+            .ToListAsync();
+        
+        var todaysRecommendation = exsistingRecommendations.FirstOrDefault(x => x.CreatedDate == today);
 
-        if (exsistingRecommendation != null) 
+        if (todaysRecommendation != null)
         {
-            return await _DbContext.Shows.FirstOrDefaultAsync(s => s.ShowId == exsistingRecommendation.Show.ShowId);
+            return;
         }
             
         // if no exsisting recommendation - get users fav tags
-        var userFavouriteTags = await _DbContext!.FavouriteTags
+        var userFavouriteTagIds = await _DbContext!.FavouriteTags
             .Where(ft => ft.UserId == userId)
             .Select(ft => ft.TagId)
             .ToListAsync();
         
-        if (userFavouriteTags.Count == 0)
+        if (userFavouriteTagIds.Count == 0)
         {
-            return null; // No favorite tags to base recommendation on
+            return; // No favorite tags to base recommendation on
+            // how to handle this ? should the function be pure instead of making the db changes itself ?
         }
         
-        var todaysShows = _todaysShowsCache.GetCachedShows();
 
-        
-        var recommendedShows = todaysShows
-            .Where(show => show.Tag != null && userFavouriteTags.Contains(show.Tag.Id))
-            .ToList();
+        List<Show> recommendedShows = _todaysShowsCache.GetTodaysShowsByTags(userFavouriteTagIds);
         
         if (recommendedShows.Count == 0)
         {
-            return null; // No shows match user's favorite tags today
+            return; // No shows match user's favorite tags today
         }
 
-        var newRecommendation = await PickRandomShow(recommendedShows);
+        // create a list of ids od recently recommended shows
+        List<int> recentlyRecommendedShowIds = exsistingRecommendations.Select(x => x.Show.ShowId).ToList();
+        var newRecommendation = PickRandomShow(recommendedShows, recentlyRecommendedShowIds);
+
+        if (newRecommendation == null)
+        {
+            return;
+        }
 
         _DbContext.IndividualRecommendations.Add(new RecommendationForUser()
         {
             UserId = userId,
-            CreatedDate = DateTime.Now,
+            CreatedDate = DateTime.Today,
             ShowId = newRecommendation.ShowId
         });
         await _DbContext.SaveChangesAsync();
+        // if its first login today - show the recommendation splash before rest of the data is fetched??
+    }
+    
+    public async Task ClearIndividualRecommendationsHistoryForAllUsers()
+    {
+        var allRecommendations = await _DbContext.IndividualRecommendations.ToListAsync();
+
+        if (allRecommendations.Count == 0)
+        {
+            return;
+        }
         
-        return newRecommendation;
-    } 
-}           // if its first login today - show the recommendation splash before rest of the data is fetched??
+        _DbContext.IndividualRecommendations.RemoveRange(allRecommendations);
+        await _DbContext.Database.ExecuteSqlRawAsync("ALTER TABLE IndividualRecommendations AUTO_INCREMENT = 1");
+        await _DbContext.SaveChangesAsync();
+    } // TODO make sure the individual recommendation is different from the global one
+      // TODO (add global recommendation id to past recommendations when calling PickRandomShow) 
+}
