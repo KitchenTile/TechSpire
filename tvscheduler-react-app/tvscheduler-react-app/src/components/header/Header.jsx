@@ -9,6 +9,7 @@ import BurgerMenu from "./BurgerMenu";
 const Header = ({ isVisible = true }) => {
   return (
     <ul className={`header-container ${isVisible ? "active" : ""}`}>
+      <BurgerMenu />
       <Link to={"/main"} className="header-img-container">
         <li className="header-img-container">
           <svg

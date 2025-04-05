@@ -1,0 +1,277 @@
+.burgerMenu {
+    display: none;
+    z-index: 999;
+}
+
+.burgerBar {
+    /* display: block;
+    height: 0.25em;
+    width: 1.8em;
+    border-radius: 0.5em;
+    background-color: white;
+    margin: 0.25em 0;
+    z-index: 999; */
+    position:absolute;
+    top: 0px;
+    left: 0;
+    height: 4px;
+    width: 28px;
+    background-color:white;
+    border-radius: 4px;
+    box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, .4);
+    cursor: pointer;
+    transform: translateY(0);
+    background: var(--accentColor);
+}
+
+.burgerBar.clicked:nth-child(1){
+    animation: top-bar-animation-active 0.5s ease-in-out forwards;
+}
+.burgerBar.clicked:nth-child(2){
+    animation: middle-bar-animation-active 0.5s ease-in-out forwards;
+}
+.burgerBar.clicked:nth-child(3){
+    animation: bottom-bar-animation-active 0.5s ease-in-out forwards;
+}
+
+.burgerBar.unclicked:nth-child(1){
+
+    animation: top-bar-animation-inactive 0.5s ease-in-out forwards;
+}
+.burgerBar.unclicked:nth-child(2){
+    animation: middle-bar-animation-inactive 0.5s ease-in-out forwards;
+}
+.burgerBar.unclicked:nth-child(3){
+    animation: bottom-bar-animation-inactive 0.5s ease-in-out forwards;
+}
+
+.menu#down {
+    border-radius: 0;
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    background-color: #FDBA17;
+    top: 6em;
+    padding-bottom: 1.5em;
+    gap: 1em;
+    width: 100vw;
+    padding: 1em 0;
+    transform-origin: top;
+    transform: scaleY(0);
+    box-shadow: 0px 4px 4px 0px #00000025 inset;
+}
+
+
+.menu#down a{
+    color: white;
+}
+
+.menu#down a:hover {
+    color: #F47A62;
+}
+
+
+.slidingDownContainer {
+    cursor: pointer;
+    font-weight: 700;
+    width: 100vw;
+    /* transition: background-color 0.5s ease-in-out; */
+    transition: all 0.5s ease-in-out;
+}
+
+.slidingDownContainer.clicked {
+    background-color: #F47A62; /* make into animation -- refine animations in general */
+    padding: 2em;
+}
+
+.slidingDownContainer.clicked .subMenu {
+    opacity: 1;
+}
+
+.slidingDownContainer h3{
+    margin-block: 0.3em;
+}
+
+.menu #account{
+    margin-block: 0.3em;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.17em;
+}
+
+.linkDown {
+    text-decoration: none;
+    font-weight: 300;
+    margin-top: 1em;
+}
+ 
+
+.subMenu{
+    display: flex;
+    flex-direction: column;
+    transform-origin: top;
+    max-height: 0;
+    /* transition: max-height 0.6s ease-in-out; */
+    opacity: 0;
+    transition: all 0.4s ease-in-out;
+
+}
+
+
+.subMenu.hidden#down{
+    max-height: 0px;
+} 
+
+.subMenu.show#down{
+    display: flex;
+    flex-direction: column;
+    max-height: 300px;
+}
+
+
+
+
+
+/* Transition only applies after the class changes to "show" or "hidden" */
+.menu.show#down,
+.menu.hidden#down {
+    transition: transform 0.5s ease-in-out; /* Add transition after toggle */
+}
+
+/* When the menu is visible */
+.menu.show {
+    transform: scaleY(1);
+}
+
+/* When the menu is hidden */
+.menu.hidden {
+    transform: scaleY(0);
+}
+
+
+/*------ MENU BARS ------*/
+
+
+@keyframes top-bar-animation-active{
+    50%{
+      transform: translateY(10px)
+    }
+    100%{
+      transform:translateY(10px) rotate(45deg)
+    }
+  }
+  
+  @keyframes bottom-bar-animation-active{
+    0%{
+        transform: translateY(18px);
+    }
+    50%{
+      transform: translateY(10px)
+    }
+    100%{
+      transform:translateY(10px) rotate(135deg);
+    }
+  }
+  
+  @keyframes middle-bar-animation-active{
+    0%{
+        transform: translateY(10px);
+    }
+    100%{
+      transform: translateY(10px) scale(0%)
+    }
+  }
+  
+  @keyframes top-bar-animation-inactive{
+     0%{
+      transform: translateY(10px) rotate(45deg)
+    }
+    50%{
+      transform: translateY(10px) rotate(0deg)
+    }
+    100%{
+      transform:translateY(2px) rotate(0deg)
+    }
+  }
+  
+  @keyframes bottom-bar-animation-inactive{
+    0%{
+      transform:translateY(10px) rotate(135deg);
+    }
+    50%{
+      transform: translateY(10px) rotate(0deg);
+    }
+    100%{
+      transform:translateY(18px) rotate(0deg);
+    }
+  }
+  
+  @keyframes middle-bar-animation-inactive{
+    0%{
+      opacity: 0;
+    }
+    99%{
+      opacity:0;
+    }
+    100%{
+      transform: scale(100%) translateY(10px);
+        opacity: 1;
+    }
+  }
+
+/*------ MENU SLIDE DOWN ------*/
+
+@keyframes slideDown {
+    0% {
+        transform: scaleY(0);
+    }
+
+    100% {
+        transform: scaleY(1);
+    }
+}
+
+@keyframes slideUp {
+    0% {
+        transform: scaleY(1);
+    }
+
+    100% {
+        transform: scaleY(0);
+    }
+}
+
+@keyframes slideDownServices {
+    0% {
+        transform: scaleY(0);
+        height: 0;
+    }
+
+    100% {
+        transform: scaleY(1);
+        height: 80px;
+    }
+}
+
+@keyframes slideUpServices {
+    0% {
+        transform: scaleY(1);
+        height: 80px;
+    }
+
+    100% {
+        transform: scaleY(0);
+        height: 0;
+    }
+}
+
+
+@media only screen and (max-width: 430px) {
+
+    .burgerMenu {
+        display: inline;
+        position: relative;
+        width: 30px;
+        height: 24px;
+    }
+}
