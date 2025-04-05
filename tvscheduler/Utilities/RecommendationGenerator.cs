@@ -151,19 +151,8 @@ public class RecommendationGeneratorIndividual : RecommendationGeneratorBase
         }
         
         _DbContext.IndividualRecommendations.RemoveRange(allRecommendations);
-        await _DbContext.SaveChangesAsync();
-    }
-
-    public async Task ClearAllIndividualRecommendationsHistoryForAllUsers()
-    {
-        var allRecommendations = await _DbContext.IndividualRecommendations.ToListAsync();
-
-        if (allRecommendations.Count == 0)
-        {
-            return;
-        }
-        _DbContext.IndividualRecommendations.RemoveRange(allRecommendations);
         await _DbContext.Database.ExecuteSqlRawAsync("ALTER TABLE IndividualRecommendations AUTO_INCREMENT = 1");
         await _DbContext.SaveChangesAsync();
-    }
+    } // TODO make sure the individual recommendation is different from the global one
+      // TODO (add global recommendation id to past recommendations when calling PickRandomShow) 
 }

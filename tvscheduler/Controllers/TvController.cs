@@ -122,7 +122,27 @@ public class TvController : ControllerBase
                 ImageUrl = s.ImageUrl,
             });
             
-            return Ok(new { schedule = response, favTags = favouriteTags, channels = channelsResponse, shows = showsResponse });
+            //get recommendations
+            var individualRecommendation = await _DbContext.IndividualRecommendations
+                .Where(x => x.UserId == user.Id && x.CreatedDate == DateTime.Today)
+                .Include(x => x.Show)
+                .FirstOrDefaultAsync();
+
+            var globalRecommendation = await _DbContext.GlobalRecommendations
+                .Where(x => x.ShowId == 11)
+                .Include(x => x.Show)
+                .FirstOrDefaultAsync();
+            
+            
+            return Ok(new
+            {
+                schedule = response,
+                favTags = favouriteTags,
+                channels = channelsResponse,
+                shows = showsResponse,
+                globalRecommendation = globalRecommendation?.Show,
+                individualRecommendation = individualRecommendation?.Show, // => x != null ? x : null
+            });
         }
 
         // IF USER NOT AUTHENTICATED
@@ -188,6 +208,14 @@ public class TvController : ControllerBase
             return Ok("No cached shows");
         }
         return Ok(shows);
+    }
+
+    [HttpGet("cachedShowsTagHashmap")]
+    public IActionResult CachedShowsTagHashmap()
+    {
+        var hashmap = _todaysShowsCache.GetShowTagHashmap();
+        
+        return Ok(hashmap);
     }
 
 }
