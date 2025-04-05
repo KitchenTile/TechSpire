@@ -140,8 +140,8 @@ public class TvController : ControllerBase
                 favTags = favouriteTags,
                 channels = channelsResponse,
                 shows = showsResponse,
-                globalRecommendation = globalRecommendation?.Show,
-                individualRecommendation = individualRecommendation?.Show, // => x != null ? x : null
+                globalRecommendation = globalRecommendation?.Show.ShowId,
+                individualRecommendation = individualRecommendation?.Show.ShowId, // => x != null ? x : null
             });
         }
 
