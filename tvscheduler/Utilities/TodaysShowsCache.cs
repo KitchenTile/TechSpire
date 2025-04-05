@@ -37,6 +37,8 @@ public class TodaysShowsCache
     public void SetCachedShows(List<Show> shows)
     {
         _cachedShows = shows;
+
+        _ShowTagHashmap.Clear();
         foreach(var Show in shows)
         {
             if (!_ShowTagHashmap.ContainsKey(Show.Tag.Id))
@@ -45,7 +47,5 @@ public class TodaysShowsCache
             }
             _ShowTagHashmap[Show.Tag.Id].Add(Show);
         }
-        
-        
     }
 }

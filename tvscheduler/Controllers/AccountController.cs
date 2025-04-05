@@ -89,8 +89,8 @@ public async Task<IActionResult> Login(LoginDTO request)
     // if first login today > send recommendation
     // else mark already logged today
     
-    var recommendation = await _recommendationGeneratorIndividual.SetIndividualRecommendation(userId: user.Id);
-    
+    await _recommendationGeneratorIndividual.SetIndividualRecommendation(userId: user.Id);
+    // return something and pass info to front end ?
 
     var claims = new[]
     {
@@ -107,7 +107,7 @@ public async Task<IActionResult> Login(LoginDTO request)
         expires: DateTime.UtcNow.AddMinutes(30),
         signingCredentials: signIn);
 
-    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), recommendation });
+    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token)});
 }
     
     
