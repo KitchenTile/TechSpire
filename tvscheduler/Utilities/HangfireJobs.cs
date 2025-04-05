@@ -67,6 +67,8 @@ public class HangfireJobs
 
         public async Task ClearIndividualRecommendationsHistory()
         {
-            
+            using var scope = _scopeFactory.CreateScope();
+            var individualRecommendationManager = scope.ServiceProvider.GetRequiredService<RecommendationGeneratorIndividual>();
+            await individualRecommendationManager.ClearIndividualRecommendationsHistoryForAllUsers();
         }
     }

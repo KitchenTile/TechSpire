@@ -68,7 +68,7 @@ public class RecommendationGeneratorGlobal : RecommendationGeneratorBase
         var allRecommendations = await _DbContext.GlobalRecommendations.ToListAsync();
         _DbContext.GlobalRecommendations.RemoveRange(allRecommendations);
         
-        await _DbContext.Database.ExecuteSqlRawAsync("ALTER TABLE RecommendationForUsers AUTO_INCREMENT = 1");
+        await _DbContext.Database.ExecuteSqlRawAsync("ALTER TABLE GlobalRecommendations AUTO_INCREMENT = 1");
         
         await _DbContext.SaveChangesAsync();
     }
@@ -151,6 +151,19 @@ public class RecommendationGeneratorIndividual : RecommendationGeneratorBase
         }
         
         _DbContext.IndividualRecommendations.RemoveRange(allRecommendations);
+        await _DbContext.SaveChangesAsync();
+    }
+
+    public async Task ClearAllIndividualRecommendationsHistoryForAllUsers()
+    {
+        var allRecommendations = await _DbContext.IndividualRecommendations.ToListAsync();
+
+        if (allRecommendations.Count == 0)
+        {
+            return;
+        }
+        _DbContext.IndividualRecommendations.RemoveRange(allRecommendations);
+        await _DbContext.Database.ExecuteSqlRawAsync("ALTER TABLE IndividualRecommendations AUTO_INCREMENT = 1");
         await _DbContext.SaveChangesAsync();
     }
 }

@@ -169,11 +169,8 @@ using (var serviceScope = app.Services.CreateScope())
     }
 }
 
-
 //HANGFIRE jobs
-recurringJobs.AddOrUpdate("Update Global Recommendation",
-    () => hangfireJobs.UpdateGlobalRecommendation(),
-    Cron.Daily());
+
 using (var scope = app.Services.CreateScope())
 {
     var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>(); // hangfire service to handle jobs
@@ -207,6 +204,14 @@ using (var scope = app.Services.CreateScope())
 
     recurringJobs.AddOrUpdate("Clear Global Recommendations History",
         () => hangfireJobs.ClearGlobalRecommendationsHistory(),
+        Cron.Never());
+    
+    recurringJobs.AddOrUpdate("Update Global Recommendation",
+        () => hangfireJobs.UpdateGlobalRecommendation(),
+        Cron.Daily());
+
+    recurringJobs.AddOrUpdate("Clear Individual Recommendation History for all users",
+        () => hangfireJobs.ClearIndividualRecommendationsHistory(),
         Cron.Never());
 }
 
