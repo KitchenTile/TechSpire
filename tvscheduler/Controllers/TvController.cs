@@ -22,13 +22,15 @@ public class TvController : ControllerBase
     private readonly HttpClient _httpClient;
     private readonly UserManager<User> _userManager;
     private readonly TagsManager _tagsManager;
+    private readonly TodaysShowsCache _todaysShowsCache;
 
-    public TvController(HttpClient httpClient, AppDbContext dbContext, UserManager<User> userManager, TagsManager tagsManager)
+    public TvController(HttpClient httpClient, AppDbContext dbContext, UserManager<User> userManager, TagsManager tagsManager, TodaysShowsCache todaysShowsCache)
     {
         _httpClient = httpClient;
         _DbContext = dbContext;
         _userManager = userManager;
         _tagsManager = tagsManager;
+        _todaysShowsCache = todaysShowsCache;
     }
     
     
@@ -118,9 +120,30 @@ public class TvController : ControllerBase
                 Name = s.Name,
                 TagName = s.Tag?.Name,
                 ImageUrl = s.ImageUrl,
+                ResizedImageUrl = s.ResizedImageUrl
             });
             
-            return Ok(new { schedule = response, favTags = favouriteTags, channels = channelsResponse, shows = showsResponse });
+            //get recommendations
+            var individualRecommendation = await _DbContext.IndividualRecommendations
+                .Where(x => x.UserId == user.Id && x.CreatedDate == DateTime.Today)
+                .Include(x => x.Show)
+                .FirstOrDefaultAsync();
+
+            var globalRecommendation = await _DbContext.GlobalRecommendations
+                .Where(x => x.Active)
+                .Include(x => x.Show)
+                .FirstOrDefaultAsync();
+            
+            
+            return Ok(new
+            {
+                schedule = response,
+                favTags = favouriteTags,
+                channels = channelsResponse,
+                shows = showsResponse,
+                globalRecommendation = globalRecommendation?.Show.ShowId,
+                individualRecommendation = individualRecommendation?.Show.ShowId, // => x != null ? x : null
+            });
         }
 
         // IF USER NOT AUTHENTICATED
@@ -173,6 +196,27 @@ public class TvController : ControllerBase
         var result = await openAiHandler.RequestTag();
         
         return Ok(result);
+    }
+
+
+    [HttpGet("checkShowsCache")]
+    public IActionResult CheckShowsCache()
+    {
+        var shows = _todaysShowsCache.GetCachedShows();
+
+        if (shows == null)
+        {
+            return Ok("No cached shows");
+        }
+        return Ok(shows);
+    }
+
+    [HttpGet("cachedShowsTagHashmap")]
+    public IActionResult CachedShowsTagHashmap()
+    {
+        var hashmap = _todaysShowsCache.GetShowTagHashmap();
+        
+        return Ok(hashmap);
     }
 
 }

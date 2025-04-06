@@ -2,8 +2,10 @@ import { useMemo, useContext } from "react";
 import useShowLookup from "./useShowLookup";
 import ChannelsContext from "../contexts/channelsContext";
 
+// kinda messy hook, its used to... merge and filter data. I found that we were basically just doing these same operations
+// and repeating the same logic over and over, so I figured I'd just make this. -- BLUE
 const useMergeAndFilter = (param) => {
-  const channels = useContext(ChannelsContext);
+  const { channels } = useContext(ChannelsContext);
   const showLookup = useShowLookup(channels);
 
   // sorting function for the sort my schedule sort method
@@ -11,6 +13,7 @@ const useMergeAndFilter = (param) => {
     return a.timeStart - b.timeStart;
   };
 
+  //Fisher-Yates shuffle to get random elements of an array
   const getRandomElements = (array, n) => {
     const copy = [...array];
     for (let i = copy.length - 1; i > 0; i--) {

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 //this hook changed over time but it currently is used just to create a lookup table
 //  with channels' (or potenitally any container's) information. This will be used
-//  in multiple components that need to display shows.
+//  in multiple components that need to display shows. -- BLUE
 
 const useShowLookup = (channelsData) => {
   return useMemo(() => {

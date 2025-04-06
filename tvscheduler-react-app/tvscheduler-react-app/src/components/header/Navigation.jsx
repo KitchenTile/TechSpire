@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useCallback, useState } from "react";
 import "./Navigation.css";
 import { Link } from "react-router-dom";
 
@@ -7,8 +7,8 @@ const Navigation = () => {
 
   const links = ["Channels", "Morning", "Afternoon", "Evening", "All"];
 
-  const mouseEnter = () => setExpanded(true);
-  const mouseLeave = () => setExpanded(false);
+  const mouseEnter = useCallback(() => setExpanded(true), []);
+  const mouseLeave = useCallback(() => setExpanded(false), []);
 
   return (
     <li
@@ -41,4 +41,4 @@ const Navigation = () => {
   );
 };
 
-export default Navigation;
+export default memo(Navigation);

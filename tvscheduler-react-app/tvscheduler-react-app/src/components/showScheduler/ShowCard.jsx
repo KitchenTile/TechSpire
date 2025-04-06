@@ -4,11 +4,10 @@ import useIntersectionObserver from "../../hooks/useIntersectionObserver";
 import DummyCardLoading from "../loadingComponents/DummyCardLoading";
 import AddRemoveShowsContext from "../../contexts/AddRemoveShowsContext";
 
+// component to display shows -- BLUE
 const ShowCard = ({ show, isAdded, rowRef, style = null }) => {
   const [expanded, setExpanded] = useState(false);
   const { addRemoveShow } = useContext(AddRemoveShowsContext);
-
-  console.log(`card ${show.name} redering` + new Date().toISOString());
 
   //options for intersection observer custom hook
   const options = {

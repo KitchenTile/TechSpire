@@ -19,7 +19,7 @@
       height: 100%;
       width: 100%;
       background: linear-gradient(to top, rgb(0 0 0) 0%, rgb(0 0 0 / 80%) 25%, rgb(0 0 0 / 0.5) 100%);
-      
+
       & img{
         position: absolute;
         z-index: -1;

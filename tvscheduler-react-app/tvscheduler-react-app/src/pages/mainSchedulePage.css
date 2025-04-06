@@ -5,6 +5,11 @@
 .grid-container{
     padding-inline: 2em;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    overflow: scroll;
     gap: 10px;
+    &::-webkit-scrollbar
+    {
+      display: none;
+    }
 }

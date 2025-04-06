@@ -1,13 +1,22 @@
 import ShowCard from "./ShowCard";
 import rightArrow from "../../assets/rightArrow.svg";
-import { useContext, useMemo, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import useMergeAndFilter from "../../hooks/useMergeAndFilter";
 import ChannelsContext from "../../contexts/channelsContext";
 import MyShowsContext from "../../contexts/myShowsContext";
 import "./MyShowsComponent.css";
+import WarningIcon from "../misc/WarningIcon";
 
+// Component to display my shows array, refacotred to be displayed vertically -- BLUE
 const MyShowsComponent = ({ position = "horizontal" }) => {
-  const channels = useContext(ChannelsContext);
+  const { channels } = useContext(ChannelsContext);
   const { myShows } = useContext(MyShowsContext);
   const mergeShows = useMergeAndFilter("All");
   const [expanded, setExpanded] = useState(false);
@@ -18,12 +27,26 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
       myShows.includes(event.showEventId)
     );
 
-    return filtered;
-  }, [channels, myShows]);
+    const overlap = [];
 
-  const handleClick = () => {
-    setExpanded(true);
-  };
+    // Filip
+    if (filtered.length > 1) {
+      for (let i = 0; i < filtered.length - 1; i++) {
+        const currentShow = filtered[i];
+        const nextShow = filtered[i + 1];
+        const currentShowEndTime = new Date(
+          currentShow.timeStart * 1000 + currentShow.duration * 1000
+        ).getTime();
+        const nextShowStartTime = new Date(nextShow.timeStart * 1000).getTime();
+
+        if (currentShowEndTime > nextShowStartTime) {
+          overlap.push({ currentShow, nextShow });
+        }
+      }
+    }
+
+    return { filtered, overlap };
+  }, [channels, myShows]);
 
   return (
     <div
@@ -59,7 +82,15 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
           </div>
         )
       ) : null}
-      <h1 className="title h1">My Shows</h1>
+      <div className={`title-warning-container`}>
+        <h1 className="title h1">My Shows</h1>
+        {mergeAndSort.overlap.length > 0 ? (
+          <WarningIcon position={position}>
+            {mergeAndSort.overlap.length} show(s) overlap!
+          </WarningIcon>
+        ) : null}
+      </div>
+
       <div
         className={`myshow-container ${
           position === "vertical" ? "vertical" : ""
@@ -68,7 +99,7 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
         {/* if my shows is not empty, flatten the show per channel object and match the ids of the show's we added to our My Shows array to all fetched shows. Then display cards */}
         {myShows.length > 0 ? (
           <>
-            {mergeAndSort.map((show) => (
+            {mergeAndSort.filtered.map((show) => (
               <ShowCard
                 key={show.showEventId}
                 show={show}
@@ -93,4 +124,4 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
   );
 };
 
-export default MyShowsComponent;
+export default memo(MyShowsComponent);

@@ -10,12 +10,18 @@ import AddRemoveShowsContextProvider from "../contexts/AddRemoveShowsContextProv
 import useThrottle from "../hooks/useThrottle";
 import Modal from "../components/misc/Modal";
 import { useNavigate } from "react-router-dom";
+import useMergeAndFilter from "../hooks/useMergeAndFilter";
+import ShowCard from "../components/showScheduler/ShowCard";
+import MyShowsContext from "../contexts/myShowsContext";
+import GenreSelectionCompoenet from "../components/misc/GenreSelectionCompoenet";
 
 const MainSchedulePage = () => {
-  const channels = useContext(ChannelsContext);
+  const { channels } = useContext(ChannelsContext);
   const [isVisible, setIsVisible] = useState(false);
   const [openModal, setOpenModal] = useState(true);
   const navigate = useNavigate();
+  const mergedAndFilteredShows = useMergeAndFilter("All");
+  const { myShows } = useContext(MyShowsContext);
 
   //effect to go back to the login page if the JWT expires
   useEffect(() => {
@@ -52,13 +58,39 @@ const MainSchedulePage = () => {
     setOpenModal(false);
   };
 
+  const recommendations = () => {
+    let userTags = [];
+
+    userTags = channels?.favTags.map((tag) => {
+      return tag.tagName;
+    });
+
+    return mergedAndFilteredShows.filter((show) =>
+      userTags.includes(show.tagName)
+    );
+  };
+
+  const recommnededShows = recommendations();
+
   return (
     <div className="page-container">
       {channels ? (
         <AddRemoveShowsContextProvider>
           <>
             {channels.favTags.length !== 0 ? null : (
-              <Modal open={openModal} handleModalClose={handleModalClose} />
+              <Modal open={openModal} handleModalClose={handleModalClose}>
+                <>
+                  <h1 className="title">Welcome to ViewQue!</h1>
+                  <p>
+                    Please let us know your favourite tv genres so we can tailor
+                    recommendations for you!
+                  </p>
+                  <GenreSelectionCompoenet
+                    handleModalClose={handleModalClose}
+                    inModal={true}
+                  />
+                </>
+              </Modal>
             )}
             <Header isVisible={isVisible} />
 
@@ -66,15 +98,31 @@ const MainSchedulePage = () => {
             <SectionCarouselComponent />
             {/* my shows display */}
             <MyShowsComponent />
-            <h1 className="title h1">All Shows</h1>
-            <div className="grid-container">
-              {/* get the first x elements of the guide data array -- 129 is too long man */}
-              {channels.channels.map((channel) => (
-                <ChannelShowComponent
-                  key={channel.channelId}
-                  channel={channel}
-                />
-              ))}
+            <h1 className="title h1">
+              {channels.favTags.length === 0
+                ? "All Channels"
+                : "Our Picks For You"}
+            </h1>
+            <div
+              className="grid-container"
+              style={
+                channels.favTags.length === 0 ? { flexDirection: "column" } : {}
+              }
+            >
+              {channels.favTags.length === 0
+                ? channels.channels.map((channel) => (
+                    <ChannelShowComponent
+                      key={channel.channelId}
+                      channel={channel}
+                    />
+                  ))
+                : recommnededShows.map((show) => (
+                    <ShowCard
+                      key={show.showEventId}
+                      show={show}
+                      isAdded={myShows.includes(show.showEventId)}
+                    />
+                  ))}
             </div>
           </>
         </AddRemoveShowsContextProvider>

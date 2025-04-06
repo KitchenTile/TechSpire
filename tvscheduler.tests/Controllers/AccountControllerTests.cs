@@ -7,36 +7,126 @@ using Moq;
 using System.Security.Claims;
 using tvscheduler.Controllers;
 using tvscheduler.Models;
-using tvscheduler.tests.Helpers;
 using Xunit;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using tvscheduler.Utilities;
 
 namespace tvscheduler.tests.Controllers
 {
-    public class AccountControllerTests
+    public class TestRecommendationGeneratorIndividual : RecommendationGeneratorIndividual
     {
-        private readonly Mock<UserManager<User>> _mockUserManager;
-        private readonly Mock<IConfiguration> _mockConfiguration;
-        private readonly AppDbContext _dbContext;
+        private readonly Show? _mockShow;
+
+        public TestRecommendationGeneratorIndividual(Show mockShow, AppDbContext dbContext, TodaysShowsCache todaysShowsCache) 
+            : base(dbContext, todaysShowsCache)
+        {
+            _mockShow = mockShow;
+        }
+
+        public new Task<Show?> SetIndividualRecommendation(string userId)
+        {
+            return Task.FromResult(_mockShow);
+        }
+    }
+
+    public class AccountControllerTests : TestBase
+    {
         private readonly AccountController _controller;
-        private readonly string _testUserId = "testUser123";
+        private readonly Mock<UserManager<User>> _userManager;
+        private readonly AppDbContext _dbContext;
+        private readonly string _testUserId = "test-user-123";
+        private readonly TestRecommendationGeneratorIndividual _recommendationGenerator;
 
         public AccountControllerTests()
         {
-            // Setup UserManager mock
-            _mockUserManager = MockHelpers.MockUserManager<User>();
+            // Setup for all tests using base class methods
+            _userManager = CreateMockUserManager();
+            _dbContext = CreateInMemoryDbContext();
             
-            _mockConfiguration = new Mock<IConfiguration>(); // Initializing the IConfiguration mock
-            _mockConfiguration.Setup(x => x["Jwt:Key"]).Returns("your-test-secret-key-with-at-least-32-characters-length");
-            _mockConfiguration.Setup(x => x["Jwt:Issuer"]).Returns("test-issuer");
-            _mockConfiguration.Setup(x => x["Jwt:Audience"]).Returns("test-audience");
+            var mockShow = new Show
+            {
+                ShowId = 1,
+                Name = "Test Show",
+                ImageUrl = "https://test.com/image.jpg"
+            };
+            _recommendationGenerator = new TestRecommendationGeneratorIndividual(mockShow, _dbContext, new TodaysShowsCache());
             
-            // Setup database context
-            _dbContext = TestDbContextFactory.CreateDbContext();
+            // Seed data needed for schedule tests
+            SeedTestData();
             
-            // Create controller instance
-            _controller = new AccountController(_dbContext, _mockUserManager.Object, _mockConfiguration.Object);
+            // Create controller
+            _controller = new AccountController(
+                _dbContext,
+                _userManager.Object,
+                CreateMockConfiguration().Object,
+                _recommendationGenerator
+            );
+        }
+        
+        private void SeedTestData()
+        {
+            // Add show
+            var show = new Show
+            {
+                ShowId = 1,
+                Name = "Test Show",
+                ImageUrl = "https://test.com/image.jpg",
+                Tag = new Tag { Id = 1, Name = "Comedy" }
+            };
+            _dbContext.Shows.Add(show);
+            
+            // Add channel
+            var channel = new Channel
+            {
+                ChannelId = 1,
+                Name = "Test Channel",
+                Description = "Test Channel",
+                LogoUrl = "https://test.com/logo.png",
+                Lcn = 1,
+                Tstv = true
+            };
+            _dbContext.Channels.Add(channel);
+            
+            // Add show event that needed for scheduling tests
+            var showEvent = new ShowEvent
+            {
+                Id = 1,
+                ShowId = 1,
+                Show = show,
+                ChannelId = 1,
+                Channel = channel,
+                TimeStart = 1710345600,
+                Duration = 3600,
+                Description = "Test Event Description"
+            };
+            _dbContext.ShowEvents.Add(showEvent);
+            
+            _dbContext.SaveChanges();
+        }
+        
+        // Helper method to simulate authenticated user for tests
+        private void SetupAuthenticatedUser()
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, _testUserId),
+                new Claim(ClaimTypes.Name, "testuser")
+            };
+            
+            var identity = new ClaimsIdentity(claims, "Test");
+            var user = new ClaimsPrincipal(identity);
+            
+            var httpContext = new DefaultHttpContext
+            {
+                User = user
+            };
+            
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext // Set the controller context to the authenticated user
+            };
         }
 
         [Fact]
@@ -45,23 +135,19 @@ namespace tvscheduler.tests.Controllers
             // Arrange
             var loginDto = new LoginDTO
             {
-                Name = "newuser",  // "Name" in LoginDTO
+                Name = "newuser",
                 Password = "Password123!"
             };
             
-            // Setup user manager to simulate successful creation
-            _mockUserManager.Setup(x => x.FindByNameAsync(loginDto.Name))
-                .ReturnsAsync((User)null); // fake user does not exist
-                
-            _mockUserManager.Setup(x => x.CreateAsync(It.IsAny<User>(), loginDto.Password))
-                .ReturnsAsync(IdentityResult.Success); // fake successful creation
+            _userManager.Setup(x => x.FindByNameAsync(loginDto.Name))
+                .ReturnsAsync((User)null); // User doesn't exist
             
             // Act
             var result = await _controller.Registration(loginDto);
             
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal(200, okResult.StatusCode);
+            Assert.Equal(200, okResult.StatusCode); // 200 OK
         }
 
         [Fact]
@@ -74,16 +160,15 @@ namespace tvscheduler.tests.Controllers
                 Password = "Password123!"
             };
             
-            // Setup user manager to simulate existing user
-            _mockUserManager.Setup(x => x.FindByNameAsync(loginDto.Name))
-                .ReturnsAsync(new User { UserName = loginDto.Name });
+            _userManager.Setup(x => x.FindByNameAsync(loginDto.Name))
+                .ReturnsAsync(new User { UserName = loginDto.Name }); // User exists
             
             // Act
             var result = await _controller.Registration(loginDto);
             
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal(400, badRequestResult.StatusCode);
+            Assert.Equal(400, badRequestResult.StatusCode); // 400 Bad Request
         }
         
         [Fact]
@@ -100,81 +185,68 @@ namespace tvscheduler.tests.Controllers
             {
                 Id = _testUserId,
                 UserName = loginDto.Name,
-                Email = "validuser@example.com"
+                Email = "valid@example.com"
             };
             
-            // Setup user manager to simulate successful login
-            _mockUserManager.Setup(x => x.FindByNameAsync(loginDto.Name))
-                .ReturnsAsync(user); // user exists
+            _userManager.Setup(x => x.FindByNameAsync(loginDto.Name))
+                .ReturnsAsync(user);
                 
-            _mockUserManager.Setup(x => x.CheckPasswordAsync(user, loginDto.Password))
-                .ReturnsAsync(true); // password ok
+            _userManager.Setup(x => x.CheckPasswordAsync(user, loginDto.Password))
+                .ReturnsAsync(true);
+
+            var mockShow = new Show
+            {
+                ShowId = 1,
+                Name = "Test Show",
+                ImageUrl = "https://test.com/image.jpg"
+            };
+            
+            await _recommendationGenerator.SetIndividualRecommendation(_testUserId);
             
             // Act
             var result = await _controller.Login(loginDto);
             
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.NotNull(okResult.Value);
+            Assert.NotNull(okResult.Value); // Token is returned and !null
         }
         
         [Fact]
         public async Task AddShowToSchedule_WithValidRequest_ReturnsOkResult()
         {
             // Arrange
-            var showEventId = 1;
-            var request = new AddShowToScheduleRequest { ShowEventId = showEventId };
-            
-            // Setup HttpContext with user claims
-            var httpContext = new DefaultHttpContext();
-            httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, _testUserId), //  to simulate an authenticated userID
-                new Claim(ClaimTypes.Name, "testuser") // to simulate an authenticated username
-            }, "mock")); // set aunth type to mock 
-            
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext 
-            };
+            var request = new AddShowToScheduleRequest { ShowEventId = 1 };
+            SetupAuthenticatedUser();
             
             // Act
             var result = await _controller.AddShowToSchedule(request);
             
             // Assert
-            var okResult = Assert.IsType<OkResult>(result); // Asserting that the result is of type OkResult.
-            Assert.Equal(200, okResult.StatusCode);
+            Assert.IsType<OkResult>(result); // 200 OK
+            
+            var scheduledEvent = await _dbContext.ScheduleEvents
+                .FirstOrDefaultAsync(e => e.UserId == _testUserId && e.ShowEventId == request.ShowEventId);
+            Assert.NotNull(scheduledEvent); // verifies that event is added to the database
         }
         
         [Fact]
         public async Task RemoveShowFromSchedule_WithValidRequest_ReturnsOkResult()
         {
             // Arrange
-            // Add schedule event entry to remove
             var showEventId = 1;
             
-            if (!_dbContext.ScheduleEvents.Any(use => use.UserId == _testUserId && use.ShowEventId == showEventId))
+            // Ensure event is in schedule before trying to remove it
+            if (!await _dbContext.ScheduleEvents.AnyAsync(e => e.UserId == _testUserId && e.ShowEventId == showEventId))
             {
                 _dbContext.ScheduleEvents.Add(new UserScheduleEvent
                 {
                     UserId = _testUserId,
                     ShowEventId = showEventId
                 });
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             }
             
-            // Setup HttpContext with user claims
-            var httpContext = new DefaultHttpContext();
-            httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, _testUserId),
-                new Claim(ClaimTypes.Name, "testuser")
-            }, "mock"));
-            
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext
-            };
+            SetupAuthenticatedUser();
             
             var request = new AddShowToScheduleRequest { ShowEventId = showEventId };
             
@@ -182,8 +254,7 @@ namespace tvscheduler.tests.Controllers
             var result = await _controller.RemoveShowFromSchedule(request);
             
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.NotNull(okResult.Value); // Asserting that the value of the result is not null.
+            Assert.IsType<OkObjectResult>(result); // 200 OK
         }
     }
 }
