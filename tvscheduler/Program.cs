@@ -147,6 +147,7 @@ builder.Services.AddSingleton<TodaysShowsCache>();
 builder.Services.AddScoped<RecommendationGeneratorGlobal>();
 builder.Services.AddScoped<RecommendationGeneratorIndividual>();
 builder.Services.AddScoped<TodaysShowsCacheUpdate>();
+builder.Services.AddScoped<ImageManager>();
 
 var app = builder.Build();
 
@@ -213,6 +214,14 @@ using (var scope = app.Services.CreateScope())
     recurringJobs.AddOrUpdate("Clear Individual Recommendation History for all users",
         () => hangfireJobs.ClearIndividualRecommendationsHistory(),
         Cron.Never());
+
+    recurringJobs.AddOrUpdate("Process Show Images",
+        () => hangfireJobs.ProcessShowImages(),
+        Cron.Daily());
+
+    recurringJobs.AddOrUpdate("Delete All Resized Images",
+        () => hangfireJobs.DeleteAllResizedImages(),
+        Cron.Never());
 }
 
 // Configure the HTTP request pipeline.
@@ -224,6 +233,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Enable static file serving from wwwroot directory
+app.UseStaticFiles();
 
 app.UseCors("AllowFrontend");
 app.UseRouting();

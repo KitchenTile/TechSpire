@@ -120,6 +120,7 @@ public class TvController : ControllerBase
                 Name = s.Name,
                 TagName = s.Tag?.Name,
                 ImageUrl = s.ImageUrl,
+                ResizedImageUrl = s.ResizedImageUrl
             });
             
             //get recommendations
