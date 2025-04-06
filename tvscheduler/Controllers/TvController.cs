@@ -129,7 +129,7 @@ public class TvController : ControllerBase
                 .FirstOrDefaultAsync();
 
             var globalRecommendation = await _DbContext.GlobalRecommendations
-                .Where(x => x.ShowId == 11)
+                .Where(x => x.Active)
                 .Include(x => x.Show)
                 .FirstOrDefaultAsync();
             
