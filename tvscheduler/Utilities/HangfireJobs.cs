@@ -71,4 +71,18 @@ public class HangfireJobs
             var individualRecommendationManager = scope.ServiceProvider.GetRequiredService<RecommendationGeneratorIndividual>();
             await individualRecommendationManager.ClearIndividualRecommendationsHistoryForAllUsers();
         }
+
+        public async Task ProcessShowImages()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var imageManager = scope.ServiceProvider.GetRequiredService<ImageManager>();
+            await imageManager.ProcessAllShowImages();
+        }
+
+        public async Task DeleteAllResizedImages()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var imageManager = scope.ServiceProvider.GetRequiredService<ImageManager>();
+            await imageManager.DeleteAllResizedImages();
+        }
     }

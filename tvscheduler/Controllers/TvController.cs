@@ -120,6 +120,7 @@ public class TvController : ControllerBase
                 Name = s.Name,
                 TagName = s.Tag?.Name,
                 ImageUrl = s.ImageUrl,
+                ResizedImageUrl = s.ResizedImageUrl
             });
             
             //get recommendations
@@ -129,7 +130,7 @@ public class TvController : ControllerBase
                 .FirstOrDefaultAsync();
 
             var globalRecommendation = await _DbContext.GlobalRecommendations
-                .Where(x => x.ShowId == 11)
+                .Where(x => x.Active)
                 .Include(x => x.Show)
                 .FirstOrDefaultAsync();
             

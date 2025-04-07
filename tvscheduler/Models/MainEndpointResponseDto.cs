@@ -14,6 +14,7 @@ public class ShowDto
     public required string Name { get; set; }
     public string? TagName { get; set; }
     public required string ImageUrl { get; set; }
+    public required string? ResizedImageUrl { get; set; }
 }
 
 public class ShowEventDto

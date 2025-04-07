@@ -13,6 +13,8 @@ public class Show
     public required string Name { get; set; }
     [MaxLength(100)]
     public required string ImageUrl { get; set; }
+    [MaxLength(100)]
+    public string? ResizedImageUrl { get; set; }
     public Tag? Tag { get; set; }
     
 }
