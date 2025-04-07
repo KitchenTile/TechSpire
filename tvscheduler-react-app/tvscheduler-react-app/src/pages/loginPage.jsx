@@ -1,7 +1,8 @@
 import { useState } from "react";
 import "./loginPage.css";
-import InputComponent from "../components/login/InputComponent";
+import FormComponent from "../components/login/FormComponent.jsx";
 import { useNavigate } from "react-router-dom";
+
 
 // set to false to disable input validation
 const validateFormInputsGlobal = true;
@@ -141,65 +142,27 @@ const LoginRegisterPage = () => {
   return (
     <div className="login-page-container">
       {!registered ? (
-        <form
-          className="login-form-container"
-          id="createForm"
+        <FormComponent
+          title="Join us now!"
+          inputs={inputs[0]}
+          buttonText="Sign Up!"
+          toggleQuestion="Already a member?"
+          toggleText="log in?"
           onSubmit={handleSubmit}
-        >
-          <h1 className="form-title h1">Join us now!</h1>
-          {inputs[0].map((input, index) => (
-            <InputComponent
-              key={index}
-              name={input.name}
-              label={input.label}
-              errorMessage={input.errorMessage}
-              type={input.type}
-            />
-          ))}
-          <span> -- ♦ --</span>
-          <button type="submit" className="button">
-            Sign Up!
-          </button>
-          <p className="text-button">
-            Already a member?
-            <button className="login" onClick={toggleRegistered}>
-              Login here!
-            </button>
-          </p>
-          {errorMessages.form && (
-            <div className="error-message">{errorMessages.form}</div>
-          )}
-        </form>
+          toggleAction={toggleRegistered}
+          errorMessages={errorMessages}
+        />
       ) : (
-        <form
-          className="login-form-container"
-          id="createForm"
+        <FormComponent
+          title="Login"
+          inputs={inputs[1]}
+          buttonText="Log In!"
+          toggleQuestion="Are you new here?"
+          toggleText="Register here?"
           onSubmit={handleSubmit}
-        >
-          <h1 className="form-title h1">Join us now!</h1>
-          {inputs[1].map((input, index) => (
-            <InputComponent
-              key={index}
-              name={input.name}
-              label={input.label}
-              errorMessage={input.errorMessage}
-              type={input.type}
-            />
-          ))}
-          <span> -- ♦ --</span>
-          <button type="submit" className="button">
-            Log In!
-          </button>
-          <p className="text-button">
-            Don't have an account?{" "}
-            <button className="login" onClick={toggleRegistered}>
-              Register here!
-            </button>
-          </p>
-          {errorMessages.form && (
-            <div className="error-message">{errorMessages.form}</div>
-          )}
-        </form>
+          toggleAction={toggleRegistered}
+          errorMessages={errorMessages}
+        />
       )}
     </div>
   );
