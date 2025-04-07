@@ -2,7 +2,7 @@ import { memo, useMemo } from "react";
 import "./GenreFilterComponent.css";
 
 // component to filter explore page by genre -- Rudraa
-const GenreFilterComponent = ({ handleFilter }) => {
+const GenreFilterComponent = ({ handleFilter, section }) => {
   const genres = useMemo(
     () => [
       "All",
@@ -25,7 +25,7 @@ const GenreFilterComponent = ({ handleFilter }) => {
   return (
     <div className="genres-container">
       <span>Genres</span>
-      <div className="genres-list">
+      <div className="genres-list" id={section}>
         {genres.map((genre, idx) => (
           <div className="input-container" key={idx}>
             <input

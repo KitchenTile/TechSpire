@@ -104,11 +104,12 @@
             display: grid;
             position: absolute;
             top: 48px;
+            /* left: -324px; */
             left: -296px;
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(6, 1fr);
             height: 300px;
-            width: 430px;
+            width: 440px;
             padding: 10px 25px 10px 35px;
             border-radius: 0;
             text-align: -webkit-center;
@@ -129,6 +130,16 @@
         & .title{
             padding-left: 1em;
             margin-block-end: 0.3em;
+        }
+
+        & .genres-list{
+            &#All{
+                left: -215px;
+            }
+            &#Afternoon{
+                left: -324px;
+            }
+
         }
         }
 

@@ -52,12 +52,8 @@ const MainSchedulePage = () => {
         prev !== scrollPosition > 500 ? scrollPosition > 500 : prev
       );
     }
-    console.log(scrollPosition);
   });
 
-  useEffect(() => {
-    console.log(isVisible);
-  }, [isVisible]);
   //header visibility logic
   useEffect(() => {
     window.addEventListener("scroll", throttleWindowScrroll);
@@ -81,14 +77,6 @@ const MainSchedulePage = () => {
     );
   };
 
-  channels
-    ? console.log(
-        channels.shows.filter(
-          (show) => show.showId === channels.individualRecommendation
-        )
-      )
-    : null;
-
   const recommendedShowOfTheDaySHOW = channels?.shows.filter(
     (show) => show.showId === channels.individualRecommendation
   );
@@ -96,8 +84,6 @@ const MainSchedulePage = () => {
   const recommendedShowOfTheDay = mergedAndFilteredShows.filter(
     (showEvent) => showEvent.showId === channels.individualRecommendation
   );
-
-  console.log(recommendedShowOfTheDay);
 
   const recommnededShows = recommendations();
 
