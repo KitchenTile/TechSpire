@@ -1,5 +1,12 @@
 .page-container{
     width: 100vw;
+    padding-bottom: 3em;
+}
+
+.show-recommnedation{
+  & .search-card-container{
+    margin-left: 2em;
+  }
 }
 
 .grid-container{
@@ -12,4 +19,14 @@
     {
       display: none;
     }
+}
+
+@media only screen and (max-width: 430px) {
+  .grid-container{
+    padding-inline: 0;
+  }
+
+  .grid-container#mainPage{
+    padding-inline: 2em;
+  }
 }

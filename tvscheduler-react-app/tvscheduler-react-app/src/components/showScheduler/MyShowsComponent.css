@@ -171,7 +171,46 @@
 
   .vertical-container{
     display: none;
-    
+
+    &.mobile{
+      display: contents;
+
+      & .title-warning-container{
+        display: none;
+      }
+
+      & .myshow-container.vertical{
+        display: none;
+      }
+
+      & span{
+        font-size: 1.5em;
+        font-weight: 600;
+        text-align: center;
+        color: var(--accentColor);
+      }
+
+      &.expanded{
+        width: 100%;
+        z-index: 200;
+        display: flex;
+
+        & .title-warning-container{
+          display: flex;
+        }
+
+        & .myshow-container.vertical{
+          display: flex;
+        }
+  
+        & .myshow-container.vertical{
+          padding: 50px 2em;
+        }
+      }
+
+    }
+
+
     &.expanded{
       width: 430px;
 

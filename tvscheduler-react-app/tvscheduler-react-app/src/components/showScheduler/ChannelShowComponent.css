@@ -58,9 +58,9 @@
     position: relative;
     flex-direction: column;
     align-items: unset;
-    width: 110%;
+    width: 95%;
     border-bottom: none;
-    left: -20px;
+    left: 11px;
 
     & h3{
       padding-right: 20px;
@@ -83,6 +83,6 @@
   }
 
   .title-image-container{
-    left: -7px;
+        left: -11px;
   }
 }

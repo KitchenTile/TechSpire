@@ -124,6 +124,7 @@
     .search-container{
         right: 1.5em;
         width: 382px;
+        z-index: 2;
 }
     .search-results{
         position: absolute;

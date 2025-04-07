@@ -8,7 +8,6 @@ import {
 } from "react";
 import "./Search.css";
 import ChannelsContext from "../../contexts/channelsContext";
-import useShowLookup from "../../hooks/useShowLookup";
 import useDebounce from "../../hooks/useDebounce";
 import SearchCard from "./SearchCard";
 import useMergeAndFilter from "../../hooks/useMergeAndFilter";
