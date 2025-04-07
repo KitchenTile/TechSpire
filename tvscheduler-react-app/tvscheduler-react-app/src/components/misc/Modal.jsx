@@ -18,16 +18,7 @@ const Modal = ({ open, handleModalClose, children }) => {
           id="modal"
           onClick={handleModalClose}
         ></button>
-
-        <h1 className="title">Welcome to ViewQue!</h1>
-        <p>
-          Please let us know your favourite tv genres so we can tailor
-          recommendations for you!
-        </p>
-        <GenreSelectionCompoenet
-          handleModalClose={handleModalClose}
-          inModal={true}
-        />
+        {children}
       </div>
     </>,
     document.getElementById("portal")

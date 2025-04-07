@@ -8,7 +8,6 @@ import {
 } from "react";
 import "./Search.css";
 import ChannelsContext from "../../contexts/channelsContext";
-import useShowLookup from "../../hooks/useShowLookup";
 import useDebounce from "../../hooks/useDebounce";
 import SearchCard from "./SearchCard";
 import useMergeAndFilter from "../../hooks/useMergeAndFilter";
@@ -46,7 +45,7 @@ const Search = () => {
       uniqueShows: uniqueShows,
       shows: filteredBySearch,
     };
-    console.log(showObjectAndEvents.shows);
+    // console.log(showObjectAndEvents.shows);
 
     return showObjectAndEvents;
   }, [channels, debounceSearachTerm]);

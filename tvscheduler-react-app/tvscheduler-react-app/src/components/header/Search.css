@@ -1,5 +1,4 @@
 .search-container{
-
     display: flex;
     width: 360px;
     right: 10.5em;
@@ -119,3 +118,27 @@
         background-color: #00000071;
     }
 }
+
+@media only screen and (max-width: 430px) {
+
+    .search-container{
+        right: 1.5em;
+        width: 382px;
+        z-index: 2;
+}
+    .search-results{
+        position: absolute;
+        background-color: black;
+        top: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 365px;
+        max-height: 600px;
+        overflow-y: auto;
+        flex-direction: column;
+        padding-block: 2px;
+        gap: 5px;
+        display: none; 
+    }
+}
+

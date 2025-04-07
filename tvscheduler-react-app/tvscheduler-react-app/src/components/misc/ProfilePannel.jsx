@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import "./ProfilePannel.css";
 import GenreSelectionCompoenet from "./GenreSelectionCompoenet";
 
-const ProfilePannel = () => {
+const ProfilePannel = ({ mobile = false }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleLogout = () => {
@@ -11,7 +11,11 @@ const ProfilePannel = () => {
   };
 
   return (
-    <div className={`profile-container ${expanded ? "expanded" : ""}`}>
+    <div
+      className={`profile-container ${expanded ? "expanded" : ""} ${
+        mobile ? "mobile" : ""
+      }`}
+    >
       {expanded ? (
         <>
           <div className="close-bttn" onClick={() => setExpanded(false)}></div>
@@ -47,6 +51,8 @@ const ProfilePannel = () => {
           </p>
           <GenreSelectionCompoenet />
         </>
+      ) : mobile ? (
+        <span onClick={() => setExpanded(true)}>Settings</span>
       ) : (
         <div className="icon-container" onClick={() => setExpanded(true)}>
           <svg

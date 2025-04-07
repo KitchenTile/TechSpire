@@ -49,3 +49,25 @@
         color: var(--accentColor);
     }
 }
+
+
+@media only screen and (max-width: 430px) {
+    .header-container{
+        & .header-img-container{
+            position: relative;
+            left: 25.5%;
+            width: auto;
+            z-index: 3;
+            top: -2.5px;
+        }
+
+        & span#title {
+            display: none;
+        }
+
+        & .logo{
+            height: 150%;
+            width: 45px;
+        }
+    }
+  }

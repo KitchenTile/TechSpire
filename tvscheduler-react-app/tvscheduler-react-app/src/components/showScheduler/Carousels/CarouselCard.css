@@ -30,6 +30,7 @@
 
     & .info-container{
         position: absolute;
+        padding-top: 0;
         margin-top: 15%;
         width: 80%;
         height: 50%;
@@ -113,4 +114,34 @@
               transform: translateX(10px);
           }
       }
+}
+
+
+@media only screen and (max-width: 430px) {
+  .carousel-card{
+
+    & .info-container{
+      padding-top: 0;
+
+      & .show-title{
+        font-size: 2em;
+        line-height: 45px;
+      }
+
+      & .time-stamps span{
+        font-size: 1em;
+      }
+
+      & .add-button{
+        left: 0;
+        right: auto;
+        bottom: -15%;
+    }
+    }
+
+    & .see-more{
+      display: none;
+    }
+  }
+
 }
