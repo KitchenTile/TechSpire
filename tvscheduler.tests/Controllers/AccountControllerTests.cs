@@ -45,16 +45,12 @@ namespace tvscheduler.tests.Controllers
             _userManager = CreateMockUserManager();
             _dbContext = CreateInMemoryDbContext();
             
-            var mockShow = new Show
-            {
-                ShowId = 1,
-                Name = "Test Show",
-                ImageUrl = "https://test.com/image.jpg"
-            };
+            // Use TestDataFactory to create mock show
+            var mockShow = TestDataFactory.CreateShow();
             _recommendationGenerator = new TestRecommendationGeneratorIndividual(mockShow, _dbContext, new TodaysShowsCache());
             
             // Seed data needed for schedule tests
-            SeedTestData();
+            TestDataFactory.SeedBasicTestData(_dbContext);
             
             // Create controller
             _controller = new AccountController(
@@ -63,47 +59,6 @@ namespace tvscheduler.tests.Controllers
                 CreateMockConfiguration().Object,
                 _recommendationGenerator
             );
-        }
-        
-        private void SeedTestData()
-        {
-            // Add show
-            var show = new Show
-            {
-                ShowId = 1,
-                Name = "Test Show",
-                ImageUrl = "https://test.com/image.jpg",
-                Tag = new Tag { Id = 1, Name = "Comedy" }
-            };
-            _dbContext.Shows.Add(show);
-            
-            // Add channel
-            var channel = new Channel
-            {
-                ChannelId = 1,
-                Name = "Test Channel",
-                Description = "Test Channel",
-                LogoUrl = "https://test.com/logo.png",
-                Lcn = 1,
-                Tstv = true
-            };
-            _dbContext.Channels.Add(channel);
-            
-            // Add show event that needed for scheduling tests
-            var showEvent = new ShowEvent
-            {
-                Id = 1,
-                ShowId = 1,
-                Show = show,
-                ChannelId = 1,
-                Channel = channel,
-                TimeStart = 1710345600,
-                Duration = 3600,
-                Description = "Test Event Description"
-            };
-            _dbContext.ShowEvents.Add(showEvent);
-            
-            _dbContext.SaveChanges();
         }
         
         // Helper method to simulate authenticated user for tests
@@ -193,13 +148,6 @@ namespace tvscheduler.tests.Controllers
                 
             _userManager.Setup(x => x.CheckPasswordAsync(user, loginDto.Password))
                 .ReturnsAsync(true);
-
-            var mockShow = new Show
-            {
-                ShowId = 1,
-                Name = "Test Show",
-                ImageUrl = "https://test.com/image.jpg"
-            };
             
             await _recommendationGenerator.SetIndividualRecommendation(_testUserId);
             
