@@ -114,13 +114,15 @@ const MainSchedulePage = () => {
             {/* my shows display */}
             <MyShowsComponent />
             {/* show recommendations section */}
-            <div className="show-recommnedation">
-              <h1 className="title h1">Show of the day</h1>
-              <SearchCard
-                show={recommendedShowOfTheDaySHOW[0]}
-                showEvents={recommendedShowOfTheDay}
-              />
-            </div>
+            {/* {channels.favTags.length !== 0 ? (
+              <div className="show-recommnedation">
+                <h1 className="title h1">Show of the day</h1>
+                <SearchCard
+                  show={recommendedShowOfTheDaySHOW[0]}
+                  showEvents={recommendedShowOfTheDay}
+                />
+              </div>
+            ) : null} */}
             <h1 className="title h1">
               {channels.favTags.length === 0
                 ? "All Channels"
@@ -128,7 +130,7 @@ const MainSchedulePage = () => {
             </h1>
             <div
               className="grid-container"
-              id="mainPage"
+              id={channels.favTags.length === 0 ? "withoutFavs" : "mainPage"}
               style={
                 channels.favTags.length === 0 ? { flexDirection: "column" } : {}
               }
