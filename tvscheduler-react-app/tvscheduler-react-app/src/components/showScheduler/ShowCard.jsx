@@ -57,7 +57,12 @@ const ShowCard = ({ show, isAdded, rowRef, style = null }) => {
         <>
           <span className="img-container">
             <img
-              src={`https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`}
+              src={
+                show.resizedImageUrl
+                  ? `http://localhost:5171${show.resizedImageUrl}`
+                  : `https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`
+                // `https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`
+              }
               alt={show.name}
               loading="lazy"
               decoding="async"

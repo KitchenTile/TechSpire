@@ -2,7 +2,7 @@ import { memo, useCallback, useState } from "react";
 import "./Navigation.css";
 import { Link } from "react-router-dom";
 
-const Navigation = () => {
+const Navigation = ({ mobile = false }) => {
   const [expanded, setExpanded] = useState(false);
 
   const links = ["Channels", "Morning", "Afternoon", "Evening", "All"];
@@ -12,7 +12,9 @@ const Navigation = () => {
 
   return (
     <li
-      className={`navigation-container ${expanded ? "expanded" : ""}`}
+      className={`navigation-container ${expanded ? "expanded" : ""} ${
+        mobile ? "mobile" : ""
+      }`}
       onMouseEnter={mouseEnter}
       onMouseLeave={mouseLeave}
     >

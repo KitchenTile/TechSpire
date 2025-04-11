@@ -108,7 +108,7 @@
       }
   
     &.expanded{
-      width: 600px;
+      width: 700px;
       height: 100vh;
       padding: 3em 2em;
   
@@ -161,3 +161,29 @@
   .title-warning-container{
     position: relative;
   }
+
+  @media only screen and (max-width: 430px) {
+    
+    .profile-container{
+        display: none;
+
+        &.mobile{
+          display: contents;
+
+          & span{
+            font-size: 1.5em;
+            font-weight: 600;
+            text-align: center;
+            color: var(--accentColor);
+          }
+
+          &.expanded{
+            width: 100%;
+            z-index: 200;
+            display: flex;
+          }
+
+        }
+
+    }
+}

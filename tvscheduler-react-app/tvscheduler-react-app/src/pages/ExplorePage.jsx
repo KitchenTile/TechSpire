@@ -54,7 +54,10 @@ const ExplorePage = () => {
             <>
               <div className="title-genres">
                 <h1 className="title">{section.section} Shows</h1>
-                <GenreFilterComponent handleFilter={handleFilter} />
+                <GenreFilterComponent
+                  handleFilter={handleFilter}
+                  section={section.section}
+                />
               </div>
               <div
                 className="content-container"

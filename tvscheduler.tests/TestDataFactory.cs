@@ -8,23 +8,33 @@ namespace tvscheduler.tests;
 // Factory class for creating test data
 public static class TestDataFactory
 {
+    private static readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
     public static HttpResponseMessage CreateTvProgramResponse() // testing API for TV program !live
     {
+        var response = new
+        {
+            programmes = new[]
+            {
+                new
+                {
+                    title = "Test Program",
+                    description = "Test Program Description",
+                    image = "https://example.com/image.jpg",
+                    startTime = 1710345600,
+                    duration = 3600
+                }
+            }
+        };
+
         return new HttpResponseMessage
         {
-            StatusCode = HttpStatusCode.OK, // 200
-            Content = new StringContent( // Http res to Json
-                @"{
-                    ""programmes"": [
-                        {
-                            ""title"": ""Test Program"",
-                            ""description"": ""Test Program Description"",
-                            ""image"": ""https://example.com/image.jpg"",
-                            ""startTime"": 1710345600,
-                            ""duration"": 3600
-                        }
-                    ]
-                }",
+            StatusCode = HttpStatusCode.OK,
+            Content = new StringContent(
+                JsonSerializer.Serialize(response, _jsonOptions),
                 Encoding.UTF8,
                 "application/json"
             )
@@ -51,7 +61,7 @@ public static class TestDataFactory
         {
             StatusCode = HttpStatusCode.OK,
             Content = new StringContent(
-                JsonSerializer.Serialize(response), // anonymous object to JSON
+                JsonSerializer.Serialize(response, _jsonOptions),
                 Encoding.UTF8,
                 "application/json"
             )

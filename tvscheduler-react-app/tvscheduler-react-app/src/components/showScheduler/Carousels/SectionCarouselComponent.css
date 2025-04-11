@@ -90,3 +90,13 @@
     scale: 1.3;
   }
 }
+
+@media only screen and (max-width: 430px) {
+  .carousel-section{
+    height: auto;
+  } 
+
+  .arrows{
+    display: none;
+  }
+}
