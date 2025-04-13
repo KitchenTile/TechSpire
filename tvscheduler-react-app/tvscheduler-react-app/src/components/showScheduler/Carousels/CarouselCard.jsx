@@ -14,7 +14,12 @@ const CarouselCard = ({ show, activeShow, id, isAdded }) => {
     >
       <span className="img-container">
         <img
-          src={`https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`}
+          src={
+            // show.resizedImageUrl
+            //   ? `http://localhost:5171${show.resizedImageUrl}`
+            //   : `https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`
+            `https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`
+          }
           alt={show.name}
         />
       </span>

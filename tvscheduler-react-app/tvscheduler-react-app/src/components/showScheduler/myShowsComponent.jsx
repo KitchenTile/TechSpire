@@ -15,7 +15,7 @@ import "./MyShowsComponent.css";
 import WarningIcon from "../misc/WarningIcon";
 
 // Component to display my shows array, refacotred to be displayed vertically -- BLUE
-const MyShowsComponent = ({ position = "horizontal" }) => {
+const MyShowsComponent = ({ position = "horizontal", mobile = false }) => {
   const { channels } = useContext(ChannelsContext);
   const { myShows } = useContext(MyShowsContext);
   const mergeShows = useMergeAndFilter("All");
@@ -52,13 +52,17 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
     <div
       className={
         position === "vertical"
-          ? `vertical-container ${expanded ? "expanded" : ""}`
-          : ""
+          ? `vertical-container ${expanded ? "expanded" : ""} ${
+              mobile ? "mobile" : ""
+            }`
+          : null
       }
     >
       {position === "vertical" ? (
         expanded ? (
           <div className="close-bttn" onClick={() => setExpanded(false)}></div>
+        ) : mobile ? (
+          <span onClick={() => setExpanded(true)}>My Shows</span>
         ) : (
           <div className="icon-container" onClick={() => setExpanded(true)}>
             <svg
@@ -82,7 +86,7 @@ const MyShowsComponent = ({ position = "horizontal" }) => {
           </div>
         )
       ) : null}
-      <div className={`title-warning-container`}>
+      <div className="title-warning-container">
         <h1 className="title h1">My Shows</h1>
         {mergeAndSort.overlap.length > 0 ? (
           <WarningIcon position={position}>

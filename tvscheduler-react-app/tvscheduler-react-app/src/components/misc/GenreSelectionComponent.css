@@ -23,6 +23,7 @@
         background-color: var(--accentColor);
         border-color: white;
         text-align: center;
+        min-width: 145px;
         transition: all 0.1s ease-in-out;
 
         &:hover{
@@ -48,3 +49,9 @@
     }
 }
     
+@media only screen and (max-width: 430px) {
+
+    .buttons-container{
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

@@ -103,7 +103,7 @@ const ShowRowComponent = ({ channel }) => {
           {/* if the channel has shows, get the first x shows for each channel -- consider writing a variable for more readable code */}
           {mergedShows.length > 0 ? (
             mergedShows
-              .slice(0, 10)
+              // .slice(0, 10)
               .map((show) => (
                 <ShowCard
                   key={show.showEventId}

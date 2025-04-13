@@ -14,6 +14,7 @@ import useMergeAndFilter from "../hooks/useMergeAndFilter";
 import ShowCard from "../components/showScheduler/ShowCard";
 import MyShowsContext from "../contexts/myShowsContext";
 import GenreSelectionCompoenet from "../components/misc/GenreSelectionCompoenet";
+import SearchCard from "../components/header/SearchCard";
 
 const MainSchedulePage = () => {
   const { channels } = useContext(ChannelsContext);
@@ -41,10 +42,16 @@ const MainSchedulePage = () => {
   const throttleWindowScrroll = useThrottle(window, () => {
     const scrollPosition = window.scrollY;
 
-    //if the scroll position of the window is > 500 then set isVisible to true
-    setIsVisible((prev) =>
-      prev !== scrollPosition > 500 ? scrollPosition > 500 : prev
-    );
+    if (window.innerWidth <= 430) {
+      setIsVisible((prev) =>
+        prev !== scrollPosition > 100 ? scrollPosition > 100 : prev
+      );
+    } else {
+      //if the scroll position of the window is > 500 then set isVisible to true
+      setIsVisible((prev) =>
+        prev !== scrollPosition > 500 ? scrollPosition > 500 : prev
+      );
+    }
   });
 
   //header visibility logic
@@ -70,6 +77,14 @@ const MainSchedulePage = () => {
     );
   };
 
+  const recommendedShowOfTheDaySHOW = channels?.shows.filter(
+    (show) => show.showId === channels.individualRecommendation
+  );
+
+  const recommendedShowOfTheDay = mergedAndFilteredShows.filter(
+    (showEvent) => showEvent.showId === channels.individualRecommendation
+  );
+
   const recommnededShows = recommendations();
 
   return (
@@ -82,7 +97,7 @@ const MainSchedulePage = () => {
                 <>
                   <h1 className="title">Welcome to ViewQue!</h1>
                   <p>
-                    Please let us know your favourite tv genres so we can tailor
+                    Select your favourite tv genres so we can tailor
                     recommendations for you!
                   </p>
                   <GenreSelectionCompoenet
@@ -98,6 +113,14 @@ const MainSchedulePage = () => {
             <SectionCarouselComponent />
             {/* my shows display */}
             <MyShowsComponent />
+            {/* show recommendations section */}
+            <div className="show-recommnedation">
+              <h1 className="title h1">Show of the day</h1>
+              <SearchCard
+                show={recommendedShowOfTheDaySHOW[0]}
+                showEvents={recommendedShowOfTheDay}
+              />
+            </div>
             <h1 className="title h1">
               {channels.favTags.length === 0
                 ? "All Channels"
@@ -105,6 +128,7 @@ const MainSchedulePage = () => {
             </h1>
             <div
               className="grid-container"
+              id="mainPage"
               style={
                 channels.favTags.length === 0 ? { flexDirection: "column" } : {}
               }
