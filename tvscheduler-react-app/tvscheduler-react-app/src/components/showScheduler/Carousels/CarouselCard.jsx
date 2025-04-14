@@ -3,6 +3,7 @@ import "./CarouselCard.css";
 import { memo, useContext } from "react";
 import AddRemoveShowsContext from "../../../contexts/AddRemoveShowsContext";
 
+// Carousel version of our show card, same basic structure with a few changes to fit carousel design -- FILIP
 const CarouselCard = ({ show, activeShow, id, isAdded }) => {
   const { addRemoveShow } = useContext(AddRemoveShowsContext);
   const unixToHuman = new Date(show.timeStart * 1000);
@@ -14,11 +15,11 @@ const CarouselCard = ({ show, activeShow, id, isAdded }) => {
     >
       <span className="img-container">
         <img
+          // the src selects the resized image stored in the back end, if there's none, then it selects the original img url from the api call
           src={
-            // show.resizedImageUrl
-            //   ? `http://localhost:5171${show.resizedImageUrl}`
-            //   : `https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`
-            `https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`
+            show.resizedImageUrl
+              ? `http://localhost:5171${show.resizedImageUrl}`
+              : `https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`
           }
           alt={show.name}
         />
