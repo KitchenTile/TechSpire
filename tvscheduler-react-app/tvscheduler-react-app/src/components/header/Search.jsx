@@ -45,7 +45,6 @@ const Search = () => {
       uniqueShows: uniqueShows,
       shows: filteredBySearch,
     };
-    // console.log(showObjectAndEvents.shows);
 
     return showObjectAndEvents;
   }, [channels, debounceSearachTerm]);

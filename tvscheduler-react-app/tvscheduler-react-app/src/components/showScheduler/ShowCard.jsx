@@ -57,11 +57,11 @@ const ShowCard = ({ show, isAdded, rowRef, style = null }) => {
         <>
           <span className="img-container">
             <img
+              // the src selects the resized image stored in the back end, if there's none, then it selects the original img url from the api call
               src={
-                // show.resizedImageUrl
-                //   ? `http://localhost:5171${show.resizedImageUrl}`
-                //   : `https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`
-                `https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`
+                show.resizedImageUrl
+                  ? `http://localhost:5171${show.resizedImageUrl}`
+                  : `https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`
               }
               alt={show.name}
               loading="lazy"
@@ -122,6 +122,7 @@ const ShowCard = ({ show, isAdded, rowRef, style = null }) => {
   );
 };
 
+// compare props to prevent unnecesary rerenders
 const areEqual = (prevProps, nextProps) => {
   return (
     prevProps.show.showEventId === nextProps.show.showEventId &&

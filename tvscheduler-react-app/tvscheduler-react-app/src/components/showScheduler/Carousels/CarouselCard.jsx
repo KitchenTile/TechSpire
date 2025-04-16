@@ -15,12 +15,8 @@ const CarouselCard = ({ show, activeShow, id, isAdded }) => {
     >
       <span className="img-container">
         <img
-          // the src selects the resized image stored in the back end, if there's none, then it selects the original img url from the api call
-          src={
-            show.resizedImageUrl
-              ? `http://localhost:5171${show.resizedImageUrl}`
-              : `https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`
-          }
+          // the src will be the original size, since large displays make low res more evident
+          src={`https://msaas.img.freeviewplay.net/cache/${show.imageUrl}`}
           alt={show.name}
         />
       </span>

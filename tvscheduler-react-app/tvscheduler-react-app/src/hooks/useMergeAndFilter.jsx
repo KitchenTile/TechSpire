@@ -89,8 +89,9 @@ const useMergeAndFilter = (param) => {
         };
         return sectionsObject;
 
+      // case for "channels" is handled elsewhere for now
       case "Channels":
-        return []; // Placeholder for now
+        return [];
 
       default:
         return [];
