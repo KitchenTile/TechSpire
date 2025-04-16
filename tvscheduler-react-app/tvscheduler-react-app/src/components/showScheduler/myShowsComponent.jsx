@@ -1,13 +1,6 @@
 import ShowCard from "./ShowCard";
 import rightArrow from "../../assets/rightArrow.svg";
-import {
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { memo, useContext, useMemo, useState } from "react";
 import useMergeAndFilter from "../../hooks/useMergeAndFilter";
 import ChannelsContext from "../../contexts/channelsContext";
 import MyShowsContext from "../../contexts/myShowsContext";
