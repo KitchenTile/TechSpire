@@ -32,6 +32,7 @@ public class AccountController : ControllerBase
     }
     
     
+    // Registers a new user with the provided credentials
     [HttpPost]
     [Route("/register")]
     public async Task<IActionResult> Registration(LoginDTO user)
@@ -66,52 +67,53 @@ public class AccountController : ControllerBase
         }
     }
     
-// login
-[HttpPost]
-[Route("login")]
-public async Task<IActionResult> Login(LoginDTO request)
-{
-    var user = await _userManager.FindByNameAsync(request.Name);
-    if (user == null)
+    // Authenticates a user and returns a JWT token
+    [HttpPost]
+    [Route("login")]
+    public async Task<IActionResult> Login(LoginDTO request)
     {
-        return Unauthorized(new { message = "User not found" });
+        var user = await _userManager.FindByNameAsync(request.Name);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found" });
+        }
+
+        var passwordCheck = await _userManager.CheckPasswordAsync(user, request.Password);
+        if (!passwordCheck)
+        {
+            return Unauthorized(new { message = "Invalid password" });
+        }
+        
+        // generate daily recommendation for the user
+        
+        //TODO 
+        // if first login today > send recommendation
+        // else mark already logged today
+        
+        await _recommendationGeneratorIndividual.SetIndividualRecommendation(userId: user.Id);
+        // return something and pass info to front end ?
+
+        var claims = new[]
+        {
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.UserName),
+        };
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? string.Empty));
+        var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var token = new JwtSecurityToken(
+            _configuration["Jwt:Issuer"],
+            _configuration["Jwt:Audience"],
+            claims,
+            expires: DateTime.UtcNow.AddMinutes(30),
+            signingCredentials: signIn);
+
+        return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token)});
     }
-
-    var passwordCheck = await _userManager.CheckPasswordAsync(user, request.Password);
-    if (!passwordCheck)
-    {
-        return Unauthorized(new { message = "Invalid password" });
-    }
-    
-    // generate daily recommendation for the user
-    
-    //TODO 
-    // if first login today > send recommendation
-    // else mark already logged today
-    
-    await _recommendationGeneratorIndividual.SetIndividualRecommendation(userId: user.Id);
-    // return something and pass info to front end ?
-
-    var claims = new[]
-    {
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        new Claim(ClaimTypes.Name, user.UserName),
-    };
-    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? string.Empty));
-    var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-    var token = new JwtSecurityToken(
-        _configuration["Jwt:Issuer"],
-        _configuration["Jwt:Audience"],
-        claims,
-        expires: DateTime.UtcNow.AddMinutes(30),
-        signingCredentials: signIn);
-
-    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token)});
-}
     
     
 
+    // Adds a show to the user's schedule
     [HttpPost("add-show-to-schedule")]
     public async Task<IActionResult> AddShowToSchedule([FromBody] AddShowToScheduleRequest request)
     {
@@ -134,7 +136,7 @@ public async Task<IActionResult> Login(LoginDTO request)
         
     }
 
-
+    // Removes a show from the user's schedule
     [HttpPost("/remove-show-from-schedule")]
     public async Task<IActionResult> RemoveShowFromSchedule([FromBody] AddShowToScheduleRequest request)
     {
@@ -159,7 +161,7 @@ public async Task<IActionResult> Login(LoginDTO request)
         return Ok("Show event removed from schedule.");
     }
 
-    //[Authorize]
+    // Adds a tag to the user's favorite tags
     [HttpPost("/favourite-tag")]
     public async Task<IActionResult> AddTagToFavourites([FromBody] AddRemoveFavTagRequest request)
     {
@@ -176,6 +178,7 @@ public async Task<IActionResult> Login(LoginDTO request)
         return Ok();
     }
 
+    // Removes a tag from the user's favorite tags
     [HttpPost("/un-favourite-tag")]
     public async Task<IActionResult> RemoveTagFromFavourites([FromBody] AddRemoveFavTagRequest request)
     {

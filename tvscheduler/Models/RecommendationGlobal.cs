@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tvscheduler.Models;
 
+// Represents a global recommendation for all users
 public class RecommendationGlobal
 {
     [Key]

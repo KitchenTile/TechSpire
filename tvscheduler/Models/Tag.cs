@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tvscheduler.Models;
 
+// Represents a category or genre tag for shows and channels
 public class Tag
 {
     

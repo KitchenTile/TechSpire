@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tvscheduler.Models;
 
+// Represents a TV show with its metadata and associated tag
 public class Show
 {
     [Key]

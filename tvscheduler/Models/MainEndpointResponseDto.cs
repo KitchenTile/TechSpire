@@ -1,7 +1,7 @@
 namespace tvscheduler.Models;
 
 
-//rename to main endpoint response and create a method which will construct the reponse to the main endpoint fully
+// Data transfer object for the main endpoint response containing user's TV guide data
 public class MainEndpointResponseDto
 {
     public int UserScheduleItemId { get; set; }

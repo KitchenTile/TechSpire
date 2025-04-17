@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace tvscheduler.Models;
 
+// Data transfer object for manually adding a new show to the TV guide
 public class AddShowManualDTO
 {
     

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tvscheduler.Models;
 
+// Represents a show that a user has added to their personal schedule
 public class UserScheduleEvent
 { 
     [Key] 

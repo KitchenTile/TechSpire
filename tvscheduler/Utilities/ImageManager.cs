@@ -10,12 +10,15 @@ using Microsoft.Extensions.Configuration;
 
 namespace tvscheduler.Utilities;
 
+/// <summary>
+/// Manages image processing operations for TV show images, including resizing and storage
+/// </summary>
 public class ImageManager
 {
     private readonly IWebHostEnvironment _environment;
     private readonly AppDbContext _context;
     private readonly HttpClient _httpClient;
-    private const int MaxWidth = 360;
+    private const int MaxWidth = 360;  // Maximum dimensions for resized images
     private const int MaxHeight = 200;
     private readonly string _baseImageUrl;
     private readonly string _uploadsPath;
@@ -27,16 +30,18 @@ public class ImageManager
         _httpClient = new HttpClient();
         _baseImageUrl = configuration["ImageServer:BaseUrl"] ?? "https://tvguide.co.uk";
         
-        // Set up the uploads directory path and make sure it exsistes
+        // Initialize uploads directory for resized images
         _uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "resized");
         Directory.CreateDirectory(_uploadsPath);
     }
 
+
+    /// Downloads, resizes, and saves an image while maintaining aspect ratio
     public async Task<string> ResizeAndSaveImage(string imageUrl)
     {
         try
         {
-            // add the host prefix (not included in the image urls provided by the external api)
+            // Construct absolute URL from relative path
             string absoluteUrl = $"{_baseImageUrl.TrimEnd('/')}/{imageUrl.TrimStart('/')}";
 
             // Download the image
@@ -49,7 +54,7 @@ public class ImageManager
             // Process and save the image
             using (var image = Image.Load(imageBytes))
             {
-                // resize bnut keep the ratio
+                // Calculate dimensions while preserving aspect ratio
                 var ratioX = (double)MaxWidth / image.Width;
                 var ratioY = (double)MaxHeight / image.Height;
                 var ratio = Math.Min(ratioX, ratioY);
@@ -70,6 +75,9 @@ public class ImageManager
             return null;
         }
     }
+
+
+    /// Processes and resizes images for all shows in the database
     public async Task ProcessAllShowImages()
     {
         var shows = await _context.Shows.ToListAsync();
@@ -85,6 +93,8 @@ public class ImageManager
         await _context.SaveChangesAsync();
     }
 
+
+    /// Removes all resized images from storage and clears references in the database
     public async Task DeleteAllResizedImages()
     {
         try
@@ -103,6 +113,7 @@ public class ImageManager
                 Console.WriteLine("Resized images directory does not exist");
             }
 
+            // Clear image references from database
             var shows = await _context.Shows.ToListAsync();
             int updatedCount = 0;
             

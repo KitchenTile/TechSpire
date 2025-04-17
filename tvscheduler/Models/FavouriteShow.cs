@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tvscheduler.Models;
 
+// Represents a show that a user has marked as their favorite
 public class FavouriteShow
 {
     [Key]

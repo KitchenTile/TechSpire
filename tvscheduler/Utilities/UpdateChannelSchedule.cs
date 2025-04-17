@@ -5,6 +5,8 @@ using tvscheduler.network_services;
 
 namespace tvscheduler.Utilities;
 
+
+/// Updates channel schedules by fetching and processing TV guide data
 public class UpdateChannelSchedule
 {
     private readonly HttpClient _httpClient;
@@ -18,29 +20,33 @@ public class UpdateChannelSchedule
         _tagsManager = tagsManager;
     }
     
+
+    /// Fetches and updates the schedule for all channels
     public async Task UpdateDailySchedule()
     { 
+        // Get all channel IDs from the database
         var channelIds = _dbContext.Channels.Select(c => c.ChannelId).ToList();
 
+        // Fetch program data for all channels
         var channelData = await TvApi.FetchMultipleProgramData(_httpClient, channelIds);
         
         foreach (var entry in channelData)
         {
             string formattedJson = JsonSerializer.Serialize(entry.Value, new JsonSerializerOptions { WriteIndented = true });
-
-            
         }
 
-        foreach (var kvp in channelData) // KeyValuePair<int, Channel>
+        // Process each channel's schedule
+        foreach (var kvp in channelData)
         {
             int channelId = kvp.Key;
-            var channel = kvp.Value; // Channel object
+            var channel = kvp.Value;
             
-    
+            // Process each show event in the schedule
             foreach (var showEvent in channel[0].GetProperty("event").EnumerateArray())
             {
                 Console.WriteLine(showEvent.GetProperty("name").GetString());
                 
+                // Find or create show in database
                 var show = await _dbContext.Shows.FirstOrDefaultAsync(show => show.Name == showEvent.GetProperty("name").GetString());
                 if (show == null)
                 {
@@ -53,6 +59,7 @@ public class UpdateChannelSchedule
                     await _dbContext.SaveChangesAsync();
                 }
 
+                // Add show event to schedule
                 _dbContext.ShowEvents.Add(new ShowEvent
                 {
                     ChannelId = channelId,
@@ -65,6 +72,4 @@ public class UpdateChannelSchedule
             await _dbContext.SaveChangesAsync();
         }
     }
-    // get the schedule
-    // for show in schedule map to channel - showevent - show relation
 }
