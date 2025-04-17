@@ -65,3 +65,16 @@
     color: red;
     margin-bottom: 0.5em;
 }
+
+@media only screen and (max-width: 430px) {
+    .login-form-container{
+        height: 100vh;
+        background: linear-gradient(0deg, rgb(100 108 255 / 1%) 0%, rgba(0, 0, 0, 0.7) 20%, rgba(0, 0, 0, 0.5) 85%, rgb(100 108 255 / 1%) 100%);
+        justify-content: center;
+        
+        & svg{
+            height: 320px;
+        }
+    }
+    
+}
