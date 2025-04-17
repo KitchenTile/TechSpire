@@ -11,6 +11,7 @@ import HighlightCarousel from "./HighlightCarousel";
 import useThrottle from "../../../hooks/useThrottle";
 import useMergeAndFilter from "../../../hooks/useMergeAndFilter";
 
+// Nested carousel container -- BLUE
 const SectionCarouselComponent = () => {
   const [activeSection, setActiveSection] = useState(0);
   const carouselSectionRef = useRef(null);

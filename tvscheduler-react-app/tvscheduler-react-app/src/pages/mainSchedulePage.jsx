@@ -15,13 +15,13 @@ import ShowCard from "../components/showScheduler/ShowCard";
 import MyShowsContext from "../contexts/myShowsContext";
 import GenreSelectionCompoenet from "../components/misc/GenreSelectionCompoenet";
 import SearchCard from "../components/header/SearchCard";
+import RecommendedShows from "../components/showScheduler/recommendations/RecommendedShows";
 
 const MainSchedulePage = () => {
   const { channels } = useContext(ChannelsContext);
   const [isVisible, setIsVisible] = useState(false);
   const [openModal, setOpenModal] = useState(true);
   const navigate = useNavigate();
-  const mergedAndFilteredShows = useMergeAndFilter("All");
   const { myShows } = useContext(MyShowsContext);
 
   //effect to go back to the login page if the JWT expires
@@ -38,7 +38,7 @@ const MainSchedulePage = () => {
     return () => clearTimeout(timeOut);
   }, [channels]);
 
-  //we want to throttle the scrolling so we use our hook
+  //we want to throttle the scrolling so we don't trigger unnecesary scroll func calls
   const throttleWindowScrroll = useThrottle(window, () => {
     const scrollPosition = window.scrollY;
 
@@ -64,28 +64,6 @@ const MainSchedulePage = () => {
   const handleModalClose = () => {
     setOpenModal(false);
   };
-
-  const recommendations = () => {
-    let userTags = [];
-
-    userTags = channels?.favTags.map((tag) => {
-      return tag.tagName;
-    });
-
-    return mergedAndFilteredShows.filter((show) =>
-      userTags.includes(show.tagName)
-    );
-  };
-
-  const recommendedShowOfTheDaySHOW = channels?.shows.filter(
-    (show) => show.showId === channels.individualRecommendation
-  );
-
-  const recommendedShowOfTheDay = mergedAndFilteredShows.filter(
-    (showEvent) => showEvent.showId === channels.individualRecommendation
-  );
-
-  const recommnededShows = recommendations();
 
   return (
     <div className="page-container">
@@ -114,13 +92,15 @@ const MainSchedulePage = () => {
             {/* my shows display */}
             <MyShowsComponent />
             {/* show recommendations section */}
-            <div className="show-recommnedation">
-              <h1 className="title h1">Show of the day</h1>
-              <SearchCard
-                show={recommendedShowOfTheDaySHOW[0]}
-                showEvents={recommendedShowOfTheDay}
-              />
-            </div>
+            {/* {channels.favTags.length !== 0 ? (
+              <div className="show-recommnedation">
+                <h1 className="title h1">Show of the day</h1>
+                <SearchCard
+                  show={recommendedShowOfTheDaySHOW[0]}
+                  showEvents={recommendedShowOfTheDay}
+                />
+              </div>
+            ) : null}
             <h1 className="title h1">
               {channels.favTags.length === 0
                 ? "All Channels"
@@ -128,7 +108,7 @@ const MainSchedulePage = () => {
             </h1>
             <div
               className="grid-container"
-              id="mainPage"
+              id={channels.favTags.length === 0 ? "withoutFavs" : "mainPage"}
               style={
                 channels.favTags.length === 0 ? { flexDirection: "column" } : {}
               }
@@ -147,7 +127,8 @@ const MainSchedulePage = () => {
                       isAdded={myShows.includes(show.showEventId)}
                     />
                   ))}
-            </div>
+            </div> */}
+            <RecommendedShows />
           </>
         </AddRemoveShowsContextProvider>
       ) : (
