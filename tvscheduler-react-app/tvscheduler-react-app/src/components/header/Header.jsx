@@ -6,6 +6,7 @@ import MyShowsComponent from "../showScheduler/myShowsComponent";
 import ProfilePannel from "../misc/ProfilePannel";
 import BurgerMenu from "./BurgerMenu";
 
+// This header is basically an unordered list with differnet compoenets as list items
 const Header = ({ isVisible = true }) => {
   return (
     <ul className={`header-container ${isVisible ? "active" : ""}`}>

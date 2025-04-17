@@ -2,6 +2,7 @@ import { memo, useCallback, useState } from "react";
 import "./Navigation.css";
 import { Link } from "react-router-dom";
 
+// Navigation is an expandable menu on the header; when hovered, it shows different navigation options
 const Navigation = ({ mobile = false }) => {
   const [expanded, setExpanded] = useState(false);
 
