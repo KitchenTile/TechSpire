@@ -1,0 +1,5 @@
+.loginPageScreen svg{
+    fill: var(--accentColor);
+    width: 100px;
+    height: 100px;
+}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./loginPage.css";
 import FormComponent from "../components/login/FormComponent.jsx";
 import { useNavigate } from "react-router-dom";
+import loginPageScreen from "../assets/loginPageScreen.png";
 
 
 // set to false to disable input validation
@@ -15,9 +16,11 @@ const LoginRegisterPage = () => {
 
   const validateInput = (loginData) => {
     const errors = {};
-    // if (!loginData.email || !loginData.email.includes("@")) {
-    //   errors.email = "*Please enter a valid email";
-    // }
+    // Email validation
+      if (!loginData.name || !loginData.name.includes("@")) {
+        errors.email = "*Please enter a valid email";
+      } 
+    // Username validation
     // if (
     //   !registered &&
     //   (!loginData.username ||
@@ -26,6 +29,8 @@ const LoginRegisterPage = () => {
     // ) {
     //   errors.username = "*Username should be 3-10 characters long";
     // }
+
+    // Password validation
     if (registered) {
       if (
         loginData.password.length < 8 ||
@@ -140,7 +145,11 @@ const LoginRegisterPage = () => {
   ];
 
   return (
+    // Main container for the login page form
     <div className="login-page-container">
+      {/* background picture */}
+      <img src={loginPageScreen} alt="login page screen" className="loginPageScreen"/>
+      {/* register/login form components */}
       {!registered ? (
         <FormComponent
           title="Join us now!"
