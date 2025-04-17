@@ -5,6 +5,7 @@ import Navigation from "./Navigation";
 import ProfilePannel from "../misc/ProfilePannel";
 import MyShowsComponent from "../showScheduler/myShowsComponent";
 
+// painful burger menu I made with animations on the css fule
 const BurgerMenu = () => {
   const [burgerBarState, setBurgerBarState] = useState("burger-bar");
   const [expanded, setExpanded] = useState(false);

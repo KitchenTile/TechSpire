@@ -12,6 +12,7 @@ import useDebounce from "../../hooks/useDebounce";
 import SearchCard from "./SearchCard";
 import useMergeAndFilter from "../../hooks/useMergeAndFilter";
 
+//search component handles logic and display of results
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const debounceSearachTerm = useDebounce(searchTerm, 500);
