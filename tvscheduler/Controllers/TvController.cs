@@ -12,12 +12,10 @@ using tvscheduler.Utilities;
 
 namespace tvscheduler.Controllers;
 
-
 [Microsoft.AspNetCore.Components.Route("")]
 [ApiController]
 public class TvController : ControllerBase
 {
-
     private readonly AppDbContext _DbContext;
     private readonly HttpClient _httpClient;
     private readonly UserManager<User> _userManager;
@@ -33,30 +31,28 @@ public class TvController : ControllerBase
         _todaysShowsCache = todaysShowsCache;
     }
     
-    
-    // ENTRY ENDPOINT
+    // Main endpoint that returns all TV guide data for the authenticated user
     [HttpGet("/main")]
     public async Task<IActionResult> EntryEndpoint()
     {
-        // Check if the user is authenticated
         if (HttpContext.User?.Identity?.IsAuthenticated ?? false)
         {
-            // Use await instead of .Result to avoid blocking
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             var user = await _userManager.FindByIdAsync(userId);
             
-                 
             if (user == null)
             {
                 return Unauthorized(new { message = "User not found" });
             }
 
+            // Get user's schedule
             var userSchedule = await _DbContext.ScheduleEvents
                 .Include(a=>a.ShowEvent)
                 .ThenInclude(s=>s.Show)
                 .Where(s => s.UserId == user.Id)
                 .ToListAsync();
             
+            // Get user's favorite tags
             var favouriteTags = await _DbContext.FavouriteTags
                 .Where(ft => ft.UserId == user.Id)
                 .Select(ft => new FavouriteTagDTO
@@ -64,16 +60,15 @@ public class TvController : ControllerBase
                     Id = ft.Id,
                     TagId = ft.TagId,
                     TagName = ft.Tag.Name
-                    
                 })
                 .ToListAsync();
             
+            // Get all channels with their show events
             var channelsData = await _DbContext.Channels
                 .Include(c => c.ShowEvents)
                 .ToListAsync();
 
-        
-
+            // Format user's schedule
             var response = userSchedule.Select(se => new MainEndpointResponseDto
             {
                 UserScheduleItemId = se.Id,
@@ -88,7 +83,7 @@ public class TvController : ControllerBase
                 }
             }).ToList();
             
-            
+            // Format channels data
             var channelsResponse = channelsData.Select(c => new ChannelDto
             {
                 ChannelId = c.ChannelId,
@@ -98,18 +93,16 @@ public class TvController : ControllerBase
                 ShowEvents = c.ShowEvents
                     .OrderBy(se => se.TimeStart)
                     .Select(se => new ShowEventDto
-                {
-                    ShowEventId = se.Id,
-                    Description = se.Description,
-                    TimeStart = se.TimeStart,
-                    Duration = se.Duration,
-                    ShowId = se.ShowId,
-                })
-                
+                    {
+                        ShowEventId = se.Id,
+                        Description = se.Description,
+                        TimeStart = se.TimeStart,
+                        Duration = se.Duration,
+                        ShowId = se.ShowId,
+                    })
             });
             
-            
-            // include all the shows
+            // Get all shows with their tags
             var shows = await _DbContext.Shows
                 .Include(s => s.Tag)
                 .ToListAsync();
@@ -123,7 +116,7 @@ public class TvController : ControllerBase
                 ResizedImageUrl = s.ResizedImageUrl
             });
             
-            //get recommendations
+            // Get recommendations
             var individualRecommendation = await _DbContext.IndividualRecommendations
                 .Where(x => x.UserId == user.Id && x.CreatedDate == DateTime.Today)
                 .Include(x => x.Show)
@@ -134,7 +127,6 @@ public class TvController : ControllerBase
                 .Include(x => x.Show)
                 .FirstOrDefaultAsync();
             
-            
             return Ok(new
             {
                 schedule = response,
@@ -142,20 +134,17 @@ public class TvController : ControllerBase
                 channels = channelsResponse,
                 shows = showsResponse,
                 globalRecommendation = globalRecommendation?.Show.ShowId,
-                individualRecommendation = individualRecommendation?.Show.ShowId, // => x != null ? x : null
+                individualRecommendation = individualRecommendation?.Show.ShowId,
             });
         }
 
-        // IF USER NOT AUTHENTICATED
         return Unauthorized();
     }
 
-
-
+    // Adds a show manually to the TV guide
     [HttpPost("add-show-manually")]
     public async Task<IActionResult> AddShow([FromBody] AddShowManualDTO request)
     {
-        // check if the channel exsists / get the channel
         var channel = await _DbContext.Channels.FirstOrDefaultAsync(chnl => chnl.ChannelId == request.ChannelId);
         var tag = await _DbContext.Tags.FirstOrDefaultAsync(tag => tag.Name == request.TagName)
             ?? _DbContext.Tags.Add(new Tag
@@ -164,9 +153,8 @@ public class TvController : ControllerBase
             }).Entity;
         
         if (channel == null)
-            return NotFound("nah mate");
+            return NotFound("Channel not found");
 
-        // check if the show exsists > create or get
         var show = await _DbContext.Shows.FirstOrDefaultAsync(show => show.Name == request.ShowName)
             ?? _DbContext.Shows.Add(new Show
             {
@@ -175,8 +163,6 @@ public class TvController : ControllerBase
                 Tag = tag
             }).Entity;
         
-        // create ShowEvent and append to the channel
-        // LATER - check if theres an event with the same start time in the channel -> retrive channel with showevents?
         var showEvent = _DbContext.ShowEvents.Add(new ShowEvent
         {
             Channel = channel,
@@ -188,7 +174,7 @@ public class TvController : ControllerBase
         return Ok(showEvent.Entity);
     }
     
-
+    // Tests the tag generation for a show
     [HttpGet("testTagGetter")]
     public async Task<IActionResult> TestTagGetter([FromQuery] string showName)
     {
@@ -198,7 +184,7 @@ public class TvController : ControllerBase
         return Ok(result);
     }
 
-
+    // Returns the current cached shows
     [HttpGet("checkShowsCache")]
     public IActionResult CheckShowsCache()
     {
@@ -211,6 +197,7 @@ public class TvController : ControllerBase
         return Ok(shows);
     }
 
+    // Returns the tag-to-shows mapping from cache
     [HttpGet("cachedShowsTagHashmap")]
     public IActionResult CachedShowsTagHashmap()
     {
@@ -218,5 +205,4 @@ public class TvController : ControllerBase
         
         return Ok(hashmap);
     }
-
 }

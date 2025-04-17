@@ -4,6 +4,8 @@ using tvscheduler.Models;
 
 namespace tvscheduler.Utilities;
 
+
+/// Base class for show recommendation generators
 public abstract class RecommendationGeneratorBase
 {
     protected readonly AppDbContext? _DbContext;
@@ -15,6 +17,9 @@ public abstract class RecommendationGeneratorBase
         _todaysShowsCache = todaysShowsCache;
     }
     
+    /// <summary>
+    /// Selects a random show from the list, optionally excluding recently recommended shows
+    /// </summary>
     protected Show? PickRandomShow(List<Show> shows, List<int>? pastRecommendations = null)
     {
         var notRecentlyRecommended = pastRecommendations == null
@@ -27,21 +32,22 @@ public abstract class RecommendationGeneratorBase
 }
 
 
-
+/// Generates global recommendations for all users
 public class RecommendationGeneratorGlobal : RecommendationGeneratorBase
 {
-    public RecommendationGeneratorGlobal(AppDbContext dbContext, TodaysShowsCache todaysShowsCache) : base(dbContext, todaysShowsCache) //dependency injection requires to explicitly pass the services through the constructors (cant just access with 'base')
+    public RecommendationGeneratorGlobal(AppDbContext dbContext, TodaysShowsCache todaysShowsCache) : base(dbContext, todaysShowsCache)
     {
     }
     
-    // add method to check if theres a recommendation for today to use on app startup
 
+    /// Sets a new global recommendation, deactivating the previous one
     public async Task SetGlobalRecommendation()
     {
         var pastRecommendations = await _DbContext.GlobalRecommendations
             .ToListAsync();
         var pastRecommendationsIds = pastRecommendations.Select(x => x.Id).ToList();
         
+        // Deactivate current recommendation if exists
         var activeRecommendation = pastRecommendations.FirstOrDefault(r => r.Active);
         if (activeRecommendation != null)
         {
@@ -51,7 +57,6 @@ public class RecommendationGeneratorGlobal : RecommendationGeneratorBase
         
         var randomShow = PickRandomShow(_todaysShowsCache.GetCachedShows(), pastRecommendationsIds);
         
-        // add the show as a current recommendation
         var newRecommendation = new RecommendationGlobal()
         {
             ShowId = randomShow.ShowId,
@@ -63,6 +68,8 @@ public class RecommendationGeneratorGlobal : RecommendationGeneratorBase
         await _DbContext.SaveChangesAsync();
     }
     
+
+    /// Clears all global recommendations and resets the auto-increment counter
     public async Task ClearGlobalRecommendationsHistory()
     {
         var allRecommendations = await _DbContext.GlobalRecommendations.ToListAsync();
@@ -75,15 +82,18 @@ public class RecommendationGeneratorGlobal : RecommendationGeneratorBase
 }
 
 
-
+/// Generates personalized recommendations based on user preferences
 public class RecommendationGeneratorIndividual : RecommendationGeneratorBase
 {
     public RecommendationGeneratorIndividual(AppDbContext dbContext, TodaysShowsCache todaysShowsCache) : base(dbContext, todaysShowsCache)
     {
     }
-    public async Task SetIndividualRecommendation(string userId) //should be split into separate methods for funcions to follow a single purpose principle
+
+
+    /// Generates a personalized recommendation for a user based on their favorite tags
+    public async Task SetIndividualRecommendation(string userId)
     {
-        //check if there already is a recommendation for today
+        // Check for existing recommendation within the last 3 days
         DateTime today = DateTime.Today;
         DateTime threeDaysAgo = DateTime.Today.AddDays(-3);
         var exsistingRecommendations = await _DbContext.IndividualRecommendations
@@ -102,7 +112,7 @@ public class RecommendationGeneratorIndividual : RecommendationGeneratorBase
             return;
         }
             
-        // if no exsisting recommendation - get users fav tags
+        // Get user's favorite tags for personalized recommendations
         var userFavouriteTagIds = await _DbContext!.FavouriteTags
             .Where(ft => ft.UserId == userId)
             .Select(ft => ft.TagId)
@@ -110,19 +120,17 @@ public class RecommendationGeneratorIndividual : RecommendationGeneratorBase
         
         if (userFavouriteTagIds.Count == 0)
         {
-            return; // No favorite tags to base recommendation on
-            // how to handle this ? should the function be pure instead of making the db changes itself ?
+            return;
         }
-        
 
         List<Show> recommendedShows = _todaysShowsCache.GetTodaysShowsByTags(userFavouriteTagIds);
         
         if (recommendedShows.Count == 0)
         {
-            return; // No shows match user's favorite tags today
+            return;
         }
 
-        // create a list of ids od recently recommended shows
+        // Select a show that hasn't been recently recommended
         List<int> recentlyRecommendedShowIds = exsistingRecommendations.Select(x => x.Show.ShowId).ToList();
         var newRecommendation = PickRandomShow(recommendedShows, recentlyRecommendedShowIds);
 
@@ -138,9 +146,10 @@ public class RecommendationGeneratorIndividual : RecommendationGeneratorBase
             ShowId = newRecommendation.ShowId
         });
         await _DbContext.SaveChangesAsync();
-        // if its first login today - show the recommendation splash before rest of the data is fetched??
     }
     
+
+    /// Clears all individual recommendations and resets the auto-increment counter
     public async Task ClearIndividualRecommendationsHistoryForAllUsers()
     {
         var allRecommendations = await _DbContext.IndividualRecommendations.ToListAsync();
@@ -153,6 +162,5 @@ public class RecommendationGeneratorIndividual : RecommendationGeneratorBase
         _DbContext.IndividualRecommendations.RemoveRange(allRecommendations);
         await _DbContext.Database.ExecuteSqlRawAsync("ALTER TABLE IndividualRecommendations AUTO_INCREMENT = 1");
         await _DbContext.SaveChangesAsync();
-    } // TODO make sure the individual recommendation is different from the global one
-      // TODO (add global recommendation id to past recommendations when calling PickRandomShow) 
+    }
 }

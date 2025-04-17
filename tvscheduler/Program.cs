@@ -13,21 +13,22 @@ using tvscheduler.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Core service registration
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
+
+// Swagger configuration with JWT authentication
 builder.Services.AddSwaggerGen(x =>
 {
-    x.SwaggerDoc( "v1", new OpenApiInfo
+    x.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "DM Web API's",
         Version = "v1"
     });
 
+    // JWT security definition
     var security = new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme.Example: \"Authorization: Bearer {token}\"",
@@ -53,24 +54,20 @@ builder.Services.AddSwaggerGen(x =>
             },
             new string[] {}
         }
-    };
-    
+    };   
     x.AddSecurityRequirement(securityRequirement);
 });
 
-
-// protectagaint circular dependencies when rendering json
+// Prevent circular reference issues in JSON serialization
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-    options.JsonSerializerOptions.MaxDepth = 64; // Increase depth limit if needed
+    options.JsonSerializerOptions.MaxDepth = 64;
 });
 
-
-// ADJUST USER CREATION REGEX
+// Simplified password requirements for development
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    // Password settings
     options.Password.RequireDigit = false;
     options.Password.RequiredLength = 1;
     options.Password.RequireNonAlphanumeric = false;
@@ -79,11 +76,10 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 0;
 });
 
-
+// Identity and JWT setup
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
-
 
 builder.Services.AddAuthentication(options =>
 {
@@ -91,7 +87,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
@@ -99,14 +95,12 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey =
-            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty)),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty)),
         NameClaimType = ClaimTypes.NameIdentifier
-
     };
 });
 
-
+// CORS policy for frontend
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
@@ -119,8 +113,7 @@ builder.Services.AddCors(options =>
         });
 });
 
-
-// database <-> ORM (Entity Framework) DI
+// Database context setup with MySQL
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -128,8 +121,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     )
 );
 
-
-
+// Hangfire configuration for background jobs
 builder.Services.AddHangfire(opts =>
 {
     opts.UseStorage(new MySqlStorage(builder.Configuration.GetConnectionString("DefaultConnection")+"Allow User Variables=true;",
@@ -138,8 +130,7 @@ builder.Services.AddHangfire(opts =>
 });
 builder.Services.AddHangfireServer();
 
-
-// custom services added to DI pipeline
+// Application services registration
 builder.Services.AddScoped<UpdateChannelSchedule>();
 builder.Services.AddScoped<TagsManager>();
 builder.Services.AddSingleton<HangfireJobs>();
@@ -151,35 +142,36 @@ builder.Services.AddScoped<ImageManager>();
 
 var app = builder.Build();
 
-
-// run on program startup
+// Initial database setup and cache population
 using (var serviceScope = app.Services.CreateScope())
 {
     var dbContext = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
     var showsCache = serviceScope.ServiceProvider.GetRequiredService<TodaysShowsCache>();
     var showsCacheUpdate = serviceScope.ServiceProvider.GetRequiredService<TodaysShowsCacheUpdate>();
+    
+    // Initialize channels if database is empty
     if (dbContext.Channels.IsNullOrEmpty())
     {
         var databaseInit = new DatabaseChannelsInit(dbContext);
-        databaseInit.SeedDatabase(); // adding hard coded channels to the database if no channels exist
+        databaseInit.SeedDatabase();
     }
 
+    // Populate cache if shows exist but cache is empty
     if (!dbContext.ShowEvents.IsNullOrEmpty() && showsCache.GetCachedShows().IsNullOrEmpty())
     {
         await showsCacheUpdate.UpdateCachedShows();
     }
 }
 
-//HANGFIRE jobs
-
+// Hangfire job scheduling
 using (var scope = app.Services.CreateScope())
 {
-    var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>(); // hangfire service to handle jobs
-    var hangfireJobs = scope.ServiceProvider.GetRequiredService<HangfireJobs>(); // class defining the jobs
+    var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+    var hangfireJobs = scope.ServiceProvider.GetRequiredService<HangfireJobs>();
     
-
+    // Schedule background jobs
     recurringJobs.AddOrUpdate("Update the channel schedule for two days",
-        ()=> hangfireJobs.UpdateChannelScheduleJob(),
+        () => hangfireJobs.UpdateChannelScheduleJob(),
         Cron.Never());
     
     recurringJobs.AddOrUpdate("Find Tags For Untagged Shows",
@@ -202,7 +194,6 @@ using (var scope = app.Services.CreateScope())
         () => hangfireJobs.UpdateTodaysShowsCache(),
         Cron.Daily());
 
-
     recurringJobs.AddOrUpdate("Clear Global Recommendations History",
         () => hangfireJobs.ClearGlobalRecommendationsHistory(),
         Cron.Never());
@@ -224,7 +215,7 @@ using (var scope = app.Services.CreateScope())
         Cron.Never());
 }
 
-// Configure the HTTP request pipeline.
+// Development environment setup
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -232,16 +223,13 @@ if (app.Environment.IsDevelopment())
     app.UseHangfireDashboard();
 }
 
+// Middleware pipeline configuration
 app.UseHttpsRedirection();
-
-// Enable static file serving from wwwroot directory
 app.UseStaticFiles();
-
 app.UseCors("AllowFrontend");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

@@ -1,5 +1,6 @@
 namespace tvscheduler.Models;
 
+// Data transfer object for favorite tag information
 public class FavouriteTagDTO
 {
     public int Id { get; set; }

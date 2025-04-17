@@ -3,10 +3,14 @@ using tvscheduler.Models;
 using tvscheduler.network_services;
 namespace tvscheduler.Utilities;
 
+
+/// Manages show tags using OpenAI for categorization
 public class TagsManager
 {
     private readonly AppDbContext _dbContext;
     private readonly HttpClient _httpClient;
+    
+    // Predefined list of valid tags for show categorization
     public readonly List<string> tagList = new List<string>
     {
         "Action", "Comedy", "Drama", "News", "Horror", "Sci-Fi", "Thriller", "Romance", "Documentary", "Animation", "Fantasy"
@@ -18,28 +22,24 @@ public class TagsManager
         _httpClient = httpClient;
     }
     
-    // assign tag() to separate checking if the show exsists from getTagForShow()
+
+    /// Assigns a tag to a show using OpenAI for categorization
     public async Task AssignTag(Show? show)
     {
-
         if (show != null)
         {
-            
             var openAiHandler = new OpenAiHandler(_httpClient, tagList, show.Name);
             string gptresponse;
 
-            //           !! verify gpt answer!!! is the response in the provided tag list ?
+            // Ensure response is a valid tag from our list
             do
             {
                 gptresponse = await openAiHandler.RequestTag();
-
-            } while ( !tagList.Contains(gptresponse) );
-            
-        
+            } while (!tagList.Contains(gptresponse));
             
             Console.WriteLine("TAG GENERATED FOR " + show.Name, " === ", gptresponse);
             
-            //get or create tag,
+            // Get existing tag or create new one
             var tag = await _dbContext.Tags.FirstOrDefaultAsync(t => t.Name == gptresponse);
             if (tag == null)
             {
@@ -49,14 +49,13 @@ public class TagsManager
                 };
                 _dbContext.Tags.Add(tag);
                 await _dbContext.SaveChangesAsync();
-                // no need to run save because if will be run in the show creator after this function returns
-                //      - well not really because then tag == null was always true on line 48
             }
-            show.Tag = tag;  // assign tag to the show
+            show.Tag = tag;
         }
     }
     
-    // check all the shows in a db for a missing tag
+
+    /// Scans database for shows without tags and assigns them
     public async Task CheckDatabaseForUntagged()
     {
         var shows = _dbContext.Shows.ToArray();
@@ -71,35 +70,30 @@ public class TagsManager
         await _dbContext.SaveChangesAsync();
     }
     
-    // reassign tags for all shows after changing the tags list
-    // for each show > delete tag > assign new tag
+
+    /// Reassigns tags for all shows in the database
     public async Task ReassignAllTags()
     {
         var shows = await _dbContext.Shows.ToArrayAsync();
         foreach (var showObject in shows)
         {
             Console.WriteLine("Reassigning " + showObject.Name);
-            //remove tag
             showObject.Tag = null;
-            _dbContext.Entry(showObject).Property("TagId").IsModified = true;  // explicitly mark as updated
-            //assign tags
-            // await AssignTag(showObject);`
-            
+            _dbContext.Entry(showObject).Property("TagId").IsModified = true;
         }  
         await _dbContext.SaveChangesAsync();
     }
     
-    // should i rewrite it in a more functional way ? 
-    // create an iterator which takes a callback (like remove, find tag etc?
-    
-    // removes link from Show to Tag for all the shows in the DB 
+
+    /// Removes tag associations from all shows
     public async Task DeleteTagIdsFromAllShows()
     {
         await _dbContext.Database.ExecuteSqlRawAsync("UPDATE Shows SET TagId = NULL;");
         _dbContext.ChangeTracker.Clear();
     }
 
-    // Clears the Tags table!
+
+    /// Removes all tags from the database
     public async Task DeleteAllTags()
     {
         await _dbContext.Database.ExecuteSqlRawAsync("DELETE FROM Tags;");

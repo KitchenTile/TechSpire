@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tvscheduler.Models;
 
+// Represents a scheduled broadcast of a show on a specific channel
 public class ShowEvent
 {
     [Key]

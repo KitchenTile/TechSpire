@@ -3,6 +3,7 @@ using tvscheduler.Models;
 
 namespace tvscheduler;
 
+// Represents a TV channel with its schedule and associated tags
 public class Channel
 {
     [Key]

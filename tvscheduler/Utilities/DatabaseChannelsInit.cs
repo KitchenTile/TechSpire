@@ -3,8 +3,11 @@ using tvscheduler.Models;
 
 namespace tvscheduler.Utilities;
 
+
+/// Initializes the database with default TV channels
 public class DatabaseChannelsInit
 {
+    // Predefined list of default channels
     private readonly List<Channel> Channels = new List<Channel>
     {
         new Channel
@@ -43,6 +46,8 @@ public class DatabaseChannelsInit
         DbContext = dbContext;
     }
 
+
+    /// Seeds the database with default channels if none exist
     public void SeedDatabase()
     {
         if (!DbContext.Channels.Any())
