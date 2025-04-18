@@ -138,3 +138,9 @@
 2. Clone the Repository and cd into the frontend folder (/tvscheduler-react-app)
 3. Install Dependencies by running `npm install`
 4. Start the Front-end by running `npm run dev`
+
+## The Meeting minutes :
+Consists 3 items
+1. meeting minutes -->> 1 Week to 12 Week
+2. sprint planning and retrospective -->> Summary of tasks assigned and completed
+3. copy of excel that was used before implementing in jira 
